@@ -43,12 +43,6 @@ export default function Register() {
       {/* Header - Mimicking Airbnb Top Nav for context */}
       <header className="border-b border-neutral-100 px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-md">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="M12 5l7 7-7 7"></path>
-            </svg>
-          </div>
           <span className="font-medium text-xl tracking-tight text-neutral-800">FairShare</span>
         </Link>
         <Link to="/login" className="text-sm font-medium text-neutral-700 hover:text-emerald-600 transition-colors">
