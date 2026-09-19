@@ -43,9 +43,9 @@ export default function Register() {
       {/* Header - Mimicking Airbnb Top Nav for context */}
       <header className="border-b border-neutral-100 px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <span className="font-medium text-xl tracking-tight text-neutral-800">FairShare</span>
+          <span className="text-3xl font-bold tracking-tight text-slate-900">FairShare</span>
         </Link>
-        <Link to="/login" className="text-sm font-medium text-neutral-700 hover:text-emerald-600 transition-colors">
+        <Link to="/login" className="text-lg font-medium text-neutral-700 hover:text-emerald-600 transition-colors">
           Log in
         </Link>
       </header>

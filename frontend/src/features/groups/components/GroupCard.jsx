@@ -13,7 +13,7 @@ const GroupCard = ({
   const getStatusStyles = () => {
     if (statusType === 'owe') return 'bg-red-500/80 border-red-500/50 text-slate-900';
     if (statusType === 'owed') return 'bg-emerald-500/80 border-emerald-500/50 text-slate-900';
-    return 'bg-black/40 border-white/10 text-slate-900';
+    return 'bg-black/40 border-white/10 text-white';
   };
 
   return (
@@ -34,10 +34,10 @@ const GroupCard = ({
         </div>
 
         <div>
-          <h3 className="text-2xl font-semibold text-slate-900 mb-3 capitalize tracking-wide truncate">
+          <h3 className="text-2xl font-semibold text-white mb-3 capitalize tracking-wide truncate">
             {groupName}
           </h3>
-          <div className="flex items-center gap-5 text-slate-900/80 text-sm font-medium">
+          <div className="flex items-center gap-5 text-slate-200 text-sm font-medium">
             <span className="flex items-center gap-1.5">
               <Users className="w-4 h-4" />
               {members} {members === 1 ? 'member' : 'members'}
