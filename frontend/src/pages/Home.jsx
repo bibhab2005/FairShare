@@ -311,7 +311,7 @@ const Home = () => {
             alt="Friends on a beach" 
             className="w-full h-[600px] object-cover group-hover:scale-105 transition-transform duration-1000" 
           />
-          <div className="absolute bottom-12 left-12 z-20 text-slate-900">
+          <div className="absolute bottom-12 left-12 z-20 text-white">
             <h3 className="text-4xl md:text-6xl font-medium tracking-tighter mb-4">Focus on the memories.<br/>We'll handle the math.</h3>
           </div>
         </div>
