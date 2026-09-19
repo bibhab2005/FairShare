@@ -12,7 +12,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:5000/auth/google';
+        window.location.href = import.meta.env.DEV ? 'http://localhost:5000/api/auth/google' : '/api/auth/google';
     };
 
     const handleEmailLogin = async (e) => {
@@ -20,7 +20,6 @@ const AuthModal = ({ isOpen, onClose }) => {
         try {
             const response = await axiosInstance.post('/auth/login', { email, password });
             if (response.data && response.data.token) {
-                localStorage.setItem('token', response.data.token);
                 login(response.data.user);
                 onClose();
             }

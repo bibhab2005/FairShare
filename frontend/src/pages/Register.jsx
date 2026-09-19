@@ -16,7 +16,7 @@ export default function Register() {
 
   const handleGoogleLogin = () => {
     // This is wired to the backend endpoint we configured
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = import.meta.env.DEV ? 'http://localhost:5000/api/auth/google' : '/api/auth/google';
   };
 
   const handleManualRegister = async (e) => {
@@ -29,9 +29,6 @@ export default function Register() {
     setLoading(true);
     try {
       const { data } = await registerUser({ name: fullName.trim(), email, password });
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-      }
       login(data.user);
       navigate('/');
     } catch (err) {
