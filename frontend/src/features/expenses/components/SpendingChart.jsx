@@ -41,8 +41,8 @@ const SpendingChart = ({ expenses }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white border border-neutral-100 p-3 rounded-xl shadow-lg">
-          <p className="font-medium text-neutral-950 mb-1">{data.name}</p>
+        <div className="bg-white/60 backdrop-blur-lg border border-white/40 p-3 rounded-xl shadow-lg">
+          <p className="font-medium text-slate-900 mb-1">{data.name}</p>
           <p className="text-emerald-600 font-semibold">{formatPaise(data.value)}</p>
         </div>
       );
@@ -51,7 +51,7 @@ const SpendingChart = ({ expenses }) => {
   };
 
   return (
-    <div className="bg-white border border-neutral-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row items-center gap-8">
+    <div className="bg-white/60 backdrop-blur-lg border border-white/40 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row items-center gap-8">
       <div className="w-full md:w-1/2 h-64 relative">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -73,13 +73,13 @@ const SpendingChart = ({ expenses }) => {
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-sm font-medium text-neutral-500 uppercase tracking-wide">Total</span>
-          <span className="text-2xl font-semibold text-neutral-950 tracking-tight">{formatPaise(total)}</span>
+          <span className="text-sm font-medium text-slate-600 uppercase tracking-wide">Total</span>
+          <span className="text-2xl font-semibold text-slate-900 tracking-tight">{formatPaise(total)}</span>
         </div>
       </div>
       
       <div className="w-full md:w-1/2 flex flex-col justify-center">
-        <h3 className="text-xl font-medium tracking-tight text-neutral-950 mb-6">Spending Breakdown</h3>
+        <h3 className="text-xl font-medium tracking-tight text-slate-900 mb-6">Spending Breakdown</h3>
         <div className="space-y-4">
           {data.map((entry, index) => (
             <div key={entry.name} className="flex items-center justify-between">
@@ -90,7 +90,7 @@ const SpendingChart = ({ expenses }) => {
                 />
                 <span className="font-medium text-neutral-700">{entry.name}</span>
               </div>
-              <span className="font-semibold text-neutral-950">{formatPaise(entry.value)}</span>
+              <span className="font-semibold text-slate-900">{formatPaise(entry.value)}</span>
             </div>
           ))}
         </div>

@@ -35,7 +35,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 onClick={onClose}
             ></div>
             
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 z-10 flex flex-col p-6">
+            <div className="relative bg-white/60 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-md mx-4 z-10 flex flex-col p-6">
                 <button 
                     onClick={onClose}
                     className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -69,7 +69,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                         
                         <button 
                             type="submit"
-                            className="w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold py-3.5 rounded-lg transition-colors"
+                            className="w-full bg-rose-500 hover:bg-rose-600 text-slate-900 font-semibold py-3.5 rounded-lg transition-colors"
                         >
                             Continue
                         </button>

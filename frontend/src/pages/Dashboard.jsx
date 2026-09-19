@@ -104,38 +104,98 @@ const Dashboard = () => {
     );
   }
 
+  const totalYouOwe = Object.values(balancesMap).reduce((acc, bal) => bal < 0 ? acc + Math.abs(bal) : acc, 0) / 100;
+  const totalYouAreOwed = Object.values(balancesMap).reduce((acc, bal) => bal > 0 ? acc + bal : acc, 0) / 100;
+  const totalBalance = totalYouAreOwed - totalYouOwe;
+
   return (
-    <div className="min-h-screen bg-white text-neutral-950 font-sans">
-      <Navbar />
-      
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="flex flex-col md:flex-row items-start justify-between mb-16 gap-6">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-neutral-950">
-              Hello, {user?.name?.split(' ')[0]}
-            </h1>
-            <p className="text-neutral-500 text-lg mt-2 max-w-xl">
-              Manage your shared expenses and settle up with ease.
-            </p>
+    <div className="font-sans relative overflow-x-hidden">
+        <Navbar />
+        
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="relative mb-16">
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-slate-900 mb-2">
+                Hello, {user?.name?.split(' ')[0]} 👋
+              </h1>
+              <p className="text-slate-600 text-lg max-w-xl">
+                Here's where you stand with your shared expenses.
+              </p>
+            </div>
+            <button
+              id="create-group-btn"
+              onClick={() => setShowModal(true)}
+              className="shrink-0 inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-6 py-3 rounded-full hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300"
+            >
+              <Plus size={18} />
+              New Group
+            </button>
           </div>
-          <button
-            id="create-group-btn"
-            onClick={() => setShowModal(true)}
-            className="shrink-0 inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-6 py-3 rounded-full hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200"
-          >
-            <Plus size={18} />
-            New Group
-          </button>
+
+          {/* Stat Cards */}
+          {groups.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              <div className="bg-white/60 backdrop-blur-lg rounded-[2rem] p-6 border border-white/40 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-slate-600 font-medium">Total Balance</span>
+                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+                    <Receipt size={20} className="text-slate-500" />
+                  </div>
+                </div>
+                <div>
+                  <div className={`text-3xl font-semibold tracking-tight ${totalBalance > 0 ? 'text-emerald-500' : totalBalance < 0 ? 'text-rose-500' : 'text-slate-900'}`}>
+                    {totalBalance > 0 ? '+' : ''}{totalBalance < 0 ? '-' : ''}₹{Math.abs(totalBalance).toFixed(2)}
+                  </div>
+                  <span className="text-sm text-slate-500 mt-1 block">Across all groups</span>
+                </div>
+              </div>
+
+              <div className="bg-white/60 backdrop-blur-lg rounded-[2rem] p-6 border border-white/40 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-slate-600 font-medium">You Owe</span>
+                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center">
+                    <AlertCircle size={20} className="text-rose-500" />
+                  </div>
+                </div>
+                <div>
+                  <div className="text-3xl font-semibold tracking-tight text-slate-900">
+                    ₹{totalYouOwe.toFixed(2)}
+                  </div>
+                  <span className="text-sm text-rose-500 mt-1 block font-medium">To be paid</span>
+                </div>
+              </div>
+
+              <div className="bg-white/60 backdrop-blur-lg rounded-[2rem] p-6 border border-white/40 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-slate-600 font-medium">You are Owed</span>
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
+                    <ArrowRight size={20} className="text-emerald-500" />
+                  </div>
+                </div>
+                <div>
+                  <div className="text-3xl font-semibold tracking-tight text-slate-900">
+                    ₹{totalYouAreOwed.toFixed(2)}
+                  </div>
+                  <span className="text-sm text-emerald-500 mt-1 block font-medium">To be collected</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
 
         {groups.length === 0 ? (
-          <div className="bg-white border border-emerald-50 rounded-[3rem] p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div className="w-20 h-20 rounded-2xl bg-emerald-50 flex items-center justify-center border border-emerald-100 shadow-sm">
+          <div className="bg-white/5 border border-white/10 rounded-[3rem] p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="w-20 h-20 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-100 shadow-sm">
               <Folders size={32} className="text-emerald-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-medium text-neutral-950 tracking-tight">No groups yet</h2>
-              <p className="text-neutral-500 mt-2">
+              <h2 className="text-2xl font-medium text-white tracking-tight">No groups yet</h2>
+              <p className="text-neutral-400 mt-2">
                 Create a group to start splitting expenses.
               </p>
             </div>
@@ -152,7 +212,7 @@ const Dashboard = () => {
           <div>
             <div className="flex items-center justify-between mb-8">
               <span className="text-xs font-semibold text-neutral-400 tracking-widest uppercase">YOUR GROUPS</span>
-              <span className="text-sm text-neutral-500 font-medium">
+              <span className="text-sm text-neutral-400 font-medium">
                 {groups.length} {groups.length === 1 ? 'group' : 'groups'}
               </span>
             </div>
@@ -220,7 +280,7 @@ const Dashboard = () => {
               className="relative w-full max-w-md bg-white border border-neutral-200 shadow-2xl rounded-[2.5rem] p-8"
             >
               <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-medium text-neutral-950 tracking-tight">Create a Group</h2>
+              <h2 className="text-2xl font-medium text-white tracking-tight">Create a Group</h2>
               <button
                 id="close-modal-btn"
                 onClick={() => setShowModal(false)}
@@ -232,19 +292,19 @@ const Dashboard = () => {
 
             <form id="create-group-form" onSubmit={handleCreateGroup} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-neutral-950 mb-2">Group Name</label>
+                <label className="block text-sm font-medium text-white mb-2">Group Name</label>
                 <input
                   id="group-name-input"
                   type="text"
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder="Trip to Goa, Flatmates..."
-                  className="w-full px-4 py-3 rounded-2xl bg-neutral-50 text-neutral-950 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-transparent focus:border-emerald-100 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-2xl bg-neutral-50 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-transparent focus:border-emerald-100 transition-all duration-200"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-950 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Description <span className="text-neutral-400 font-normal">(Optional)</span>
                 </label>
                 <input
@@ -253,7 +313,7 @@ const Dashboard = () => {
                   value={newGroupDesc}
                   onChange={(e) => setNewGroupDesc(e.target.value)}
                   placeholder="What's this group for?"
-                  className="w-full px-4 py-3 rounded-2xl bg-neutral-50 text-neutral-950 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-transparent focus:border-emerald-100 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-2xl bg-neutral-50 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-transparent focus:border-emerald-100 transition-all duration-200"
                 />
               </div>
               

@@ -28,7 +28,7 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 hover:bg-neutral-50 p-2 pr-3 rounded-full transition-colors outline-none"
+        className="flex items-center gap-3 hover:bg-slate-50 p-2 pr-3 rounded-full transition-colors outline-none"
       >
         {avatarUrl ? (
           <img 
@@ -43,11 +43,11 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
           </div>
         )}
         <span className="text-sm font-medium text-neutral-700 hidden sm:block">{name}</span>
-        <ChevronDown className={`w-4 h-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-slate-600 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white border border-neutral-100 rounded-2xl shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-2 w-64 bg-white/60 backdrop-blur-lg border border-white/40 rounded-2xl shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="px-4 py-3 border-b border-neutral-50 mb-1 flex items-center gap-3">
             {avatarUrl ? (
               <img 
@@ -63,7 +63,7 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
             )}
             <div className="overflow-hidden">
               <p className="text-sm font-medium text-neutral-900 truncate">{name}</p>
-              <p className="text-xs text-neutral-500 truncate mt-0.5">{email}</p>
+              <p className="text-xs text-slate-600 truncate mt-0.5">{email}</p>
             </div>
           </div>
           

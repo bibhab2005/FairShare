@@ -65,3 +65,25 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+@keyframes slide {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-slide {
+  animation: slide 40s linear infinite;
+}
+.animate-slide:hover {
+  animation-play-state: paused;
+}
+
+@layer utilities {
+  @keyframes gradient-pan {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .animate-bg-pan {
+    animation: gradient-pan 15s ease-in-out infinite;
+  }
+}

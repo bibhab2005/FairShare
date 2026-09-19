@@ -11,13 +11,13 @@ const GroupCard = ({
   const displayImage = imageUrl || `https://picsum.photos/seed/${groupName}/800/500`;
 
   const getStatusStyles = () => {
-    if (statusType === 'owe') return 'bg-red-500/80 border-red-500/50 text-white';
-    if (statusType === 'owed') return 'bg-emerald-500/80 border-emerald-500/50 text-white';
-    return 'bg-black/40 border-white/10 text-white';
+    if (statusType === 'owe') return 'bg-red-500/80 border-red-500/50 text-slate-900';
+    if (statusType === 'owed') return 'bg-emerald-500/80 border-emerald-500/50 text-slate-900';
+    return 'bg-black/40 border-white/10 text-slate-900';
   };
 
   return (
-    <div className="relative w-full h-64 rounded-[2.5rem] overflow-hidden group cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 block border border-neutral-100">
+    <div className="relative w-full h-64 rounded-[2.5rem] overflow-hidden group cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 block border border-white/40">
       <img
         src={displayImage}
         alt={groupName}
@@ -34,10 +34,10 @@ const GroupCard = ({
         </div>
 
         <div>
-          <h3 className="text-2xl font-semibold text-white mb-3 capitalize tracking-wide truncate">
+          <h3 className="text-2xl font-semibold text-slate-900 mb-3 capitalize tracking-wide truncate">
             {groupName}
           </h3>
-          <div className="flex items-center gap-5 text-white/80 text-sm font-medium">
+          <div className="flex items-center gap-5 text-slate-900/80 text-sm font-medium">
             <span className="flex items-center gap-1.5">
               <Users className="w-4 h-4" />
               {members} {members === 1 ? 'member' : 'members'}

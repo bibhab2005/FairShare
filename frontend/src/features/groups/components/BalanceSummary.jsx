@@ -79,10 +79,10 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
           ? 'bg-emerald-50 border-emerald-100 shadow-sm' 
           : netBalance < 0 
             ? 'bg-red-50 border-red-100 shadow-sm'
-            : 'bg-neutral-50 border-neutral-100'
+            : 'bg-slate-50 border-white/40'
       }`}>
         <h3 className={`text-sm font-semibold tracking-wide uppercase mb-4 ${
-          netBalance > 0 ? 'text-emerald-700' : netBalance < 0 ? 'text-red-700' : 'text-neutral-500'
+          netBalance > 0 ? 'text-emerald-700' : netBalance < 0 ? 'text-red-700' : 'text-slate-600'
         }`}>Your Overall Balance</h3>
         {myBalance ? (
           <div className="flex items-center gap-3">
@@ -91,21 +91,21 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
                 <span className="text-3xl font-medium tracking-tight text-green-600">
                   +{formatPaise(netBalance)}
                 </span>
-                <span className="text-sm font-medium text-neutral-500">gets back</span>
+                <span className="text-sm font-medium text-slate-600">gets back</span>
               </>
             ) : netBalance < 0 ? (
               <>
                 <span className="text-3xl font-medium tracking-tight text-red-600">
                   {formatPaise(Math.abs(netBalance))}
                 </span>
-                <span className="text-sm font-medium text-neutral-500">you owe</span>
+                <span className="text-sm font-medium text-slate-600">you owe</span>
               </>
             ) : (
-              <span className="text-3xl font-medium tracking-tight text-neutral-950">Settled up</span>
+              <span className="text-3xl font-medium tracking-tight text-slate-900">Settled up</span>
             )}
           </div>
         ) : (
-          <p className="text-neutral-500 font-medium">Not involved in any expenses yet.</p>
+          <p className="text-slate-600 font-medium">Not involved in any expenses yet.</p>
         )}
       </div>
 
@@ -121,21 +121,21 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
       )}
 
       {simplifiedDebts.length > 0 && (
-        <div className="bg-white border border-neutral-100 shadow-sm rounded-3xl p-6">
-          <h3 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase mb-4">All Group Debts</h3>
+        <div className="bg-white/60 backdrop-blur-lg border border-white/40 shadow-sm rounded-3xl p-6">
+          <h3 className="text-sm font-semibold tracking-wide text-slate-600 uppercase mb-4">All Group Debts</h3>
           <div className="space-y-3">
             {simplifiedDebts.map((debt, idx) => {
               if (debt.from === user?._id || debt.to === user?._id) return null;
               const fromUser = findUser(debt.from);
               const toUser = findUser(debt.to);
               return (
-                <div key={`all-debt-${idx}`} className="flex items-center justify-between p-3 rounded-2xl hover:bg-white transition-colors duration-200">
+                <div key={`all-debt-${idx}`} className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/60 backdrop-blur-lg transition-colors duration-200">
                   <div className="flex items-center gap-2 text-neutral-600 text-sm">
-                    <span className="font-medium text-neutral-950">{fromUser?.name}</span>
+                    <span className="font-medium text-slate-900">{fromUser?.name}</span>
                     <ArrowRight size={14} className="text-neutral-300" />
-                    <span className="font-medium text-neutral-950">{toUser?.name}</span>
+                    <span className="font-medium text-slate-900">{toUser?.name}</span>
                   </div>
-                  <span className="font-medium text-neutral-500">{formatPaise(debt.amountPaise)}</span>
+                  <span className="font-medium text-slate-600">{formatPaise(debt.amountPaise)}</span>
                 </div>
               );
             })}

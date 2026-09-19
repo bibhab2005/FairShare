@@ -82,6 +82,8 @@ const AppRoutes = () => {
 
 import { Toaster } from 'react-hot-toast';
 
+import LightParticles from './core/components/LightParticles';
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -112,7 +114,17 @@ const App = () => {
           },
         }}
       />
-      <AppRoutes />
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 bg-[length:200%_200%] animate-bg-pan text-slate-800 relative">
+        {/* Subtle Ambient Grainy Texture */}
+        <div 
+          className="absolute inset-0 z-0 opacity-[0.15] mix-blend-overlay bg-cover bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: "url('/assets/dashboard-bg.jpg')" }}
+        />
+        <LightParticles />
+        <div className="relative z-10">
+          <AppRoutes />
+        </div>
+      </div>
     </BrowserRouter>
   );
 };
