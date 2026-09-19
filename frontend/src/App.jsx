@@ -81,6 +81,7 @@ const AppRoutes = () => {
 };
 
 import { Toaster } from 'react-hot-toast';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import LightParticles from './core/components/LightParticles';
