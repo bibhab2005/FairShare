@@ -81,12 +81,14 @@ const AppRoutes = () => {
 };
 
 import { Toaster } from 'react-hot-toast';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import LightParticles from './core/components/LightParticles';
 
 const App = () => {
   return (
     <BrowserRouter>
+      <SpeedInsights />
       <Toaster 
         position="bottom-center"
         toastOptions={{
