@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import GroupDetails from './pages/GroupDetails';
 import Home from './pages/Home';
+import AboutUs from './pages/AboutUs';
 import { Loader2 } from 'lucide-react';
 
 const ProtectedRoute = ({ children }) => {
@@ -78,6 +79,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/about" element={<AboutUs />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
