@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { IoMdClose } from 'react-icons/io';
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance from '../../../core/api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
 
 const AuthModal = ({ isOpen, onClose }) => {

@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { createSettlement } from '../api/expenseApi';
-import { formatPaise } from '../utils/formatCurrency';
+import { useAuth } from '../../auth/context/AuthContext';
+import { createSettlement } from '../../expenses/api/settlementService';
+import { formatPaise } from '../../../core/utils/formatCurrency';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import AnimatedEmptyState from './AnimatedEmptyState';
-import emptyStateAnim from '../../public/assets/empty-box.json';
-import PendingSettlements from './PendingSettlements';
+import AnimatedEmptyState from '../../../core/components/AnimatedEmptyState';
+import emptyStateAnim from '../../../../public/assets/empty-box.json';
+import PendingSettlements from '../../expenses/components/PendingSettlements';
 
 const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
   const { user } = useAuth();

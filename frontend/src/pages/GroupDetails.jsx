@@ -1,21 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { fetchGroupById, addMemberToGroup } from '../api/groupApi';
-import { fetchExpenses, deleteExpense, fetchBalances } from '../api/expenseApi';
-import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
-import ExpenseModal from '../components/ExpenseModal';
-import BalanceSummary from '../components/BalanceSummary';
-import { formatPaise } from '../utils/formatCurrency';
+import { fetchGroupById, addMemberToGroup } from '../features/groups/api/groupService';
+import { fetchExpenses, deleteExpense } from '../features/expenses/api/expenseService';
+import { fetchBalances } from '../features/groups/api/balanceService';
+import { useAuth } from '../features/auth/context/AuthContext';
+import Navbar from '../core/components/Navbar';
+import ExpenseModal from '../features/expenses/components/ExpenseModal';
+import BalanceSummary from '../features/groups/components/BalanceSummary';
+import { formatPaise } from '../core/utils/formatCurrency';
 import {
   Plus, Trash2, ArrowLeft, Users, UserPlus, AlertCircle,
   Loader2, Receipt, CheckCircle2, X, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { ExpenseRowSkeleton, BalanceCardSkeleton } from '../components/SkeletonLoaders';
-import SpendingChart from '../components/SpendingChart';
-import AnimatedEmptyState from '../components/AnimatedEmptyState';
+import { ExpenseRowSkeleton, BalanceCardSkeleton } from '../core/components/SkeletonLoaders';
+import SpendingChart from '../features/expenses/components/SpendingChart';
+import AnimatedEmptyState from '../core/components/AnimatedEmptyState';
 import emptyStateAnim from '../../public/assets/empty-box.json';
 
 const GroupDetails = () => {

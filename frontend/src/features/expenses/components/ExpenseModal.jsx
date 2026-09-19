@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { X, Receipt, AlertCircle, ChevronDown, Equal, Sliders, Loader2 } from 'lucide-react';
-import { createExpense } from '../api/expenseApi';
-import { useAuth } from '../context/AuthContext';
-import { formatPaise, rupeeToRoundedPaise } from '../utils/formatCurrency';
+import { createExpense } from '../api/expenseService';
+import { useAuth } from '../../auth/context/AuthContext';
+import { formatPaise, rupeeToRoundedPaise } from '../../../core/utils/formatCurrency';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 

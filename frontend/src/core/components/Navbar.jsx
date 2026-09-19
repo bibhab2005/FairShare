@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import { SplitSquareVertical } from 'lucide-react';
-import ProfileDropdown from './ProfileDropdown';
+import ProfileDropdown from '../../features/auth/components/ProfileDropdown';
 
 const Navbar = () => {
   const { user } = useAuth();

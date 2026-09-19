@@ -4,5 +4,10 @@ dist/
 .DS_Store
 *.log
 secret key.txt
-.env.example
+atlas
 
+
+atlas-credentials.env
+client_secret.json
+graphify-out/
+sample ss/

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { fetchGroups, createGroup } from '../api/groupApi';
-import { fetchBalances } from '../api/expenseApi';
+import { useAuth } from '../features/auth/context/AuthContext';
+import { fetchGroups, createGroup } from '../features/groups/api/groupService';
+import { fetchBalances } from '../features/groups/api/balanceService';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { GroupCardSkeleton } from '../components/SkeletonLoaders';
-import Navbar from '../components/Navbar';
-import GroupCard from '../components/GroupCard';
-import { Plus, Folders, Loader2, AlertCircle, X } from 'lucide-react';
+import { GroupCardSkeleton } from '../core/components/SkeletonLoaders';
+import Navbar from '../core/components/Navbar';
+import GroupCard from '../features/groups/components/GroupCard';
+import { Plus, Folders, Loader2, AlertCircle, X, Users, Receipt, Search, ArrowRight } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();

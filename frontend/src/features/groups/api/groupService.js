@@ -1,4 +1,4 @@
-import api from './axiosInstance';
+import api from '../../../core/api/axiosInstance';
 
 export const fetchGroups = () => api.get('/groups');
 export const fetchGroupById = (id) => api.get(`/groups/${id}`);
