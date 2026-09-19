@@ -108,7 +108,7 @@ const GroupDetails = () => {
     return (
       <div className="min-h-screen bg-neutral-950">
         <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-0 isolate">
           <div className="flex flex-col md:flex-row items-start justify-between mb-12 gap-6">
             <div className="h-12 w-64 bg-slate-200 rounded-lg animate-pulse mb-4"></div>
             <div className="flex gap-3">
@@ -140,10 +140,10 @@ const GroupDetails = () => {
   const actualExpensesCount = expenses.filter(e => !e.isSettlement).length;
 
   return (
-    <div className="font-sans relative overflow-x-hidden">
+    <div className="font-sans relative">
       <div className="relative z-10">
         <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-0 isolate">
           <div className="mb-12">
             <Link
               to="/"

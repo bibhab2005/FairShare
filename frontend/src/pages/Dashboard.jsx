@@ -86,7 +86,7 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-0 isolate">
           <div className="flex flex-col md:flex-row items-start justify-between mb-16 gap-6">
             <div>
               <div className="h-12 w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
@@ -109,10 +109,10 @@ const Dashboard = () => {
   const totalBalance = totalYouAreOwed - totalYouOwe;
 
   return (
-    <div className="font-sans relative overflow-x-hidden">
+    <div className="font-sans relative">
         <Navbar />
         
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-0 isolate">
           <div className="relative mb-16">
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
             <div>
