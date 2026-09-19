@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useAuth } from './features/auth/context/AuthContext';
+import LightParticles from './core/components/LightParticles';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -80,11 +83,6 @@ const AppRoutes = () => {
   );
 };
 
-import { Toaster } from 'react-hot-toast';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import LightParticles from './core/components/LightParticles';
 
 const App = () => {
   return (
