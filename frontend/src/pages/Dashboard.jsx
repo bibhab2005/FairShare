@@ -189,13 +189,13 @@ const Dashboard = () => {
         </div>
 
         {groups.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-[3rem] p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="bg-white border border-neutral-200 rounded-[3rem] p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="w-20 h-20 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-100 shadow-sm">
               <Folders size={32} className="text-emerald-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-medium text-white tracking-tight">No groups yet</h2>
-              <p className="text-neutral-400 mt-2">
+              <h2 className="text-2xl font-medium text-slate-900 tracking-tight">No groups yet</h2>
+              <p className="text-slate-500 mt-2">
                 Create a group to start splitting expenses.
               </p>
             </div>
@@ -280,7 +280,7 @@ const Dashboard = () => {
               className="relative w-full max-w-md bg-white border border-neutral-200 shadow-2xl rounded-[2.5rem] p-8"
             >
               <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-medium text-white tracking-tight">Create a Group</h2>
+              <h2 className="text-2xl font-medium text-slate-900 tracking-tight">Create a Group</h2>
               <button
                 id="close-modal-btn"
                 onClick={() => setShowModal(false)}
@@ -292,19 +292,19 @@ const Dashboard = () => {
 
             <form id="create-group-form" onSubmit={handleCreateGroup} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Group Name</label>
+                <label className="block text-sm font-medium text-slate-900 mb-2">Group Name</label>
                 <input
                   id="group-name-input"
                   type="text"
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder="Trip to Goa, Flatmates..."
-                  className="w-full px-4 py-3 rounded-2xl bg-neutral-50 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-transparent focus:border-emerald-100 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-neutral-200 focus:border-emerald-300 transition-all duration-200"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-slate-900 mb-2">
                   Description <span className="text-neutral-400 font-normal">(Optional)</span>
                 </label>
                 <input
@@ -313,7 +313,7 @@ const Dashboard = () => {
                   value={newGroupDesc}
                   onChange={(e) => setNewGroupDesc(e.target.value)}
                   placeholder="What's this group for?"
-                  className="w-full px-4 py-3 rounded-2xl bg-neutral-50 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-transparent focus:border-emerald-100 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-neutral-200 focus:border-emerald-300 transition-all duration-200"
                 />
               </div>
               
