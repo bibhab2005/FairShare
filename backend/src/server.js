@@ -15,6 +15,8 @@ import balanceRoutes from './routes/balanceRoutes.js';
 //console.log("GOOGLE_CLIENT_ID Loaded:", process.env.GOOGLE_CLIENT_ID);
 
 const app = express();
+app.set('trust proxy', 1); // Essential for Vercel/Passport to resolve https callback URLs
+
 const PORT = process.env.PORT || 5000;
 
 app.use(
