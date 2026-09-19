@@ -8,9 +8,8 @@ export const configurePassport = () => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.NODE_ENV === 'production' || process.env.VERCEL
-          ? `${process.env.FRONTEND_URL}/api/auth/google/callback`
-          : 'http://localhost:5000/api/auth/google/callback',
+        callbackURL: '/api/auth/google/callback',
+        proxy: true
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
