@@ -9,35 +9,21 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const handleTokenAndFetchUser = async () => {
-            // Check URL for Google OAuth token
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlToken = urlParams.get('token');
-
-            if (urlToken) {
-                localStorage.setItem('token', urlToken);
-                // Clean the token from the URL without refreshing the page
+            // Clean the token from the URL if it exists (from OAuth redirect)
+            if (window.location.search.includes('token=')) {
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            const storedToken = localStorage.getItem('token');
-
-            if (!storedToken) {
-                setLoading(false);
-                return;
-            }
-
             try {
-                const response = await fetch('http://localhost:5000/api/auth/me', {
-                    headers: {
-                        'Authorization': `Bearer ${storedToken}`
-                    }
+                // Let the browser send the httpOnly cookie automatically
+                const response = await fetch(import.meta.env.DEV ? 'http://localhost:5000/api/auth/me' : '/api/auth/me', {
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     setUser(data.user);
                 } else {
-                    localStorage.removeItem('token');
                     setUser(null);
                 }
             } catch (error) {
@@ -61,7 +47,6 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Logout error:", error);
         } finally {
-            localStorage.removeItem('token');
             setUser(null);
         }
     }, []);

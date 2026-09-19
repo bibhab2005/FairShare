@@ -19,6 +19,8 @@ import SpendingChart from '../features/expenses/components/SpendingChart';
 import AnimatedEmptyState from '../core/components/AnimatedEmptyState';
 import emptyStateAnim from '../../public/assets/empty-box.json';
 
+
+
 const GroupDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -104,14 +106,14 @@ const GroupDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-neutral-950">
         <Navbar />
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex flex-col md:flex-row items-start justify-between mb-12 gap-6">
-            <div className="h-12 w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
+            <div className="h-12 w-64 bg-neutral-800 rounded-lg animate-pulse mb-4"></div>
             <div className="flex gap-3">
-              <div className="h-12 w-32 bg-neutral-100 rounded-full animate-pulse"></div>
-              <div className="h-12 w-32 bg-neutral-100 rounded-full animate-pulse"></div>
+              <div className="h-12 w-32 bg-neutral-800 rounded-full animate-pulse"></div>
+              <div className="h-12 w-32 bg-neutral-800 rounded-full animate-pulse"></div>
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -138,41 +140,42 @@ const GroupDetails = () => {
   const actualExpensesCount = expenses.filter(e => !e.isSettlement).length;
 
   return (
-    <div className="min-h-screen bg-white text-neutral-950 font-sans">
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-12">
-          <Link
-            to="/"
-            id="back-to-dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 -ml-4 rounded-full text-sm font-medium text-neutral-500 hover:text-neutral-950 hover:bg-neutral-50 transition-colors duration-200 mb-6"
-          >
-            <ArrowLeft size={16} />
-            Back to Dashboard
-          </Link>
+    <div className="font-sans relative overflow-x-hidden">
+      <div className="relative z-10">
+        <Navbar />
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="mb-12">
+            <Link
+              to="/"
+              id="back-to-dashboard"
+              className="inline-flex items-center gap-2 px-4 py-2 -ml-4 rounded-full text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200 mb-6"
+            >
+              <ArrowLeft size={16} />
+              Back to Dashboard
+            </Link>
 
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-neutral-950">{group.name}</h1>
-              {group.description && (
-                <p className="text-neutral-500 text-lg mt-2">{group.description}</p>
-              )}
-              <div className="flex items-center gap-6 mt-6">
-                <span className="flex items-center gap-2 text-sm text-neutral-500 font-medium">
-                  <Users size={16} className="text-neutral-400" />
-                  {group.members.length} {group.members.length === 1 ? 'member' : 'members'}
-                </span>
-                <span className="flex items-center gap-2 text-sm text-neutral-500 font-medium">
-                  <Receipt size={16} className="text-neutral-400" />
-                  {actualExpensesCount} expenses
-                </span>
-                <span className="text-sm text-neutral-500 font-medium">
-                  Total:{' '}
-                  <span className="text-neutral-950">{formatPaise(totalSpent)}</span>
-                </span>
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-slate-900">{group.name}</h1>
+                {group.description && (
+                  <p className="text-slate-600 text-lg mt-2">{group.description}</p>
+                )}
+                <div className="flex items-center gap-6 mt-6">
+                  <span className="flex items-center gap-2 text-sm text-slate-500 font-medium">
+                    <Users size={16} className="text-slate-400" />
+                    {group.members.length} {group.members.length === 1 ? 'member' : 'members'}
+                  </span>
+                  <span className="flex items-center gap-2 text-sm text-slate-500 font-medium">
+                    <Receipt size={16} className="text-slate-400" />
+                    {actualExpensesCount} expenses
+                  </span>
+                  <span className="text-sm text-slate-500 font-medium">
+                    Total:{' '}
+                    <span className="text-slate-900">{formatPaise(totalSpent)}</span>
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className="flex gap-3 shrink-0">
+              <div className="flex gap-3 shrink-0">
               {isCreator && (
                 <button
                   id="add-member-toggle-btn"
@@ -198,9 +201,9 @@ const GroupDetails = () => {
 
 
         {showAddMember && (
-          <div className="bg-neutral-50 rounded-[2.5rem] p-8 md:p-10 mb-10">
+          <div className="bg-neutral-900 rounded-[2.5rem] p-8 md:p-10 mb-10">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-medium text-neutral-950 tracking-tight">Add a member</h3>
+              <h3 className="text-2xl font-medium text-white tracking-tight">Add a member</h3>
               <button
                 id="close-add-member-btn"
                 onClick={() => {
@@ -208,7 +211,7 @@ const GroupDetails = () => {
                   setMemberError('');
                   setMemberSuccess('');
                 }}
-                className="p-2 rounded-full text-neutral-400 hover:text-neutral-950 hover:bg-neutral-200 transition-colors duration-200"
+                className="p-2 rounded-full text-neutral-400 hover:text-white hover:bg-neutral-200 transition-colors duration-200"
               >
                 <X size={20} />
               </button>
@@ -223,7 +226,7 @@ const GroupDetails = () => {
                 value={memberEmail}
                 onChange={(e) => setMemberEmail(e.target.value)}
                 placeholder="member@example.com"
-                className="flex-1 px-6 py-3.5 rounded-full bg-white border border-neutral-200 text-neutral-950 placeholder-neutral-400 focus:outline-none focus:border-neutral-950 transition-colors duration-200 shadow-sm"
+                className="flex-1 px-6 py-3.5 rounded-full bg-neutral-950 border border-neutral-200 text-white placeholder-neutral-400 focus:outline-none focus:border-neutral-950 transition-colors duration-200 shadow-sm"
                 required
               />
               <button
@@ -244,9 +247,9 @@ const GroupDetails = () => {
               {group.members.map((m) => (
                 <div
                   key={m._id}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-neutral-200 text-sm font-medium text-neutral-700 shadow-sm"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-950 border border-neutral-200 text-sm font-medium text-neutral-700 shadow-sm"
                 >
-                  <span className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center text-xs text-neutral-950">
+                  <span className="w-6 h-6 rounded-full bg-neutral-800 flex items-center justify-center text-xs text-white">
                     {m.name?.charAt(0)?.toUpperCase() || '?'}
                   </span>
                   {m.name}
@@ -262,8 +265,8 @@ const GroupDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-medium tracking-tight text-neutral-950">Activity</h2>
-              <span className="text-sm font-medium text-neutral-500">{actualExpensesCount} total</span>
+              <h2 className="text-2xl font-medium tracking-tight text-white">Activity</h2>
+              <span className="text-sm font-medium text-neutral-400">{actualExpensesCount} total</span>
             </div>
 
             {expenses.length > 0 && (
@@ -312,7 +315,7 @@ const GroupDetails = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ delay: idx * 0.05 }}
                       id={`expense-row-${expense._id}`}
-                      className="flex items-center justify-between p-6 rounded-3xl bg-white border border-neutral-100 shadow-sm hover:shadow-md hover:border-emerald-100 hover:bg-emerald-50/30 transition-all duration-200"
+                      className="flex items-center justify-between p-6 rounded-3xl bg-neutral-950 border border-neutral-800 shadow-sm hover:shadow-md hover:border-emerald-100 hover:bg-emerald-50/30 transition-all duration-200"
                     >
                       <div className="flex items-center gap-5 min-w-0">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm border ${
@@ -327,8 +330,8 @@ const GroupDetails = () => {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-lg font-medium text-neutral-950 truncate tracking-tight">{expense.description}</p>
-                          <p className="text-neutral-500 text-sm mt-1">
+                          <p className="text-lg font-medium text-white truncate tracking-tight">{expense.description}</p>
+                          <p className="text-neutral-400 text-sm mt-1">
                             Paid by{' '}
                             <span className="font-medium text-neutral-700">
                               {expense.paidBy?._id === user?._id ? 'you' : expense.paidBy?.name}
@@ -339,9 +342,9 @@ const GroupDetails = () => {
                       </div>
                       <div className="flex items-center gap-6 shrink-0 ml-4">
                         <div className="text-right">
-                          <p className="text-lg font-medium text-neutral-950 tracking-tight">{formatPaise(expense.amountPaise)}</p>
+                          <p className="text-lg font-medium text-white tracking-tight">{formatPaise(expense.amountPaise)}</p>
                           {myShare && !expense.isSettlement && (
-                            <p className="text-sm text-neutral-500 mt-1">
+                            <p className="text-sm text-neutral-400 mt-1">
                               You:{' '}
                               <span className="font-medium text-neutral-700">{formatPaise(myShare.amountPaise)}</span>
                             </p>
@@ -352,10 +355,10 @@ const GroupDetails = () => {
                             id={`delete-expense-${expense._id}`}
                             onClick={() => handleDelete(expense._id)}
                             disabled={deletingId === expense._id}
-                            className="p-3 rounded-full text-neutral-400 hover:text-red-600 hover:bg-white shadow-sm transition-all duration-200"
+                            className="p-3 rounded-full text-neutral-400 hover:text-red-600 hover:bg-neutral-950 shadow-sm transition-all duration-200"
                           >
                             {deletingId === expense._id ? (
-                              <Loader2 size={18} className="animate-spin text-neutral-950" />
+                              <Loader2 size={18} className="animate-spin text-white" />
                             ) : (
                               <Trash2 size={18} />
                             )}
@@ -375,12 +378,12 @@ const GroupDetails = () => {
               onClick={() => setShowBalances(!showBalances)}
               className="flex items-center justify-between w-full mb-8 group"
             >
-              <h2 className="text-2xl font-medium tracking-tight text-neutral-950 group-hover:opacity-70 transition-opacity">Balances</h2>
-              <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-200 transition-colors">
+              <h2 className="text-2xl font-medium tracking-tight text-white group-hover:opacity-70 transition-opacity">Balances</h2>
+              <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center group-hover:bg-neutral-200 transition-colors">
                 {showBalances ? (
-                  <ChevronUp size={18} className="text-neutral-950" />
+                  <ChevronUp size={18} className="text-white" />
                 ) : (
-                  <ChevronDown size={18} className="text-neutral-950" />
+                  <ChevronDown size={18} className="text-white" />
                 )}
               </div>
             </button>
@@ -405,6 +408,7 @@ const GroupDetails = () => {
           />
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 };

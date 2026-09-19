@@ -31,6 +31,15 @@ app.use(cookieParser());
 configurePassport();
 app.use(passport.initialize());
 
+// Ensure DB connection for serverless requests
+app.use(async (req, res, next) => {
+  // Only connect on request if we are in serverless mode (production or vercel dev)
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    await connectDB();
+  }
+  next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/expenses', expenseRoutes);
@@ -49,8 +58,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error', error: err.message });
 });
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`FairShare server running on http://localhost:${PORT}`);
+export default app;
+
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`FairShare server running on http://localhost:${PORT}`);
+    });
   });
-});
+}

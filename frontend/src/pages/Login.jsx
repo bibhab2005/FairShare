@@ -14,7 +14,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = import.meta.env.DEV ? 'http://localhost:5000/api/auth/google' : '/api/auth/google';
   };
 
   const handleManualLogin = async (e) => {
@@ -24,9 +24,6 @@ export default function Login() {
     
     try {
       const { data } = await loginUser({ email, password });
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-      }
       login(data.user);
       navigate('/');
     } catch (err) {

@@ -88,14 +88,14 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" 
+        className="absolute inset-0 bg-white/60 backdrop-blur-lg/40 backdrop-blur-sm" 
         onClick={onClose} 
       />
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-lg bg-white border border-neutral-200 shadow-2xl rounded-3xl p-6 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-lg bg-white/60 backdrop-blur-lg border border-neutral-200 shadow-2xl rounded-3xl p-6 max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -103,14 +103,14 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               <Receipt size={18} className="text-emerald-600" />
             </div>
             <div>
-              <h2 className="font-semibold text-lg text-neutral-950">Add Expense</h2>
-              <p className="text-sm text-neutral-500">{group.name}</p>
+              <h2 className="font-semibold text-lg text-slate-900">Add Expense</h2>
+              <p className="text-sm text-slate-600">{group.name}</p>
             </div>
           </div>
           <button
             id="expense-modal-close"
             onClick={onClose}
-            className="p-2 rounded-full text-neutral-400 hover:text-neutral-950 hover:bg-neutral-100 transition-colors duration-200"
+            className="p-2 rounded-full text-slate-600 hover:text-slate-900 hover:bg-neutral-100 transition-colors duration-200"
           >
             <X size={20} />
           </button>
@@ -118,20 +118,20 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
 
         <form id="add-expense-form" onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-neutral-950 mb-2" htmlFor="expense-description">Description</label>
+            <label className="block text-sm font-medium text-slate-900 mb-2" htmlFor="expense-description">Description</label>
             <input
               id="expense-description"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. Dinner at restaurant"
-              className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-950 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-neutral-200 text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
               autoFocus
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-950 mb-2" htmlFor="expense-amount">Total Amount (₹)</label>
+            <label className="block text-sm font-medium text-slate-900 mb-2" htmlFor="expense-amount">Total Amount (₹)</label>
             <input
               id="expense-amount"
               type="number"
@@ -140,18 +140,18 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               placeholder="0.00"
               min="0.01"
               step="0.01"
-              className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-950 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-neutral-200 text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-950 mb-2" htmlFor="expense-paidby">Paid by</label>
+            <label className="block text-sm font-medium text-slate-900 mb-2" htmlFor="expense-paidby">Paid by</label>
             <div className="relative">
               <select
                 id="expense-paidby"
                 value={paidBy}
                 onChange={(e) => setPaidBy(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200 text-neutral-950 appearance-none pr-10 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-neutral-200 text-slate-900 appearance-none pr-10 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
               >
                 {members.map((m) => (
                   <option key={m._id} value={m._id}>
@@ -161,13 +161,13 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               </select>
               <ChevronDown
                 size={16}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-950 mb-2">Split type</label>
+            <label className="block text-sm font-medium text-slate-900 mb-2">Split type</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
@@ -176,7 +176,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-medium transition-all duration-200 ${
                   splitType === 'equal'
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm'
-                    : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
+                    : 'border-neutral-200 bg-white/60 backdrop-blur-lg text-neutral-600 hover:border-neutral-300 hover:bg-slate-50'
                 }`}
               >
                 <Equal size={16} />
@@ -189,7 +189,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
                 className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border text-sm font-medium transition-all duration-200 ${
                   splitType === 'custom'
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm'
-                    : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
+                    : 'border-neutral-200 bg-white/60 backdrop-blur-lg text-neutral-600 hover:border-neutral-300 hover:bg-slate-50'
                 }`}
               >
                 <Sliders size={16} />
@@ -199,8 +199,8 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
           </div>
 
           {splitType === 'equal' && amountPaise > 0 && members.length > 0 && (
-            <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-100">
-              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Split preview</p>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-white/40">
+              <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-3">Split preview</p>
               <div className="space-y-3">
                 {members.map((m, i) => {
                   const base = Math.floor(amountPaise / members.length);
@@ -208,7 +208,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
                   return (
                     <div key={m._id} className="flex justify-between items-center text-sm">
                       <span className="font-medium text-neutral-700">{m.name}</span>
-                      <span className="text-neutral-950 font-semibold">{formatPaise(share)}</span>
+                      <span className="text-slate-900 font-semibold">{formatPaise(share)}</span>
                     </div>
                   );
                 })}
@@ -217,9 +217,9 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
           )}
 
           {splitType === 'custom' && (
-            <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-100 space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-50 border border-white/40 space-y-4">
               <div className="flex justify-between items-center">
-                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Custom amounts (₹)</p>
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Custom amounts (₹)</p>
                 <span
                   className={`text-xs font-semibold ${
                     splitDifference === 0
@@ -248,7 +248,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-200 text-neutral-950 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200 flex-1 text-sm"
+                      className="w-full px-3 py-2 rounded-lg bg-white/60 backdrop-blur-lg border border-neutral-200 text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200 flex-1 text-sm"
                     />
                   </div>
                 ))}
@@ -256,7 +256,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
             </div>
           )}
 
-          <div className="flex gap-3 pt-4 mt-6 border-t border-neutral-100">
+          <div className="flex gap-3 pt-4 mt-6 border-t border-white/40">
             <button
               type="button"
               id="cancel-expense-btn"
@@ -269,7 +269,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               type="submit"
               id="submit-expense-btn"
               disabled={loading}
-              className="flex-1 py-3 px-4 rounded-full font-medium text-white bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+              className="flex-1 py-3 px-4 rounded-full font-medium text-slate-900 bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
