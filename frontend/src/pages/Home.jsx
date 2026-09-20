@@ -335,7 +335,7 @@ const Home = () => {
       <footer className="border-t border-white/40 pt-20 pb-8 flex flex-col items-center overflow-hidden bg-white relative">
         <div className="w-full max-w-6xl flex flex-col md:flex-row justify-between px-8 mb-20 text-slate-600 font-medium text-sm gap-8 relative z-10">
           <div className="flex gap-12">
-             <Link to="/about" className="hover:text-emerald-600 transition-colors">About Us</Link>
+             <a href="https://portfolio-bi-bhab-personal.vercel.app/about" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">About Me</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Terms of Service</a>
           </div>

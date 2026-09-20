@@ -27,13 +27,16 @@ const fadeUp = {
 };
 
 export default function AboutUs() {
+  useEffect(() => {
+    window.location.replace('https://portfolio-bi-bhab-personal.vercel.app/about');
+  }, []);
   const githubHref = 'https://github.com/bibhab2005';
   const linkedinHref = 'https://linkedin.com/in/bibhab';
   const email = 'bibhabtalukdar2005@gmail.com';
   const resumeHref = '/resume.pdf';
   const portfolioHref =
     import.meta.env.VITE_PORTFOLIO_URL ||
-    (import.meta.env.DEV ? 'http://localhost:3001' : 'https://sparkle-recruit-showcase.vercel.app');
+    (import.meta.env.DEV ? 'http://localhost:3001' : 'https://portfolio-bi-bhab-personal.vercel.app/about');
 
   return (
     <div className="min-h-screen bg-[#FAFAF6] text-[#101014]">
