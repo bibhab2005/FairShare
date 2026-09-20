@@ -108,6 +108,16 @@ const Home = () => {
             </span>
           </Link>
           <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/bibhab2005/FairShare"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors flex items-center"
+              title="GitHub Repository"
+              aria-label="GitHub Repository"
+            >
+              <Github size={22} />
+            </a>
             <Link
               to="/login"
               className="px-6 py-3 rounded-full font-medium text-lg text-neutral-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200"
@@ -341,7 +351,7 @@ const Home = () => {
           </div>
           <div className="flex gap-12">
              <a href="#" className="hover:text-emerald-600 transition-colors">Twitter</a>
-             <a href="#" className="hover:text-emerald-600 transition-colors flex items-center gap-2"><Github size={16}/> GitHub</a>
+             <a href="https://github.com/bibhab2005/FairShare" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors flex items-center gap-2"><Github size={16}/> GitHub</a>
           </div>
         </div>
         
