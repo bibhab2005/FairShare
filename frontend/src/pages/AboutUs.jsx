@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Briefcase,
   Award,
+  Sparkles,
 } from 'lucide-react';
 
 /**
@@ -30,6 +31,9 @@ export default function AboutUs() {
   const linkedinHref = 'https://linkedin.com/in/bibhab';
   const email = 'bibhabtalukdar2005@gmail.com';
   const resumeHref = '/resume.pdf';
+  const portfolioHref =
+    import.meta.env.VITE_PORTFOLIO_URL ||
+    (import.meta.env.DEV ? 'http://localhost:3001' : 'https://sparkle-recruit-showcase.vercel.app');
 
   return (
     <div className="min-h-screen bg-[#FAFAF6] text-[#101014]">
@@ -75,7 +79,8 @@ export default function AboutUs() {
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.6 }}
             className="mt-10 flex flex-wrap gap-3"
           >
-            <ActionButton href={resumeHref} icon={FileDown} label="Resume" download primary />
+            <ActionButton href={portfolioHref} icon={Sparkles} label="Interactive Showcase" external primary />
+            <ActionButton href={resumeHref} icon={FileDown} label="Resume" download />
             <ActionButton href={githubHref} icon={Github} label="GitHub" external />
             <ActionButton href={linkedinHref} icon={Linkedin} label="LinkedIn" external />
             <ActionButton href={`mailto:${email}`} icon={Mail} label="Email" />
@@ -234,6 +239,7 @@ export default function AboutUs() {
             else on this list.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
+            <ActionButton href={portfolioHref} icon={Sparkles} label="Open Interactive Showcase" external inverted />
             <ActionButton href={`mailto:${email}`} icon={Mail} label={email} inverted />
             <ActionButton href={resumeHref} icon={FileDown} label="Download resume" download inverted />
           </div>
