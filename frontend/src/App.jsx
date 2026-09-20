@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 import { useAuth } from './features/auth/context/AuthContext';
 import LightParticles from './core/components/LightParticles';
 import Login from './pages/Login';
@@ -90,6 +91,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <SpeedInsights />
+      <Analytics />
       <Toaster 
         position="bottom-center"
         toastOptions={{
