@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import api from '../core/api/api';
+import api from '../core/api/axiosInstance';
 
 export default function SetUsername() {
   const [username, setUsername] = useState('');
@@ -31,7 +31,7 @@ export default function SetUsername() {
     const checkUsername = async () => {
       setChecking(true);
       try {
-        const { data } = await api.get(`/users/check-username?username=${username}`);
+        const { data } = await api.get(`/auth/check-username?username=${username}`);
         setAvailable(data.available);
       } catch (err) {
         setAvailable(null);
@@ -52,7 +52,7 @@ export default function SetUsername() {
     setError('');
 
     try {
-      const { data } = await api.put('/users/username', { username });
+      const { data } = await api.put('/auth/username', { username });
       // Update auth context user
       login(data.user);
       navigate('/dashboard');
