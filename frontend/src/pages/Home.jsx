@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SplitSquareVertical, Users, Split, Zap, Github, Menu, X } from 'lucide-react';
+import { SplitSquareVertical, Users, Split, Zap, Github, Menu, X, MessageSquareHeart } from 'lucide-react';
+import FeedbackModal from '../core/components/FeedbackModal';
 
 const VortexParticles = () => {
   const particles = Array.from({ length: 100 }, (_, i) => ({
@@ -96,6 +97,7 @@ const Home = () => {
   }, []);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans overflow-x-hidden">
@@ -402,8 +404,11 @@ const Home = () => {
 
       <footer className="border-t border-white/40 pt-12 sm:pt-20 pb-8 flex flex-col items-center overflow-hidden bg-white relative">
         <div className="w-full max-w-6xl flex flex-col sm:flex-row justify-between items-start px-6 sm:px-8 mb-12 sm:mb-20 text-slate-600 font-medium text-sm gap-4 relative z-10">
-          <div className="flex flex-wrap gap-5 sm:gap-12 justify-center sm:justify-start w-full">
+          <div className="flex flex-wrap gap-5 sm:gap-12 justify-center sm:justify-start w-full items-center">
              <a href="https://portfolio-bi-bhab-personal.vercel.app/about" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">About Me</a>
+             <button type="button" onClick={() => setFeedbackOpen(true)} className="hover:text-emerald-600 transition-colors flex items-center gap-1.5 font-medium text-emerald-600">
+               <MessageSquareHeart size={16} /> Feedback & Ideas
+             </button>
              <a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Terms of Service</a>
           </div>
@@ -417,6 +422,8 @@ const Home = () => {
         
         <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-emerald-500/5 to-transparent pointer-events-none z-0"></div>
       </footer>
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   );
 };

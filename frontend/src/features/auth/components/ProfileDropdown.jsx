@@ -1,16 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Settings, LogOut, ChevronDown, Trash2 } from 'lucide-react';
+import { Settings, LogOut, ChevronDown, Trash2, MessageSquareHeart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { deleteAccount } from '../api/authService';
 import ConfirmModal from '../../../core/components/ConfirmModal';
+import FeedbackModal from '../../../core/components/FeedbackModal';
 
 const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005@gmail.com", avatarUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
@@ -87,9 +89,12 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       </div>
       
       <div className="px-2">
-        <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors outline-none mb-1">
-          <Settings className="w-4 h-4" />
-          Settings
+        <button 
+          onClick={() => { setIsOpen(false); setShowFeedbackModal(true); }}
+          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors outline-none mb-1 font-medium"
+        >
+          <MessageSquareHeart className="w-4 h-4 text-emerald-500" />
+          Feedback & Ideas
         </button>
       </div>
       
@@ -136,6 +141,11 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       </button>
 
       {dropdownMenu}
+
+      <FeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+      />
 
       <ConfirmModal
         isOpen={showDeleteModal}
