@@ -53,29 +53,34 @@ const FeedbackModal = ({ isOpen, onClose }) => {
             transition={{ duration: 0.2 }}
             className="relative w-full max-w-md bg-white rounded-3xl sm:rounded-[2rem] shadow-2xl p-6 sm:p-8 my-auto z-10 border border-slate-100"
           >
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-              aria-label="Close"
-            >
-              <X size={20} />
-            </button>
+            {/* Header info with integrated close button */}
+            <div className="flex items-start justify-between gap-3 mb-5">
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
+                  <MessageSquareHeart size={22} />
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                    Feedback & Ideas
+                  </h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-700 whitespace-nowrap">
+                      <Sparkles size={11} /> Dev Direct
+                    </span>
+                    <span className="text-xs text-slate-500 hidden sm:inline">•</span>
+                    <span className="text-xs text-slate-500 hidden sm:inline">Always listening</span>
+                  </div>
+                </div>
+              </div>
 
-            {/* Header info */}
-            <div className="flex items-center gap-3.5 mb-5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
-                <MessageSquareHeart size={24} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                  Feedback & Ideas
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-                    <Sparkles size={11} /> Dev Direct
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-500">I'd love to hear from you!</p>
-              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1.5 -mr-1 -mt-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0"
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
             </div>
 
             {/* Message Body */}
