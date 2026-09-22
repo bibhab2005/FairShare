@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Settings, LogOut, ChevronDown } from 'lucide-react';
+import { Settings, LogOut, ChevronDown, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { deleteAccount } from '../api/authService';
+import ConfirmModal from '../../../core/components/ConfirmModal';
 
 const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005@gmail.com", avatarUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
   const { logout } = useAuth();
@@ -42,6 +47,20 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
     navigate('/login');
   };
 
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount();
+      toast.success('Your account has been permanently deleted.');
+      logout();
+      navigate('/login');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete account.');
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   const dropdownMenu = isOpen ? createPortal(
     <div 
       ref={menuRef}
@@ -74,13 +93,20 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
         </button>
       </div>
       
-      <div className="px-2 border-t border-neutral-50 pt-1">
+      <div className="px-2 border-t border-neutral-100 pt-1">
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors outline-none"
+          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-100 rounded-xl transition-colors outline-none mb-1"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 text-neutral-500" />
           Logout
+        </button>
+        <button 
+          onClick={() => { setIsOpen(false); setShowDeleteModal(true); }}
+          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors outline-none font-medium"
+        >
+          <Trash2 className="w-4 h-4 text-red-500" />
+          Delete Account
         </button>
       </div>
     </div>,
@@ -110,6 +136,17 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       </button>
 
       {dropdownMenu}
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => !isDeleting && setShowDeleteModal(false)}
+        onConfirm={handleDeleteAccount}
+        title="Delete Account Permanently?"
+        message="This action is permanent and cannot be undone. All your profile data, username, and group memberships will be permanently deleted."
+        confirmText="Yes, Delete Permanently"
+        isDestructive={true}
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

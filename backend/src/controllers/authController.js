@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Group from '../models/Group.js';
 
 export const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -149,5 +150,30 @@ export const setUsername = async (req, res) => {
     res.status(200).json({ message: 'Username set successfully', user });
   } catch (error) {
     res.status(500).json({ message: 'Failed to set username', error: error.message });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Remove user from all groups they belong to
+    await Group.updateMany(
+      { members: userId },
+      { $pull: { members: userId } }
+    );
+
+    // Delete user record from database
+    await User.findByIdAndDelete(userId);
+
+    // Clear authentication cookie
+    res.cookie('token', '', {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+
+    res.status(200).json({ message: 'Account permanently deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete account', error: error.message });
   }
 };
