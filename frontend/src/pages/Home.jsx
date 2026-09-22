@@ -408,7 +408,6 @@ const Home = () => {
              <a href="#" className="hover:text-emerald-600 transition-colors">Terms of Service</a>
           </div>
           <div className="flex flex-wrap gap-5 sm:gap-12">
-             <a href="#" className="hover:text-emerald-600 transition-colors">Twitter</a>
              <a href="https://github.com/bibhab2005/FairShare" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors flex items-center gap-2"><Github size={16}/> GitHub</a>
           </div>
         </div>
