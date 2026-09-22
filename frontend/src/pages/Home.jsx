@@ -402,13 +402,10 @@ const Home = () => {
 
       <footer className="border-t border-white/40 pt-12 sm:pt-20 pb-8 flex flex-col items-center overflow-hidden bg-white relative">
         <div className="w-full max-w-6xl flex flex-col sm:flex-row justify-between items-start px-6 sm:px-8 mb-12 sm:mb-20 text-slate-600 font-medium text-sm gap-4 relative z-10">
-          <div className="flex flex-wrap gap-5 sm:gap-12">
+          <div className="flex flex-wrap gap-5 sm:gap-12 justify-center sm:justify-start w-full">
              <a href="https://portfolio-bi-bhab-personal.vercel.app/about" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">About Me</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Terms of Service</a>
-          </div>
-          <div className="flex flex-wrap gap-5 sm:gap-12">
-             <a href="https://github.com/bibhab2005/FairShare" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors flex items-center gap-2"><Github size={16}/> GitHub</a>
           </div>
         </div>
         
