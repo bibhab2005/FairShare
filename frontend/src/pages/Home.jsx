@@ -100,12 +100,12 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans overflow-x-hidden">
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-24 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 sm:gap-3">
-            <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-md">
-              <SplitSquareVertical size={20} className="text-slate-900" />
+        <div className="w-full px-6 sm:px-10 lg:px-12 h-20 sm:h-24 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3.5 group">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
+              <SplitSquareVertical size={24} className="text-white" />
             </div>
-            <span className="text-xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            <span className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
               FairShare
             </span>
           </Link>
