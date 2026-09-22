@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Receipt, AlertCircle, ChevronDown, Equal, Sliders, Loader2 } from 'lucide-react';
+import { X, IndianRupee, AlertCircle, ChevronDown, Equal, Sliders, Loader2 } from 'lucide-react';
 import { createExpense } from '../api/expenseService';
 import { useAuth } from '../../auth/context/AuthContext';
 import { formatPaise, rupeeToRoundedPaise } from '../../../core/utils/formatCurrency';
@@ -26,6 +26,13 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
       );
     }
   }, [group]);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const customTotal = customSplits.reduce(
     (sum, s) => sum + rupeeToRoundedPaise(s.amountRupees),
@@ -103,8 +110,8 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
         </div>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-              <Receipt size={18} className="text-emerald-600" />
+            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+              <IndianRupee size={18} className="text-emerald-600" />
             </div>
             <div>
               <h2 className="font-semibold text-lg text-slate-900">Add Expense</h2>

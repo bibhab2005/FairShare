@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
-import { fetchGroups, createGroup } from '../features/groups/api/groupService';
+import { fetchGroups, createGroup, deleteGroup } from '../features/groups/api/groupService';
 import { fetchBalances } from '../features/groups/api/balanceService';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { GroupCardSkeleton } from '../core/components/SkeletonLoaders';
 import Navbar from '../core/components/Navbar';
 import GroupCard from '../features/groups/components/GroupCard';
-import { Plus, Folders, Loader2, AlertCircle, X, Users, Receipt, Search, ArrowRight } from 'lucide-react';
+import { 
+  Users, Plus, LogOut, ArrowRight, Wallet, TrendingUp, AlertCircle, 
+  Settings, User, HelpCircle, Receipt, IndianRupee, Menu, X, Folders, Loader2, Search
+} from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [groups, setGroups] = useState([]);
   const [balancesMap, setBalancesMap] = useState({});
+  const [hasExpensesMap, setHasExpensesMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -32,14 +36,16 @@ const Dashboard = () => {
       const balancesPromises = loadedGroups.map(async (g) => {
         try {
           const bRes = await fetchBalances(g._id);
-          return { groupId: g._id, simplifiedDebts: bRes.data.simplifiedDebts || [] };
+          const hasExpenses = bRes.data.balances && bRes.data.balances.length > 0;
+          return { groupId: g._id, simplifiedDebts: bRes.data.simplifiedDebts || [], hasExpenses };
         } catch (e) {
-          return { groupId: g._id, simplifiedDebts: [] };
+          return { groupId: g._id, simplifiedDebts: [], hasExpenses: false };
         }
       });
       const balancesResults = await Promise.all(balancesPromises);
       
       const newBalancesMap = {};
+      const newHasExpensesMap = {};
       balancesResults.forEach(r => {
         let netBalance = 0;
         r.simplifiedDebts.forEach(debt => {
@@ -47,8 +53,10 @@ const Dashboard = () => {
           if (debt.to === user?._id) netBalance += debt.amountPaise;
         });
         newBalancesMap[r.groupId] = netBalance;
+        newHasExpensesMap[r.groupId] = r.hasExpenses;
       });
       setBalancesMap(newBalancesMap);
+      setHasExpensesMap(newHasExpensesMap);
       
     } catch (err) {
       toast.error('Failed to load groups. Please try again later.');
@@ -81,6 +89,7 @@ const Dashboard = () => {
       setCreating(false);
     }
   };
+
 
   if (loading) {
     return (
@@ -144,7 +153,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-slate-600 font-medium">Total Balance</span>
                   <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                    <Receipt size={20} className="text-slate-500" />
+                    <IndianRupee size={20} className="text-slate-500" />
                   </div>
                 </div>
                 <div>
@@ -243,11 +252,13 @@ const Dashboard = () => {
                           year: 'numeric',
                         })}
                         status={
+                          !hasExpensesMap[group._id] ? "No expenses" :
                           netBalanceRupees > 0 ? `Gets back ₹${netBalanceRupees}` : 
                           netBalanceRupees < 0 ? `Owes ₹${Math.abs(netBalanceRupees)}` : 
                           "Settled up"
                         }
                         statusType={
+                          !hasExpensesMap[group._id] ? "settled" :
                           netBalanceRupees > 0 ? 'owed' : 
                           netBalanceRupees < 0 ? 'owe' : 
                           'settled'

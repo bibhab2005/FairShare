@@ -64,6 +64,7 @@ const SpendingChart = ({ expenses }) => {
               paddingAngle={2}
               dataKey="value"
               stroke="none"
+              minAngle={15}
             >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} className="hover:opacity-80 transition-opacity outline-none" />
@@ -72,9 +73,9 @@ const SpendingChart = ({ expenses }) => {
             <Tooltip content={<CustomTooltip />} />
           </PieChart>
         </ResponsiveContainer>
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-sm font-medium text-slate-600 uppercase tracking-wide">Total</span>
-          <span className="text-2xl font-semibold text-slate-900 tracking-tight">{formatPaise(total)}</span>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4">
+          <span className="text-xs font-medium text-slate-600 uppercase tracking-wide">Total</span>
+          <span className="text-base sm:text-xl font-semibold text-slate-900 tracking-tight text-center leading-tight break-all">{formatPaise(total)}</span>
         </div>
       </div>
       

@@ -113,10 +113,6 @@ export const deleteExpense = async (req, res) => {
     const { error, status } = await validateGroupMembership(expense.group, req.user._id);
     if (error) return res.status(status).json({ message: error });
 
-    if (expense.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Only the expense creator can delete it' });
-    }
-
     await expense.deleteOne();
 
     res.status(200).json({ message: 'Expense deleted successfully' });

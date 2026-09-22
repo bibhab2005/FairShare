@@ -145,57 +145,57 @@ const Home = () => {
             <Menu size={24} />
           </button>
         </div>
-
-        {/* Mobile drawer overlay */}
-        {menuOpen && (
-          <div className="fixed inset-0 z-50 sm:hidden">
-            <div
-              className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-              onClick={() => setMenuOpen(false)}
-            />
-            <div className="absolute top-0 right-0 h-full w-64 bg-white shadow-2xl flex flex-col p-6 gap-4">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-bold tracking-tight text-slate-900">Menu</span>
-                <button
-                  onClick={() => setMenuOpen(false)}
-                  className="p-2 rounded-full text-slate-500 hover:bg-slate-100 transition-colors"
-                  aria-label="Close menu"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              <a
-                href="https://github.com/bibhab2005/FairShare"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                <Github size={18} /> GitHub
-              </a>
-              <Link
-                to="/login"
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="flex items-center justify-center px-4 py-3 rounded-2xl font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 transition-all"
-                onClick={() => setMenuOpen(false)}
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        )}
       </header>
+
+      {/* Mobile drawer overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-[100] sm:hidden">
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div className="absolute top-0 right-0 h-full w-64 bg-white shadow-2xl flex flex-col p-6 gap-4">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-lg font-bold tracking-tight text-slate-900">Menu</span>
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="p-2 rounded-full text-slate-500 hover:bg-slate-100 transition-colors"
+                aria-label="Close menu"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <a
+              href="https://github.com/bibhab2005/FairShare"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              <Github size={18} /> GitHub
+            </a>
+            <Link
+              to="/login"
+              className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="flex items-center justify-center px-4 py-3 rounded-2xl font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 transition-all"
+              onClick={() => setMenuOpen(false)}
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      )}
 
       <section className="relative pt-20 pb-16 sm:pt-40 sm:pb-32 px-4 flex flex-col items-center text-center overflow-hidden min-h-[80vh] justify-center">
         <VortexParticles />
 
-        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+        <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-semibold mb-8 fade-in-section shadow-sm">
             Expense splitting, simplified
           </div>
@@ -223,7 +223,7 @@ const Home = () => {
               See how it works
             </a>
           </div>
-          <div className="mt-16 w-screen shrink-0 overflow-hidden fade-in-section py-12">
+          <div className="mt-16 w-full min-w-0 shrink-0 overflow-hidden fade-in-section py-12">
             <div className="flex animate-slide w-max hover:pause">
               {/* First half of the loop */}
               <div className="flex gap-6 px-3">
@@ -275,8 +275,8 @@ const Home = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white border border-white/40 rounded-[2.5rem] p-10 hover:border-emerald-100 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 fade-in-section group">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <div className="bg-white border border-white/40 rounded-[2.5rem] p-10 hover:border-emerald-100 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 fade-in-section group text-center flex flex-col items-center">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto">
               <Users className="text-emerald-600" size={24} />
             </div>
             <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Group Management</h3>
@@ -285,8 +285,8 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="bg-white border border-white/40 rounded-[2.5rem] p-10 hover:border-rose-100 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-300 fade-in-section group" style={{ transitionDelay: '0.1s' }}>
-            <div className="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <div className="bg-white border border-white/40 rounded-[2.5rem] p-10 hover:border-rose-100 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-300 fade-in-section group text-center flex flex-col items-center" style={{ transitionDelay: '0.1s' }}>
+            <div className="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto">
               <Split className="text-rose-500" size={24} />
             </div>
             <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Equal & Custom Splits</h3>
@@ -295,8 +295,8 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="bg-white border border-white/40 rounded-[2.5rem] p-10 hover:border-emerald-100 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 fade-in-section group" style={{ transitionDelay: '0.2s' }}>
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <div className="bg-white border border-white/40 rounded-[2.5rem] p-10 hover:border-emerald-100 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 fade-in-section group text-center flex flex-col items-center" style={{ transitionDelay: '0.2s' }}>
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto">
               <Zap className="text-emerald-500" size={24} />
             </div>
             <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Minimize Settlements</h3>
@@ -401,20 +401,20 @@ const Home = () => {
       </section>
 
       <footer className="border-t border-white/40 pt-12 sm:pt-20 pb-8 flex flex-col items-center overflow-hidden bg-white relative">
-        <div className="w-full max-w-6xl flex flex-col sm:flex-row justify-between px-6 sm:px-8 mb-12 sm:mb-20 text-slate-600 font-medium text-sm gap-6 relative z-10">
-          <div className="flex flex-wrap gap-6 sm:gap-12">
+        <div className="w-full max-w-6xl flex flex-col sm:flex-row justify-between items-start px-6 sm:px-8 mb-12 sm:mb-20 text-slate-600 font-medium text-sm gap-4 relative z-10">
+          <div className="flex flex-wrap gap-5 sm:gap-12">
              <a href="https://portfolio-bi-bhab-personal.vercel.app/about" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">About Me</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a>
              <a href="#" className="hover:text-emerald-600 transition-colors">Terms of Service</a>
           </div>
-          <div className="flex flex-wrap gap-6 sm:gap-12">
+          <div className="flex flex-wrap gap-5 sm:gap-12">
              <a href="#" className="hover:text-emerald-600 transition-colors">Twitter</a>
              <a href="https://github.com/bibhab2005/FairShare" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors flex items-center gap-2"><Github size={16}/> GitHub</a>
           </div>
         </div>
         
         <div className="w-full px-4 overflow-hidden flex justify-center relative z-10">
-          <h1 className="text-[16vw] leading-none font-bold tracking-tighter text-slate-900 select-none whitespace-nowrap">
+          <h1 className="text-[16vw] sm:text-[16vw] leading-none font-bold tracking-tighter text-slate-900 select-none whitespace-nowrap text-center">
             fAirShArE
           </h1>
         </div>
