@@ -5,7 +5,7 @@ dist/
 *.log
 secret key.txt
 atlas
-
+Photos/
 
 atlas-credentials.env
 client_secret.json
