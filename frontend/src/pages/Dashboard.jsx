@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
-import { fetchGroups, createGroup } from '../features/groups/api/groupService';
+import { fetchGroups, createGroup, deleteGroup } from '../features/groups/api/groupService';
 import { fetchBalances } from '../features/groups/api/balanceService';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { GroupCardSkeleton } from '../core/components/SkeletonLoaders';
 import Navbar from '../core/components/Navbar';
 import GroupCard from '../features/groups/components/GroupCard';
-import { Plus, Folders, Loader2, AlertCircle, X, Users, Receipt, Search, ArrowRight } from 'lucide-react';
+import { 
+  Users, Plus, LogOut, ArrowRight, Wallet, TrendingUp, AlertCircle, 
+  Settings, User, HelpCircle, Receipt, IndianRupee, Menu, X, Folders, Loader2, Search
+} from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [groups, setGroups] = useState([]);
   const [balancesMap, setBalancesMap] = useState({});
+  const [hasExpensesMap, setHasExpensesMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -32,14 +36,16 @@ const Dashboard = () => {
       const balancesPromises = loadedGroups.map(async (g) => {
         try {
           const bRes = await fetchBalances(g._id);
-          return { groupId: g._id, simplifiedDebts: bRes.data.simplifiedDebts || [] };
+          const hasExpenses = bRes.data.balances && bRes.data.balances.length > 0;
+          return { groupId: g._id, simplifiedDebts: bRes.data.simplifiedDebts || [], hasExpenses };
         } catch (e) {
-          return { groupId: g._id, simplifiedDebts: [] };
+          return { groupId: g._id, simplifiedDebts: [], hasExpenses: false };
         }
       });
       const balancesResults = await Promise.all(balancesPromises);
       
       const newBalancesMap = {};
+      const newHasExpensesMap = {};
       balancesResults.forEach(r => {
         let netBalance = 0;
         r.simplifiedDebts.forEach(debt => {
@@ -47,8 +53,10 @@ const Dashboard = () => {
           if (debt.to === user?._id) netBalance += debt.amountPaise;
         });
         newBalancesMap[r.groupId] = netBalance;
+        newHasExpensesMap[r.groupId] = r.hasExpenses;
       });
       setBalancesMap(newBalancesMap);
+      setHasExpensesMap(newHasExpensesMap);
       
     } catch (err) {
       toast.error('Failed to load groups. Please try again later.');
@@ -82,15 +90,16 @@ const Dashboard = () => {
     }
   };
 
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-0 isolate">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-16 relative z-0 isolate">
           <div className="flex flex-col md:flex-row items-start justify-between mb-16 gap-6">
             <div>
-              <div className="h-12 w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
-              <div className="h-6 w-96 bg-neutral-100 rounded-lg animate-pulse"></div>
+              <div className="h-12 w-48 sm:w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
+              <div className="h-6 w-64 sm:w-96 bg-neutral-100 rounded-lg animate-pulse"></div>
             </div>
             <div className="h-12 w-32 bg-neutral-100 rounded-full animate-pulse"></div>
           </div>
@@ -112,11 +121,11 @@ const Dashboard = () => {
     <div className="font-sans relative">
         <Navbar />
         
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-0 isolate">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 relative z-0 isolate">
           <div className="relative mb-16">
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
             <div>
-              <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-slate-900 mb-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900 mb-2">
                 Hello, {user?.name?.split(' ')[0]} 👋
               </h1>
               <p className="text-slate-600 text-lg max-w-xl">
@@ -144,7 +153,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-slate-600 font-medium">Total Balance</span>
                   <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                    <Receipt size={20} className="text-slate-500" />
+                    <IndianRupee size={20} className="text-slate-500" />
                   </div>
                 </div>
                 <div>
@@ -189,7 +198,7 @@ const Dashboard = () => {
         </div>
 
         {groups.length === 0 ? (
-          <div className="bg-white border border-neutral-200 rounded-[3rem] p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="bg-white border border-neutral-200 rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="w-20 h-20 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-100 shadow-sm">
               <Folders size={32} className="text-emerald-600" />
             </div>
@@ -243,11 +252,13 @@ const Dashboard = () => {
                           year: 'numeric',
                         })}
                         status={
+                          !hasExpensesMap[group._id] ? "No expenses" :
                           netBalanceRupees > 0 ? `Gets back ₹${netBalanceRupees}` : 
                           netBalanceRupees < 0 ? `Owes ₹${Math.abs(netBalanceRupees)}` : 
                           "Settled up"
                         }
                         statusType={
+                          !hasExpensesMap[group._id] ? "settled" :
                           netBalanceRupees > 0 ? 'owed' : 
                           netBalanceRupees < 0 ? 'owe' : 
                           'settled'

@@ -125,15 +125,16 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
           <h3 className="text-sm font-semibold tracking-wide text-slate-600 uppercase mb-4">All Group Debts</h3>
           <div className="space-y-3">
             {simplifiedDebts.map((debt, idx) => {
-              if (debt.from === user?._id || debt.to === user?._id) return null;
               const fromUser = findUser(debt.from);
               const toUser = findUser(debt.to);
+              const fromName = debt.from === user?._id ? 'You' : (fromUser?.name || 'Unknown');
+              const toName = debt.to === user?._id ? 'You' : (toUser?.name || 'Unknown');
               return (
                 <div key={`all-debt-${idx}`} className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/60 backdrop-blur-lg transition-colors duration-200">
                   <div className="flex items-center gap-2 text-neutral-600 text-sm">
-                    <span className="font-medium text-slate-900">{fromUser?.name}</span>
+                    <span className="font-medium text-slate-900">{fromName}</span>
                     <ArrowRight size={14} className="text-neutral-300" />
-                    <span className="font-medium text-slate-900">{toUser?.name}</span>
+                    <span className="font-medium text-slate-900">{toName}</span>
                   </div>
                   <span className="font-medium text-slate-600">{formatPaise(debt.amountPaise)}</span>
                 </div>

@@ -36,11 +36,11 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
       {/* Header - Mimicking Airbnb Top Nav for context */}
-      <header className="border-b border-neutral-100 px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-neutral-100 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <span className="text-3xl font-bold tracking-tight text-slate-900">FairShare</span>
+          <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">FairShare</span>
         </Link>
-        <Link to="/register" className="text-lg font-medium text-neutral-700 hover:text-emerald-600 transition-colors">
+        <Link to="/register" className="text-base sm:text-lg font-medium text-neutral-700 hover:text-emerald-600 transition-colors">
           Sign up
         </Link>
       </header>
@@ -58,7 +58,7 @@ export default function Login() {
           </div>
         )}
 
-        <div className="w-full max-w-[560px] bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_40px_rgba(0,0,0,0.04)] p-10 md:p-12 border border-white">
+        <div className="w-full max-w-[560px] bg-white/80 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_8px_40px_rgba(0,0,0,0.04)] p-6 sm:p-10 md:p-12 border border-white">
           <h1 className="text-3xl font-medium tracking-tighter text-neutral-900 mb-2">Welcome back</h1>
           <p className="text-neutral-500 text-lg mb-10">Sign in to manage your shared expenses.</p>
 

@@ -1,4 +1,4 @@
-import { Users, Calendar } from 'lucide-react';
+import { Users, Calendar, Trash2 } from 'lucide-react';
 
 const GroupCard = ({
   groupName,
@@ -6,7 +6,9 @@ const GroupCard = ({
   date,
   status,
   statusType,
-  imageUrl
+  imageUrl,
+  onDelete,
+  isCreator,
 }) => {
   const displayImage = imageUrl || `https://picsum.photos/seed/${groupName}/800/500`;
 
@@ -27,7 +29,7 @@ const GroupCard = ({
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/90 transition-opacity duration-300 group-hover:opacity-90" />
 
       <div className="relative h-full p-6 flex flex-col justify-between z-10">
-        <div className="flex justify-end items-start">
+        <div className="flex justify-between items-start">
           <div className={`px-3 py-1.5 rounded-full backdrop-blur-md text-xs font-medium border shadow-sm ${getStatusStyles()}`}>
             {status}
           </div>

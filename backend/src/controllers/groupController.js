@@ -1,5 +1,7 @@
 import Group from '../models/Group.js';
 import User from '../models/User.js';
+import Expense from '../models/Expense.js';
+import calculateBalances from '../utils/balanceCalculator.js';
 
 export const createGroup = async (req, res) => {
   try {
@@ -62,6 +64,35 @@ export const getGroupById = async (req, res) => {
   }
 };
 
+export const updateGroup = async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    const group = await Group.findById(req.params.id);
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const isMember = group.members.some(memberId => memberId.toString() === req.user._id.toString());
+    
+    if (!isMember) {
+      return res.status(403).json({ message: 'Only group members can update this group' });
+    }
+
+    if (name) group.name = name;
+    if (description !== undefined) group.description = description;
+
+    await group.save();
+    
+    await group.populate('members', 'name email');
+    await group.populate('createdBy', 'name email');
+
+    res.status(200).json({ group });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update group', error: error.message });
+  }
+};
+
 export const addMember = async (req, res) => {
   try {
     const { email } = req.body;
@@ -76,8 +107,9 @@ export const addMember = async (req, res) => {
       return res.status(404).json({ message: 'Group not found' });
     }
 
-    if (group.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Only the group creator can add members' });
+    const isMember = group.members.some(m => m.toString() === req.user._id.toString());
+    if (!isMember) {
+      return res.status(403).json({ message: 'Only group members can add new members' });
     }
 
     const userToAdd = await User.findOne({ email: email.toLowerCase() });
@@ -103,5 +135,66 @@ export const addMember = async (req, res) => {
     res.status(200).json({ group });
   } catch (error) {
     res.status(500).json({ message: 'Failed to add member', error: error.message });
+  }
+};
+
+export const removeMember = async (req, res) => {
+  try {
+    const { id: groupId, memberId } = req.params;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const isMember = group.members.some(m => m.toString() === req.user._id.toString());
+    if (!isMember) {
+      return res.status(403).json({ message: 'Only group members can remove members' });
+    }
+
+    const memberExists = group.members.some(m => m.toString() === memberId);
+    if (!memberExists) {
+      return res.status(404).json({ message: 'User is not a member of this group' });
+    }
+
+    const balances = await calculateBalances(groupId);
+    const memberBalance = balances[memberId] || 0;
+
+    if (memberBalance !== 0) {
+      return res.status(400).json({ message: 'Cannot remove member because their balance is not settled up (₹0)' });
+    }
+
+    group.members = group.members.filter(m => m.toString() !== memberId);
+    await group.save();
+
+    await group.populate('members', 'name email');
+    await group.populate('createdBy', 'name email');
+
+    res.status(200).json({ group, message: 'Member removed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to remove member', error: error.message });
+  }
+};
+
+export const deleteGroup = async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id);
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const isMember = group.members.some(memberId => memberId.toString() === req.user._id.toString());
+    
+    if (!isMember) {
+      return res.status(403).json({ message: 'Only group members can delete this group' });
+    }
+
+    await Expense.deleteMany({ group: group._id });
+    await group.deleteOne();
+
+    res.status(200).json({ message: 'Group deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete group', error: error.message });
   }
 };
