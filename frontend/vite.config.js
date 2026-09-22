@@ -13,7 +13,7 @@ export default defineConfig({
         short_name: 'FairShare',
         description: 'Split expenses effortlessly with friends and groups.',
         theme_color: '#10b981',
-        background_color: '#f8fafc',
+        background_color: '#ffffff',
         display: 'standalone',
         icons: [
           {
