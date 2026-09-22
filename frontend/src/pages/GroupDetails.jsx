@@ -143,7 +143,7 @@ const GroupDetails = () => {
     <div className="font-sans relative">
       <div className="relative z-10">
         <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-0 isolate">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16 relative z-0 isolate">
           <div className="mb-12">
             <Link
               to="/"
@@ -156,11 +156,11 @@ const GroupDetails = () => {
 
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div>
-                <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-slate-900">{group.name}</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900">{group.name}</h1>
                 {group.description && (
                   <p className="text-slate-600 text-lg mt-2">{group.description}</p>
                 )}
-                <div className="flex items-center gap-6 mt-6">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-6">
                   <span className="flex items-center gap-2 text-sm text-slate-500 font-medium">
                     <Users size={16} className="text-slate-400" />
                     {group.members.length} {group.members.length === 1 ? 'member' : 'members'}
@@ -175,7 +175,7 @@ const GroupDetails = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex gap-3 shrink-0">
+              <div className="flex flex-wrap gap-2 sm:gap-3 shrink-0">
               {isCreator && (
                 <button
                   id="add-member-toggle-btn"
@@ -315,7 +315,7 @@ const GroupDetails = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ delay: idx * 0.05 }}
                       id={`expense-row-${expense._id}`}
-                      className="flex items-center justify-between p-6 rounded-3xl bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:border-emerald-200 hover:bg-emerald-50/50 transition-all duration-200"
+                      className="flex items-center justify-between p-4 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:border-emerald-200 hover:bg-emerald-50/50 transition-all duration-200"
                     >
                       <div className="flex items-center gap-5 min-w-0">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm border ${
@@ -340,7 +340,7 @@ const GroupDetails = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-6 shrink-0 ml-4">
+                       <div className="flex items-center gap-3 sm:gap-6 shrink-0 ml-2 sm:ml-4">
                         <div className="text-right">
                           <p className="text-lg font-medium text-slate-900 tracking-tight">{formatPaise(expense.amountPaise)}</p>
                           {myShare && !expense.isSettlement && (

@@ -86,11 +86,11 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-0 isolate">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-16 relative z-0 isolate">
           <div className="flex flex-col md:flex-row items-start justify-between mb-16 gap-6">
             <div>
-              <div className="h-12 w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
-              <div className="h-6 w-96 bg-neutral-100 rounded-lg animate-pulse"></div>
+              <div className="h-12 w-48 sm:w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
+              <div className="h-6 w-64 sm:w-96 bg-neutral-100 rounded-lg animate-pulse"></div>
             </div>
             <div className="h-12 w-32 bg-neutral-100 rounded-full animate-pulse"></div>
           </div>
@@ -112,11 +112,11 @@ const Dashboard = () => {
     <div className="font-sans relative">
         <Navbar />
         
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-0 isolate">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 relative z-0 isolate">
           <div className="relative mb-16">
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
             <div>
-              <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-slate-900 mb-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900 mb-2">
                 Hello, {user?.name?.split(' ')[0]} 👋
               </h1>
               <p className="text-slate-600 text-lg max-w-xl">
@@ -189,7 +189,7 @@ const Dashboard = () => {
         </div>
 
         {groups.length === 0 ? (
-          <div className="bg-white border border-neutral-200 rounded-[3rem] p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="bg-white border border-neutral-200 rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-16 md:p-24 flex flex-col items-center gap-6 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="w-20 h-20 rounded-2xl bg-emerald-500/20 flex items-center justify-center border border-emerald-100 shadow-sm">
               <Folders size={32} className="text-emerald-600" />
             </div>

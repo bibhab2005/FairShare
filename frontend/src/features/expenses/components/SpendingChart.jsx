@@ -51,16 +51,16 @@ const SpendingChart = ({ expenses }) => {
   };
 
   return (
-    <div className="bg-white/60 backdrop-blur-lg border border-white/40 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row items-center gap-8">
-      <div className="w-full md:w-1/2 h-64 relative">
+    <div className="bg-white/60 backdrop-blur-lg border border-white/40 rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-8 shadow-sm flex flex-col md:flex-row items-center gap-6 sm:gap-8">
+      <div className="w-full md:w-1/2 h-52 sm:h-64 relative">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={80}
-              outerRadius={110}
+              innerRadius="55%"
+              outerRadius="78%"
               paddingAngle={2}
               dataKey="value"
               stroke="none"
