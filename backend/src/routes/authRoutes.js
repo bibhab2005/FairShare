@@ -15,14 +15,19 @@ router.put('/username', protect, setUsername);
 // Google OAuth routes
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// Fallback to relative path if FRONTEND_URL is missing on Vercel
-const frontendUrl = process.env.FRONTEND_URL || '';
+// Helper to get frontend URL dynamically at request time
+const getFrontendUrl = () => {
+  return process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5173');
+};
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${frontendUrl}/login` }),
+  (req, res, next) => {
+    const frontendUrl = getFrontendUrl();
+    passport.authenticate('google', { session: false, failureRedirect: `${frontendUrl}/login` })(req, res, next);
+  },
   (req, res) => {
-    // Generate JWT and set in HttpOnly cookie just like normal login
+    const frontendUrl = getFrontendUrl();
     const token = generateToken(req.user._id);
     setTokenCookie(res, token);
 
