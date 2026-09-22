@@ -19,10 +19,26 @@ app.set('trust proxy', 1); // Essential for Vercel/Passport to resolve https cal
 
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  'https://www.fairshare.buzz',
+  'https://fairshare.buzz',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Blocked by CORS policy'));
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
