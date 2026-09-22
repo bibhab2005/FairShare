@@ -91,21 +91,21 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={handleToggle}
-        className="flex items-center gap-3 hover:bg-slate-50 p-2 pr-3 rounded-full transition-colors outline-none"
+        className="flex items-center gap-3 hover:bg-slate-100/70 p-2 sm:p-2.5 pr-3 sm:pr-4 rounded-full transition-colors outline-none"
       >
         {avatarUrl ? (
           <img 
             src={avatarUrl} 
             alt={name} 
-            className="w-9 h-9 rounded-full object-cover border border-neutral-200" 
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-neutral-200" 
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-semibold">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-base font-semibold">
             {name.charAt(0).toUpperCase()}
           </div>
         )}
-        <span className="text-sm font-medium text-neutral-700 hidden sm:block">{name}</span>
+        <span className="text-sm sm:text-base font-medium text-neutral-800 hidden sm:block">{name}</span>
         <ChevronDown className={`w-4 h-4 text-slate-600 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
