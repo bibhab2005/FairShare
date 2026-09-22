@@ -351,10 +351,10 @@ const GroupDetails = () => {
             <form id="add-member-form" onSubmit={handleAddMember} className="flex flex-col sm:flex-row gap-4 mb-8">
               <input
                 id="member-email-input"
-                type="email"
+                type="text"
                 value={memberEmail}
                 onChange={(e) => setMemberEmail(e.target.value)}
-                placeholder="member@example.com"
+                placeholder="Enter email or @username"
                 className="flex-1 px-6 py-3.5 rounded-full bg-white border border-neutral-200 text-slate-900 placeholder-neutral-400 focus:outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200 shadow-sm"
                 required
               />

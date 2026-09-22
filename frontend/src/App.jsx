@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
@@ -10,10 +10,12 @@ import Dashboard from './pages/Dashboard';
 import GroupDetails from './pages/GroupDetails';
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
+import SetUsername from './pages/SetUsername';
 import { Loader2 } from 'lucide-react';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -26,7 +28,15 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return user ? children : <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!user.username && location.pathname !== '/set-username') {
+    return <Navigate to="/set-username" replace />;
+  }
+
+  return children;
 };
 
 const PublicRoute = ({ children }) => {
@@ -77,6 +87,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <GroupDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/set-username"
+        element={
+          <ProtectedRoute>
+            <SetUsername />
           </ProtectedRoute>
         }
       />

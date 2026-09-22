@@ -18,8 +18,8 @@ export const createGroup = async (req, res) => {
       createdBy: req.user._id,
     });
 
-    await group.populate('members', 'name email');
-    await group.populate('createdBy', 'name email');
+    await group.populate('members', 'name email username');
+    await group.populate('createdBy', 'name email username');
 
     res.status(201).json({ group });
   } catch (error) {
@@ -30,8 +30,8 @@ export const createGroup = async (req, res) => {
 export const getGroups = async (req, res) => {
   try {
     const groups = await Group.find({ members: req.user._id })
-      .populate('members', 'name email')
-      .populate('createdBy', 'name email')
+      .populate('members', 'name email username')
+      .populate('createdBy', 'name email username')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ groups });
@@ -43,8 +43,8 @@ export const getGroups = async (req, res) => {
 export const getGroupById = async (req, res) => {
   try {
     const group = await Group.findById(req.params.id)
-      .populate('members', 'name email')
-      .populate('createdBy', 'name email');
+      .populate('members', 'name email username')
+      .populate('createdBy', 'name email username');
 
     if (!group) {
       return res.status(404).json({ message: 'Group not found' });
@@ -84,8 +84,8 @@ export const updateGroup = async (req, res) => {
 
     await group.save();
     
-    await group.populate('members', 'name email');
-    await group.populate('createdBy', 'name email');
+    await group.populate('members', 'name email username');
+    await group.populate('createdBy', 'name email username');
 
     res.status(200).json({ group });
   } catch (error) {
@@ -112,10 +112,15 @@ export const addMember = async (req, res) => {
       return res.status(403).json({ message: 'Only group members can add new members' });
     }
 
-    const userToAdd = await User.findOne({ email: email.toLowerCase() });
+    const userToAdd = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { username: email.toLowerCase() }
+      ]
+    });
 
     if (!userToAdd) {
-      return res.status(404).json({ message: 'No user found with that email' });
+      return res.status(404).json({ message: 'No user found with that email or username' });
     }
 
     const alreadyMember = group.members.some(
@@ -129,8 +134,8 @@ export const addMember = async (req, res) => {
     group.members.push(userToAdd._id);
     await group.save();
 
-    await group.populate('members', 'name email');
-    await group.populate('createdBy', 'name email');
+    await group.populate('members', 'name email username');
+    await group.populate('createdBy', 'name email username');
 
     res.status(200).json({ group });
   } catch (error) {
@@ -167,8 +172,8 @@ export const removeMember = async (req, res) => {
     group.members = group.members.filter(m => m.toString() !== memberId);
     await group.save();
 
-    await group.populate('members', 'name email');
-    await group.populate('createdBy', 'name email');
+    await group.populate('members', 'name email username');
+    await group.populate('createdBy', 'name email username');
 
     res.status(200).json({ group, message: 'Member removed successfully' });
   } catch (error) {

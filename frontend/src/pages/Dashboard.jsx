@@ -125,9 +125,16 @@ const Dashboard = () => {
           <div className="relative mb-16">
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
             <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900 mb-2">
-                Hello, {user?.name?.split(' ')[0]} 👋
-              </h1>
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900">
+                  Hello, {user?.name?.split(' ')[0]} 👋
+                </h1>
+                {user?.username && (
+                  <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full border border-emerald-200">
+                    @{user.username}
+                  </span>
+                )}
+              </div>
               <p className="text-slate-600 text-lg max-w-xl">
                 Here's where you stand with your shared expenses.
               </p>
