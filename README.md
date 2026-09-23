@@ -29,6 +29,7 @@ Built with modern glassmorphism aesthetics, buttery-smooth micro-animations, int
 ### 🔐 Authentication & Profile Security
 * **Dual Auth Providers:** Email/Password authentication (with `bcryptjs` hashing) and Google OAuth 2.0 (via `passport-google-oauth20`).
 * **Secure Cookie Storage:** Authentication tokens (JWT) are stored in secure, `httpOnly`, `SameSite: Lax` cookies to safeguard against XSS and enable smooth redirects.
+* **Profile Management:** Fully featured profile settings modal allowing users to instantly update their display name, `@username`, and **UPI ID** for easy payments.
 * **Route Protection:** Protected routes with state synchronization (`ProtectedRoute` and `PublicRoute`).
 * **Permanent Account Deletion (Kill Button):** Complete self-service account deletion accessible from the profile dropdown. Cleans up group memberships and permanently removes user data with custom confirmation modals.
 
@@ -40,6 +41,7 @@ Built with modern glassmorphism aesthetics, buttery-smooth micro-animations, int
 ### 👥 Groups & Expense Management
 * **Group Collaboration:** Create groups for trips, apartments, or events. Any member can add, view, or manage shared transactions.
 * **Flexible Splits:** Supports equal splitting across group members as well as custom split distributions.
+* **Permanent 1-to-1 Settlement History:** Users have a dedicated global Settlement History dashboard tracking all payments they've made or received. These records act as immutable receipts and are preserved permanently even if the underlying group is deleted!
 * **Visual Breakdown:** Spending visualizations and doughnut charts powered by **Recharts** highlighting top spenders.
 * **Safe Actions:** Destructive operations (removing a member, deleting a group, deleting an account) are guarded by animated, portal-mounted confirmation modals.
 
@@ -103,6 +105,7 @@ fairshare/
 | `GET` | `/api/auth/me` | Fetch currently authenticated user session | Yes |
 | `GET` | `/api/auth/check-username` | Check if username is available (`?username=...`) | No |
 | `PUT` | `/api/auth/username` | Set username for user without one | Yes |
+| `PUT` | `/api/auth/profile` | Update profile settings (Name, Username, UPI ID) | Yes |
 | `DELETE` | `/api/auth/account` | Permanently delete account and remove from all groups | Yes |
 | `GET` | `/api/auth/google` | Initiate Google OAuth 2.0 flow | No |
 | `GET` | `/api/auth/google/callback` | Google OAuth callback handler | No |
@@ -123,6 +126,7 @@ fairshare/
 | `GET` | `/api/expenses/group/:groupId` | Get all expenses recorded in a group | Yes |
 | `POST` | `/api/expenses` | Create a new expense or settlement payment | Yes |
 | `DELETE` | `/api/expenses/:id` | Delete an expense | Yes |
+| `GET` | `/api/expenses/settlements/my` | Get peer-to-peer settlement receipts across all groups | Yes |
 | `GET` | `/api/balances/:groupId` | Compute simplified debts and net balances | Yes |
 
 ---
