@@ -138,6 +138,7 @@ export const createSettlement = async (req, res) => {
 
     const settlement = await Expense.create({
       group: groupId,
+      groupName: group.name,
       description: 'Settlement Payment',
       amountPaise,
       paidBy: payerId,
@@ -155,3 +156,27 @@ export const createSettlement = async (req, res) => {
     res.status(500).json({ message: 'Failed to record settlement', error: error.message });
   }
 };
+
+export const getMySettlements = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Find settlements where current user is receiver or payer
+    const settlements = await Expense.find({
+      isSettlement: true,
+      $or: [
+        { 'splits.user': userId },
+        { paidBy: userId }
+      ]
+    })
+      .populate('paidBy', 'name email avatar upiId username')
+      .populate('splits.user', 'name email avatar upiId username')
+      .populate('group', 'name')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ settlements });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch settlements', error: error.message });
+  }
+};
+

@@ -1,6 +1,10 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, AlertTriangle, X } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 
 const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [], user, onSettle }) => {
+  const [selectedUpiDebt, setSelectedUpiDebt] = useState(null);
   const getAvatar = (name, debtObj) => {
     // 1. Check if the debt object itself contains an avatar/picture property
     if (debtObj && typeof debtObj === 'object') {
@@ -124,12 +128,9 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                 {!isCurrentUserOwed && (
                   <div className="flex items-center gap-2 shrink-0">
                     {debt.toUpiId && (
-                      <a 
-                        href={`upi://pay?pa=${debt.toUpiId}&pn=${encodeURIComponent(finalDisplayTo)}&am=${debt.amount.toFixed(2)}&cu=INR`}
+                      <button 
+                        onClick={() => setSelectedUpiDebt({ ...debt, finalDisplayTo })}
                         className="bg-[#118A45] hover:bg-[#0c6b35] text-white hover:shadow-lg hover:shadow-[#118A45]/30 hover:-translate-y-0.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
-                        onClick={(e) => {
-                          // Let the browser handle deep links naturally.
-                        }}
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M12.9842 16.273H10.1245V7.71714H12.9842C15.1167 7.71714 16.5936 8.78453 16.5936 11.9951C16.5936 15.2056 15.1167 16.273 12.9842 16.273ZM12.7214 9.94086H12.2858V14.0493H12.7214C13.6896 14.0493 14.2811 13.5658 14.2811 11.9951C14.2811 10.4243 13.6896 9.94086 12.7214 9.94086Z" fill="currentColor"/>
@@ -137,14 +138,14 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                           <path d="M18.8266 16.273H21.4112V7.71714H18.8266V16.273Z" fill="currentColor"/>
                         </svg>
                         Pay UPI
-                      </a>
+                      </button>
                     )}
-                    <button 
-                      onClick={() => onSettle && onSettle(debt)}
-                      className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 text-slate-900 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap"
-                    >
-                      Settle
-                    </button>
+                      <button 
+                        onClick={() => onSettle && onSettle(debt)}
+                        className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 text-slate-900 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap"
+                      >
+                        Settle
+                      </button>
                   </div>
                 )}
               </div>
@@ -152,6 +153,56 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
           );
         })}
       </div>
+      
+      {/* Security Warning Modal */}
+      {createPortal(
+        <AnimatePresence>
+          {selectedUpiDebt && (
+            <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
+                onClick={() => setSelectedUpiDebt(null)}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                transition={{ duration: 0.2 }}
+                className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-6 z-10 border border-slate-100 flex flex-col items-center text-center"
+              >
+                <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
+                  <AlertTriangle size={24} />
+                </div>
+                
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Security Warning</h3>
+                <p className="text-slate-600 mb-6 leading-relaxed">
+                  FairShare does not verify UPI IDs. When your UPI app opens, please manually verify that the registered receiver name matches <strong className="text-slate-900">{selectedUpiDebt.finalDisplayTo}</strong>.
+                </p>
+                
+                <div className="flex flex-col w-full gap-2.5 mt-2">
+                  <a 
+                    href={`upi://pay?pa=${selectedUpiDebt.toUpiId}&pn=${encodeURIComponent(selectedUpiDebt.finalDisplayTo)}&am=${selectedUpiDebt.amount.toFixed(2)}&cu=INR`}
+                    onClick={() => setSelectedUpiDebt(null)}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3.5 rounded-2xl font-semibold transition-all duration-300 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                  >
+                    Continue to Pay
+                  </a>
+                  <button 
+                    onClick={() => setSelectedUpiDebt(null)}
+                    className="w-full bg-transparent hover:bg-slate-100 text-slate-500 hover:text-slate-800 py-3 rounded-2xl font-semibold transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };

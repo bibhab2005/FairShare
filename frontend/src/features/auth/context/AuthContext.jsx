@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
             try {
                 // Let the browser send the httpOnly cookie automatically
-                const response = await fetch(import.meta.env.DEV ? 'http://localhost:5000/api/auth/me' : '/api/auth/me', {
+                const response = await fetch(import.meta.env.DEV ? `http://${window.location.hostname}:5000/api/auth/me` : '/api/auth/me', {
                     credentials: 'include'
                 });
 

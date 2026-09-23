@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { GroupCardSkeleton } from '../core/components/SkeletonLoaders';
 import Navbar from '../core/components/Navbar';
 import GroupCard from '../features/groups/components/GroupCard';
+import SettlementHistoryModal from '../features/expenses/components/SettlementHistoryModal';
 import { 
   Users, Plus, LogOut, ArrowRight, Wallet, TrendingUp, AlertCircle, 
   Settings, User, HelpCircle, Receipt, IndianRupee, Menu, X, Folders, Loader2, Search
@@ -22,12 +23,13 @@ const Dashboard = () => {
   const [error, setError] = useState('');
   
   const [showModal, setShowModal] = useState(false);
+  const [showSettlementsModal, setShowSettlementsModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupDesc, setNewGroupDesc] = useState('');
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
-  const loadGroups = async () => {
+  const loadGroups = async (isMounted) => {
     try {
       const res = await fetchGroups();
       const loadedGroups = res.data.groups;
@@ -59,14 +61,22 @@ const Dashboard = () => {
       setHasExpensesMap(newHasExpensesMap);
       
     } catch (err) {
-      toast.error('Failed to load groups. Please try again later.');
+      if (isMounted) {
+        toast.error('Failed to load groups. Please try again later.');
+      }
     } finally {
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    loadGroups();
+    let isMounted = true;
+    loadGroups(isMounted);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleCreateGroup = async (e) => {
@@ -139,14 +149,24 @@ const Dashboard = () => {
                 Here's where you stand with your shared expenses.
               </p>
             </div>
-            <button
-              id="create-group-btn"
-              onClick={() => setShowModal(true)}
-              className="shrink-0 inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-6 py-3 rounded-full hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300"
-            >
-              <Plus size={18} />
-              New Group
-            </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+              <button
+                id="create-group-btn"
+                onClick={() => setShowModal(true)}
+                className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-4 sm:px-6 py-3 rounded-full hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base"
+              >
+                <Plus size={18} className="shrink-0" />
+                <span className="whitespace-nowrap">New Group</span>
+              </button>
+              <button
+                onClick={() => setShowSettlementsModal(true)}
+                className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 bg-white/80 hover:bg-white text-slate-700 font-medium px-4 sm:px-5 py-3 rounded-full border border-slate-200/80 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-sm sm:text-base"
+              >
+                <Receipt size={18} className="text-emerald-500 shrink-0" />
+                <span className="hidden sm:inline">Settlement History</span>
+                <span className="sm:hidden">History</span>
+              </button>
+            </div>
           </div>
 
           {/* Stat Cards */}
@@ -215,14 +235,23 @@ const Dashboard = () => {
                 Create a group to start splitting expenses.
               </p>
             </div>
-            <button
-              id="create-first-group-btn"
-              onClick={() => setShowModal(true)}
-              className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-8 py-4 rounded-full hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <Plus size={18} />
-              Create your first group
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+              <button
+                id="create-first-group-btn"
+                onClick={() => setShowModal(true)}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-8 py-4 rounded-full hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <Plus size={18} />
+                Create your first group
+              </button>
+              <button
+                onClick={() => setShowSettlementsModal(true)}
+                className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-6 py-4 rounded-full transition-all duration-200"
+              >
+                <Receipt size={18} className="text-emerald-600" />
+                Settlement History
+              </button>
+            </div>
           </div>
         ) : (
           <div>
@@ -354,6 +383,11 @@ const Dashboard = () => {
           </div>
         )}
       </AnimatePresence>
+
+      <SettlementHistoryModal
+        isOpen={showSettlementsModal}
+        onClose={() => setShowSettlementsModal(false)}
+      />
     </div>
   );
 };

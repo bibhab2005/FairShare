@@ -37,6 +37,8 @@ const userSchema = new mongoose.Schema(
     },
     upiId: {
       type: String,
+      unique: true,
+      sparse: true,
       trim: true,
       match: [/^[\w.-]+@[\w.-]+$/, 'Please enter a valid UPI ID (e.g., name@bank)'],
     },

@@ -7,6 +7,7 @@ import { useAuth } from '../features/auth/context/AuthContext';
 import Navbar from '../core/components/Navbar';
 import ExpenseModal from '../features/expenses/components/ExpenseModal';
 import BalanceSummary from '../features/groups/components/BalanceSummary';
+import RecentSettlementsBox from '../features/expenses/components/RecentSettlementsBox';
 import ConfirmModal from '../core/components/ConfirmModal';
 import { formatPaise } from '../core/utils/formatCurrency';
 import {
@@ -608,6 +609,11 @@ const GroupDetails = () => {
                 onSettled={loadAll}
               />
             )}
+            
+            <RecentSettlementsBox 
+              expenses={expenses} 
+              currentUserId={user?._id} 
+            />
           </div>
         </div>
       </main>

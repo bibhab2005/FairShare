@@ -21,7 +21,11 @@ const expenseSchema = new mongoose.Schema(
     group: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Group',
-      required: true,
+      required: false,
+    },
+    groupName: {
+      type: String,
+      trim: true,
     },
     description: {
       type: String,

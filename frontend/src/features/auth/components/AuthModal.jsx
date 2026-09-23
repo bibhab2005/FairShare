@@ -12,7 +12,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     const handleGoogleLogin = () => {
-        window.location.href = import.meta.env.DEV ? 'http://localhost:5000/api/auth/google' : '/api/auth/google';
+        window.location.href = import.meta.env.DEV ? `http://${window.location.hostname}:5000/api/auth/google` : '/api/auth/google';
     };
 
     const handleEmailLogin = async (e) => {

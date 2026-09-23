@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Settings, LogOut, ChevronDown, Trash2, MessageSquareHeart } from 'lucide-react';
+import { Settings, LogOut, ChevronDown, Trash2, MessageSquareHeart, Receipt } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -8,6 +8,7 @@ import { deleteAccount } from '../api/authService';
 import ConfirmModal from '../../../core/components/ConfirmModal';
 import FeedbackModal from '../../../core/components/FeedbackModal';
 import ProfileSettingsModal from './ProfileSettingsModal';
+import SettlementHistoryModal from '../../expenses/components/SettlementHistoryModal';
 
 const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005@gmail.com", avatarUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,7 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showSettlementsModal, setShowSettlementsModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
@@ -92,6 +94,13 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       
       <div className="px-2">
         <button 
+          onClick={() => { setIsOpen(false); setShowSettlementsModal(true); }}
+          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors outline-none mb-1 font-medium"
+        >
+          <Receipt className="w-4 h-4 text-emerald-500" />
+          Recent Settlements
+        </button>
+        <button 
           onClick={() => { setIsOpen(false); setShowSettingsModal(true); }}
           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors outline-none mb-1 font-medium"
         >
@@ -132,7 +141,7 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       <button 
         onClick={handleToggle}
         className="flex items-center gap-3 hover:bg-slate-100/70 p-2 sm:p-2.5 pr-3 sm:pr-4 rounded-full transition-colors outline-none"
-      >
+        >
         {avatarUrl ? (
           <img 
             src={avatarUrl} 
@@ -170,6 +179,11 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       <ProfileSettingsModal
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
+      />
+
+      <SettlementHistoryModal
+        isOpen={showSettlementsModal}
+        onClose={() => setShowSettlementsModal(false)}
       />
     </div>
   );

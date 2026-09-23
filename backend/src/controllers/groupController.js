@@ -195,7 +195,12 @@ export const deleteGroup = async (req, res) => {
       return res.status(403).json({ message: 'Only group members can delete this group' });
     }
 
-    await Expense.deleteMany({ group: group._id });
+    // Preserve settlement records: snapshot groupName, delete only non-settlement expenses
+    await Expense.updateMany(
+      { group: group._id, isSettlement: true },
+      { $set: { groupName: group.name } }
+    );
+    await Expense.deleteMany({ group: group._id, isSettlement: { $ne: true } });
     await group.deleteOne();
 
     res.status(200).json({ message: 'Group deleted successfully' });

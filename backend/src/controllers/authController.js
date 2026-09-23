@@ -18,28 +18,19 @@ export const setTokenCookie = (res, token) => {
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, username } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !password || !username) {
-      return res.status(400).json({ message: 'Name, username, email, and password are required' });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required' });
     }
 
     if (password.length < 6) {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
-    if (username.length < 3) {
-      return res.status(400).json({ message: 'Username must be at least 3 characters' });
-    }
-
     const existingEmail = await User.findOne({ email: email.toLowerCase() });
     if (existingEmail) {
       return res.status(409).json({ message: 'An account with this email already exists' });
-    }
-
-    const existingUsername = await User.findOne({ username: username.toLowerCase() });
-    if (existingUsername) {
-      return res.status(409).json({ message: 'This username is already taken' });
     }
 
     const saltRounds = 12;
@@ -48,7 +39,6 @@ export const register = async (req, res) => {
     const user = await User.create({ 
       name, 
       email, 
-      username: username.toLowerCase(), 
       passwordHash 
     });
     
@@ -120,9 +110,24 @@ export const checkUsername = async (req, res) => {
   }
 };
 
+export const checkUpiId = async (req, res) => {
+  try {
+    const { upiId } = req.query;
+    if (!upiId) {
+      return res.status(400).json({ message: 'UPI ID is required' });
+    }
+    
+    const formattedUpi = upiId.trim();
+    const existingUpi = await User.findOne({ upiId: formattedUpi });
+    res.status(200).json({ available: !existingUpi });
+  } catch (error) {
+    res.status(500).json({ message: 'Error checking UPI ID', error: error.message });
+  }
+};
+
 export const setUsername = async (req, res) => {
   try {
-    const { username } = req.body;
+    const { username, upiId } = req.body;
     
     if (!username || username.length < 3) {
       return res.status(400).json({ message: 'Username must be at least 3 characters' });
@@ -145,6 +150,16 @@ export const setUsername = async (req, res) => {
     }
 
     user.username = username.toLowerCase();
+    
+    if (upiId && upiId.trim() !== '') {
+      const formattedUpi = upiId.trim();
+      const existingUpi = await User.findOne({ upiId: formattedUpi });
+      if (existingUpi && existingUpi._id.toString() !== user._id.toString()) {
+        return res.status(409).json({ message: 'This UPI ID is already registered to another user' });
+      }
+      user.upiId = formattedUpi;
+    }
+    
     await user.save();
 
     res.status(200).json({ message: 'Username set successfully', user });
@@ -180,7 +195,7 @@ export const deleteAccount = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { name, upiId } = req.body;
+    const { name, username, upiId } = req.body;
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -190,8 +205,39 @@ export const updateProfile = async (req, res) => {
     if (name) {
       user.name = name;
     }
+    
+    if (username !== undefined) {
+      if (username.trim() !== '') {
+        const formattedUsername = username.trim().toLowerCase();
+        
+        if (formattedUsername.length < 3) {
+          return res.status(400).json({ message: 'Username must be at least 3 characters' });
+        }
+        
+        const isValid = /^[a-zA-Z0-9_.-]+$/.test(formattedUsername);
+        if (!isValid) {
+          return res.status(400).json({ message: 'Invalid characters in username' });
+        }
+        
+        const existingUsername = await User.findOne({ username: formattedUsername });
+        if (existingUsername && existingUsername._id.toString() !== user._id.toString()) {
+          return res.status(409).json({ message: 'This username is already taken' });
+        }
+        user.username = formattedUsername;
+      }
+    }
+
     if (upiId !== undefined) {
-      user.upiId = upiId; // Allow setting to empty string to remove
+      if (upiId.trim() !== '') {
+        const formattedUpi = upiId.trim();
+        const existingUpi = await User.findOne({ upiId: formattedUpi });
+        if (existingUpi && existingUpi._id.toString() !== user._id.toString()) {
+          return res.status(409).json({ message: 'This UPI ID is already registered to another user' });
+        }
+        user.upiId = formattedUpi;
+      } else {
+        user.upiId = ''; // Allow setting to empty string to remove
+      }
     }
 
     await user.save();

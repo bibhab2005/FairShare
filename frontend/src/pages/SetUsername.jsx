@@ -6,6 +6,7 @@ import api from '../core/api/axiosInstance';
 
 export default function SetUsername() {
   const [username, setUsername] = useState('');
+  const [upiId, setUpiId] = useState('');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(false);
   const [available, setAvailable] = useState(null);
@@ -52,7 +53,7 @@ export default function SetUsername() {
     setError('');
 
     try {
-      const { data } = await api.put('/auth/username', { username });
+      const { data } = await api.put('/auth/username', { username, upiId });
       // Update auth context user
       login(data.user);
       navigate('/dashboard');
@@ -123,6 +124,22 @@ export default function SetUsername() {
             {available === true && (
               <p className="text-sm text-emerald-600 mt-2 ml-1">Username available!</p>
             )}
+          </div>
+
+          <div>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 font-medium">₹</span>
+              <input
+                type="text"
+                value={upiId}
+                onChange={(e) => setUpiId(e.target.value)}
+                placeholder="UPI ID (optional)"
+                className="w-full bg-neutral-50 border border-neutral-200 rounded-2xl py-4 pl-8 pr-4 text-lg outline-none transition-all placeholder:text-neutral-300 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 focus:bg-white"
+              />
+            </div>
+            <p className="text-xs text-neutral-500 mt-2 ml-1 leading-relaxed">
+              Adding a UPI ID makes it easy to receive payments from friends. You can add any valid UPI ID.
+            </p>
           </div>
 
           <button

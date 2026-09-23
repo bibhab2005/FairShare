@@ -6,7 +6,6 @@ import { AlertCircle } from 'lucide-react';
 
 export default function Register() {
   const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +16,7 @@ export default function Register() {
 
   const handleGoogleLogin = () => {
     // This is wired to the backend endpoint we configured
-    window.location.href = import.meta.env.DEV ? 'http://localhost:5000/api/auth/google' : '/api/auth/google';
+    window.location.href = import.meta.env.DEV ? `http://${window.location.hostname}:5000/api/auth/google` : '/api/auth/google';
   };
 
   const handleManualRegister = async (e) => {
@@ -25,12 +24,11 @@ export default function Register() {
     setError('');
 
     if (fullName.trim().length < 2) return setError('Name must be at least 2 characters.');
-    if (username.trim().length < 3) return setError('Username must be at least 3 characters.');
     if (password.length < 6) return setError('Password must be at least 6 characters.');
 
     setLoading(true);
     try {
-      const { data } = await registerUser({ name: fullName.trim(), username: username.trim(), email, password });
+      const { data } = await registerUser({ name: fullName.trim(), email, password });
       login(data.user);
       navigate('/');
     } catch (err) {
@@ -111,17 +109,6 @@ export default function Register() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="First Last"
-                className="w-full bg-neutral-50/50 border border-neutral-200 rounded-full py-4 px-6 text-base outline-none focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all placeholder:text-neutral-400"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2 pl-1">Username</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Unique username"
                 className="w-full bg-neutral-50/50 border border-neutral-200 rounded-full py-4 px-6 text-base outline-none focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all placeholder:text-neutral-400"
                 required
               />

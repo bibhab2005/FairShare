@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { register, login, logout, getMe, generateToken, setTokenCookie, checkUsername, setUsername, deleteAccount, updateProfile } from '../controllers/authController.js';
+import { register, login, logout, getMe, generateToken, setTokenCookie, checkUsername, checkUpiId, setUsername, deleteAccount, updateProfile } from '../controllers/authController.js';
 import protect from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.post('/login', login);
 router.post('/logout', protect, logout);
 router.get('/me', protect, getMe);
 router.get('/check-username', checkUsername);
+router.get('/check-upi', checkUpiId);
 router.put('/username', protect, setUsername);
 router.put('/profile', protect, updateProfile);
 router.delete('/account', protect, deleteAccount);

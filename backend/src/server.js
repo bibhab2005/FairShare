@@ -31,7 +31,8 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      const isLocalNetwork = process.env.NODE_ENV !== 'production' && origin && (origin.startsWith('http://192.168.') || origin.startsWith('http://10.'));
+      if (!origin || allowedOrigins.includes(origin) || isLocalNetwork) {
         callback(null, true);
       } else {
         callback(new Error('Blocked by CORS policy'));

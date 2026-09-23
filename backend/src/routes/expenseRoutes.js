@@ -4,6 +4,7 @@ import {
   getExpenses,
   deleteExpense,
   createSettlement,
+  getMySettlements,
 } from '../controllers/expenseController.js';
 import protect from '../middleware/authMiddleware.js';
 
@@ -11,6 +12,7 @@ const router = express.Router();
 
 router.use(protect);
 
+router.get('/settlements/my', getMySettlements);
 router.post('/', createExpense);
 router.get('/group/:groupId', getExpenses);
 router.delete('/:id', deleteExpense);
