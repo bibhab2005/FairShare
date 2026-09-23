@@ -91,7 +91,7 @@ const SettlementHistoryModal = ({ isOpen, onClose }) => {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
         transition={{ duration: 0.2 }}
-        className="relative w-full max-w-2xl bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/60 overflow-hidden flex flex-col max-h-[85vh] z-10"
+        className="relative w-[95vw] md:w-[672px] bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/60 overflow-hidden flex flex-col max-h-[85vh] z-10"
       >
         {/* Header */}
         <div className="p-6 pb-4 border-b border-slate-100 flex items-start justify-between">

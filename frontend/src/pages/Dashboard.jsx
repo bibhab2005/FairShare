@@ -103,15 +103,15 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen">
         <Navbar />
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-16 relative z-0 isolate">
           <div className="flex flex-col md:flex-row items-start justify-between mb-16 gap-6">
             <div>
-              <div className="h-12 w-48 sm:w-64 bg-neutral-100 rounded-lg animate-pulse mb-4"></div>
-              <div className="h-6 w-64 sm:w-96 bg-neutral-100 rounded-lg animate-pulse"></div>
+              <div className="h-12 w-48 sm:w-64 bg-slate-200/50 rounded-lg animate-pulse mb-4"></div>
+              <div className="h-6 w-64 sm:w-96 bg-slate-200/50 rounded-lg animate-pulse"></div>
             </div>
-            <div className="h-12 w-32 bg-neutral-100 rounded-full animate-pulse"></div>
+            <div className="h-12 w-32 bg-slate-200/50 rounded-full animate-pulse"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <GroupCardSkeleton />
