@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
 import { loginUser } from '../features/auth/api/authService';
@@ -12,6 +12,16 @@ export default function Login() {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get('error');
+    if (err === 'oauth_failed') {
+      setError('Google sign-in could not be completed. Please check your connection and try again.');
+    } else if (err === 'cancelled') {
+      setError('Google sign-in was cancelled.');
+    }
+  }, []);
 
   const handleGoogleLogin = () => {
     window.location.href = import.meta.env.DEV ? 'http://localhost:5000/api/auth/google' : '/api/auth/google';

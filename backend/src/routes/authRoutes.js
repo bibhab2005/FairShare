@@ -25,15 +25,17 @@ router.get(
   '/google/callback',
   (req, res, next) => {
     const frontendUrl = getFrontendUrl();
-    passport.authenticate('google', { session: false, failureRedirect: `${frontendUrl}/login` })(req, res, next);
-  },
-  (req, res) => {
-    const frontendUrl = getFrontendUrl();
-    const token = generateToken(req.user._id);
-    setTokenCookie(res, token);
+    passport.authenticate('google', { session: false }, (err, user, info) => {
+      if (err || !user) {
+        console.error('Google OAuth callback failure:', err || info);
+        return res.redirect(`${frontendUrl}/login?error=oauth_failed`);
+      }
+      const token = generateToken(user._id);
+      setTokenCookie(res, token);
 
-    // Redirect straight back to the frontend app root
-    res.redirect(`${frontendUrl}/?token=${token}`);
+      // Redirect straight back to the frontend app root
+      return res.redirect(`${frontendUrl}/?token=${token}`);
+    })(req, res, next);
   }
 );
 
