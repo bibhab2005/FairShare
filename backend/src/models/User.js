@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
+    upiId: {
+      type: String,
+      trim: true,
+      match: [/^[\w.-]+@[\w.-]+$/, 'Please enter a valid UPI ID (e.g., name@bank)'],
+    },
   },
   { timestamps: true }
 );

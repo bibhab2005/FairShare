@@ -11,7 +11,8 @@ import ConfirmModal from '../core/components/ConfirmModal';
 import { formatPaise } from '../core/utils/formatCurrency';
 import {
   Plus, Trash2, ArrowLeft, Users, UserPlus, AlertCircle,
-  Loader2, IndianRupee, CheckCircle2, X, ChevronDown, ChevronUp, Edit2
+  Loader2, IndianRupee, CheckCircle2, X, ChevronDown, ChevronUp, Edit2,
+  Download, FileText, FileSpreadsheet
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -19,6 +20,7 @@ import { ExpenseRowSkeleton, BalanceCardSkeleton } from '../core/components/Skel
 import SpendingChart from '../features/expenses/components/SpendingChart';
 import AnimatedEmptyState from '../core/components/AnimatedEmptyState';
 import emptyStateAnim from '../../public/assets/empty-box.json';
+import { exportExpensesToCSV, exportExpensesToPDF } from '../core/utils/exportUtils';
 
 
 
@@ -44,6 +46,8 @@ const GroupDetails = () => {
   const [editName, setEditName] = useState('');
   const [editDesc, setEditDesc] = useState('');
   const [updatingGroup, setUpdatingGroup] = useState(false);
+
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   const [deletingId, setDeletingId] = useState(null);
   const [showBalances, setShowBalances] = useState(true);
@@ -250,9 +254,18 @@ const GroupDetails = () => {
                           : 'bg-emerald-50 text-emerald-700 hover:bg-red-50 hover:text-red-700'
                       }`}
                     >
-                      <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center font-bold text-xs shadow-sm">
-                        {member.name.charAt(0).toUpperCase()}
-                      </div>
+                      {(member.avatar || member.picture) ? (
+                        <img 
+                          src={member.avatar || member.picture} 
+                          alt={member.name} 
+                          referrerPolicy="no-referrer"
+                          className="w-5 h-5 rounded-full object-cover shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center font-bold text-xs shadow-sm">
+                          {member.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       {member._id === user?._id ? 'You' : member.name}
                     </button>
                   ))}
@@ -275,6 +288,57 @@ const GroupDetails = () => {
                   <Plus size={18} />
                   Add Expense
                 </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setShowExportMenu(!showExportMenu)}
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm"
+                  >
+                    <Download size={18} className="text-slate-500" />
+                    Export
+                    <ChevronDown size={16} className={`transition-transform duration-200 ${showExportMenu ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {showExportMenu && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setShowExportMenu(false)}
+                        ></div>
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute left-0 mt-2 w-48 bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden z-50"
+                        >
+                          <div className="p-1.5">
+                            <button
+                              onClick={() => {
+                                exportExpensesToCSV(expenses, group.name);
+                                setShowExportMenu(false);
+                              }}
+                              className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors text-left"
+                            >
+                              <FileSpreadsheet size={16} className="text-emerald-500" />
+                              <span className="font-medium">Export as CSV</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                exportExpensesToPDF(expenses, group.name);
+                                setShowExportMenu(false);
+                              }}
+                              className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors text-left mt-1"
+                            >
+                              <FileText size={16} className="text-emerald-500" />
+                              <span className="font-medium">Export as PDF</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
+                </div>
                 <button
                   onClick={handleDeleteGroup}
                   className="inline-flex items-center gap-2 px-4 py-3 rounded-full font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 transition-colors duration-200 shadow-sm ml-auto sm:ml-0"

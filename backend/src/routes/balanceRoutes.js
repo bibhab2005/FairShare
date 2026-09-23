@@ -13,7 +13,7 @@ router.get('/:groupId', async (req, res) => {
   try {
     const { groupId } = req.params;
 
-    const group = await Group.findById(groupId).populate('members', 'name email');
+    const group = await Group.findById(groupId).populate('members', 'name email avatar');
 
     if (!group) {
       return res.status(404).json({ message: 'Group not found' });
@@ -31,10 +31,10 @@ router.get('/:groupId', async (req, res) => {
     const simplifiedDebts = simplifyDebts(rawBalances);
 
     const userIds = Object.keys(rawBalances);
-    const users = await User.find({ _id: { $in: userIds } }).select('name email');
+    const users = await User.find({ _id: { $in: userIds } }).select('name email upiId');
     const userMap = {};
     users.forEach((u) => {
-      userMap[u._id.toString()] = { name: u.name, email: u.email };
+      userMap[u._id.toString()] = { name: u.name, email: u.email, upiId: u.upiId };
     });
 
     const namedBalances = Object.entries(rawBalances).map(([userId, amountPaise]) => ({

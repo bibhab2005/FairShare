@@ -73,9 +73,9 @@ export const createExpense = async (req, res) => {
       isSettlement: false,
     });
 
-    await expense.populate('paidBy', 'name email');
-    await expense.populate('splits.user', 'name email');
-    await expense.populate('createdBy', 'name email');
+    await expense.populate('paidBy', 'name email avatar upiId username');
+    await expense.populate('splits.user', 'name email avatar upiId username');
+    await expense.populate('createdBy', 'name email avatar upiId username');
 
     res.status(201).json({ expense });
   } catch (error) {
@@ -91,9 +91,9 @@ export const getExpenses = async (req, res) => {
     if (error) return res.status(status).json({ message: error });
 
     const expenses = await Expense.find({ group: groupId })
-      .populate('paidBy', 'name email')
-      .populate('splits.user', 'name email')
-      .populate('createdBy', 'name email')
+      .populate('paidBy', 'name email avatar upiId username')
+      .populate('splits.user', 'name email avatar upiId username')
+      .populate('createdBy', 'name email avatar upiId username')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ expenses });
@@ -146,9 +146,9 @@ export const createSettlement = async (req, res) => {
       isSettlement: true,
     });
 
-    await settlement.populate('paidBy', 'name email');
-    await settlement.populate('splits.user', 'name email');
-    await settlement.populate('createdBy', 'name email');
+    await settlement.populate('paidBy', 'name email avatar upiId username');
+    await settlement.populate('splits.user', 'name email avatar upiId username');
+    await settlement.populate('createdBy', 'name email avatar upiId username');
 
     res.status(201).json({ settlement });
   } catch (error) {

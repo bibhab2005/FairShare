@@ -1,0 +1,163 @@
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { format } from 'date-fns';
+
+const formatCurrency = (amount) => {
+  return `Rs. ${(amount / 100).toFixed(2)}`;
+};
+
+export const exportExpensesToCSV = (expenses, groupName) => {
+  const filtered = expenses?.filter(e => !e.isSettlement);
+  if (!filtered || filtered.length === 0) return;
+
+  const headers = ['Date', 'Description', 'Category', 'Paid By', 'Amount'];
+  const rows = filtered.map(expense => [
+    format(new Date(expense.createdAt), 'dd MMM yyyy'),
+    expense.description,
+    expense.category || 'General',
+    expense.paidBy?.name || 'Unknown',
+    (expense.amountPaise / 100).toFixed(2)
+  ]);
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `${groupName.replace(/\s+/g, '_')}_expenses.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+export const exportExpensesToPDF = (expenses, groupName) => {
+  try {
+    const filtered = expenses?.filter(e => !e.isSettlement);
+    if (!filtered || filtered.length === 0) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    // === Modern Header — no background, clean typography ===
+    doc.setFontSize(28);
+    doc.setTextColor(16, 185, 129); // Emerald
+    doc.setFont('helvetica', 'bold');
+    doc.text('FairShare', 14, 22);
+
+    // Thin emerald accent line under the logo
+    doc.setDrawColor(16, 185, 129);
+    doc.setLineWidth(1.5);
+    doc.line(14, 26, 70, 26);
+
+    doc.setFontSize(14);
+    doc.setTextColor(100, 116, 139); // Slate 400
+    doc.setFont('helvetica', 'normal');
+    doc.text('Expense Report', 14, 34);
+
+    // === Group Name ===
+    doc.setFontSize(20);
+    doc.setTextColor(30, 41, 59); // Slate 800
+    doc.setFont('helvetica', 'bold');
+    doc.text(groupName, 14, 48);
+
+    // === Stats ===
+    const totalAmount = filtered.reduce((sum, exp) => sum + exp.amountPaise, 0);
+    const memberIds = new Set();
+    filtered.forEach(exp => {
+      if (exp.paidBy?._id) memberIds.add(exp.paidBy._id);
+      exp.splits?.forEach(s => { if (s.user?._id) memberIds.add(s.user._id); });
+    });
+
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Generated: ${format(new Date(), 'dd MMM yyyy, hh:mm a')}  |  ${filtered.length} expenses  |  ${memberIds.size} members  |  Total: ${formatCurrency(totalAmount)}`, 14, 56);
+
+    // Light divider
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.line(14, 60, pageWidth - 14, 60);
+
+    // === Table (no Category column) ===
+    const tableColumn = ['#', 'Date', 'Description', 'Paid By', 'Amount'];
+    const tableRows = filtered.map((expense, i) => {
+      const name = expense.paidBy?.name || 'Unknown';
+      const username = expense.paidBy?.username;
+      const paidByText = username ? `${name} (@${username})` : name;
+      
+      return [
+        i + 1,
+        format(new Date(expense.createdAt), 'dd MMM yyyy'),
+        expense.description,
+        paidByText,
+        formatCurrency(expense.amountPaise)
+      ];
+    });
+
+    autoTable(doc, {
+      startY: 66,
+      head: [tableColumn],
+      body: tableRows,
+      theme: 'plain',
+      headStyles: { 
+        fillColor: [16, 185, 129], // Emerald 500
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        fontSize: 11,
+        cellPadding: 5,
+      },
+      bodyStyles: {
+        fontSize: 10,
+        cellPadding: 4.5,
+        textColor: [51, 65, 85],
+      },
+      alternateRowStyles: {
+        fillColor: [248, 250, 252], // Slate 50
+      },
+      columnStyles: {
+        0: { cellWidth: 12, halign: 'center' },
+        4: { halign: 'right', fontStyle: 'bold', textColor: [30, 41, 59] },
+      },
+      styles: {
+        lineColor: [226, 232, 240],
+        lineWidth: 0.3,
+      },
+      margin: { left: 14, right: 14 },
+    });
+
+    // === Total Footer ===
+    const finalY = doc.lastAutoTable?.finalY || 120;
+
+    // Emerald accent line
+    doc.setDrawColor(16, 185, 129);
+    doc.setLineWidth(1);
+    doc.line(14, finalY + 6, pageWidth - 14, finalY + 6);
+
+    doc.setFontSize(12);
+    doc.setTextColor(30, 41, 59);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Total Expenses', 14, finalY + 16);
+
+    doc.setFontSize(14);
+    doc.setTextColor(16, 185, 129);
+    doc.setFont('helvetica', 'bold');
+    doc.text(formatCurrency(totalAmount), pageWidth - 14, finalY + 16, { align: 'right' });
+
+    // === Page Footer ===
+    doc.setFontSize(8);
+    doc.setTextColor(203, 213, 225); // Slate 300
+    doc.setFont('helvetica', 'normal');
+    doc.text('Generated by FairShare', pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+
+    doc.save(`${groupName.replace(/\s+/g, '_')}_expenses.pdf`);
+  } catch (err) {
+    console.error('PDF export failed:', err);
+    alert('Failed to export PDF. Please try again.');
+  }
+};
+
+

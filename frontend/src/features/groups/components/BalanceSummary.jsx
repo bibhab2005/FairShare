@@ -56,6 +56,7 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
         from: 'You',
         to: toUser?.name || 'Unknown',
         toAvatar: toUser?.avatar || toUser?.picture,
+        toUpiId: toUser?.upiId,
         amount: d.amountPaise / 100,
         originalDebt: d
       };

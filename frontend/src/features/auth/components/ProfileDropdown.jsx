@@ -7,12 +7,14 @@ import toast from 'react-hot-toast';
 import { deleteAccount } from '../api/authService';
 import ConfirmModal from '../../../core/components/ConfirmModal';
 import FeedbackModal from '../../../core/components/FeedbackModal';
+import ProfileSettingsModal from './ProfileSettingsModal';
 
 const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005@gmail.com", avatarUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
@@ -90,6 +92,13 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
       
       <div className="px-2">
         <button 
+          onClick={() => { setIsOpen(false); setShowSettingsModal(true); }}
+          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors outline-none mb-1 font-medium"
+        >
+          <Settings className="w-4 h-4 text-emerald-500" />
+          Profile Settings
+        </button>
+        <button 
           onClick={() => { setIsOpen(false); setShowFeedbackModal(true); }}
           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors outline-none mb-1 font-medium"
         >
@@ -156,6 +165,11 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
         confirmText="Yes, Delete Permanently"
         isDestructive={true}
         isLoading={isDeleting}
+      />
+
+      <ProfileSettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
       />
     </div>
   );

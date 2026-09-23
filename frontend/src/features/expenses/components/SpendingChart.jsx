@@ -6,32 +6,25 @@ const COLORS = ['#10b981', '#14b8a6', '#0ea5e9', '#6366f1', '#8b5cf6', '#d946ef'
 const SpendingChart = ({ expenses }) => {
   if (!expenses || expenses.length === 0) return null;
 
-  // Aggregate spending by user
   const spendingMap = {};
   
   expenses.forEach((expense) => {
     if (expense.isSettlement) return;
     
-    // Total cost
-    const totalAmount = expense.amountPaise;
-    
-    // Who paid it? Add to their "paid" total if we want to show who paid, 
-    // OR show how much each person consumed. Let's show who paid what.
     if (expense.splits && Array.isArray(expense.splits)) {
       expense.splits.forEach((split) => {
+        const userId = split.user?._id || split.user?.id || split.user?.name || 'unknown';
         const consumerName = split.user?.name || 'Unknown';
-        if (!spendingMap[consumerName]) {
-          spendingMap[consumerName] = 0;
+        
+        if (!spendingMap[userId]) {
+          spendingMap[userId] = { name: consumerName, value: 0 };
         }
-        spendingMap[consumerName] += split.amountPaise;
+        spendingMap[userId].value += split.amountPaise;
       });
     }
   });
 
-  const data = Object.keys(spendingMap).map((name) => ({
-    name,
-    value: spendingMap[name],
-  })).sort((a, b) => b.value - a.value); // Sort descending
+  const data = Object.values(spendingMap).sort((a, b) => b.value - a.value); // Sort descending
 
   if (data.length === 0) return null;
 

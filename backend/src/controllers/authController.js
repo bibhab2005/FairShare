@@ -177,3 +177,41 @@ export const deleteAccount = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete account', error: error.message });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, upiId } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (name) {
+      user.name = name;
+    }
+    if (upiId !== undefined) {
+      user.upiId = upiId; // Allow setting to empty string to remove
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar,
+        upiId: user.upiId,
+      },
+    });
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((val) => val.message);
+      return res.status(400).json({ message: messages.join(', ') });
+    }
+    res.status(500).json({ message: 'Failed to update profile', error: error.message });
+  }
+};
