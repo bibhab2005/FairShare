@@ -10,8 +10,8 @@ const getEmailTemplate = (title, bodyContent) => `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
 </head>
-<body style="font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #111111; margin: 0; padding: 0;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #111111; padding: 40px 20px;">
+<body style="font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #ffffff; margin: 0; padding: 0;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; padding: 40px 20px;">
         <tr>
             <td align="center">
                 <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1c1c1c; border-radius: 12px; overflow: hidden; max-width: 600px; margin: 0 auto; width: 100%;">
