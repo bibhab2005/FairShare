@@ -12,11 +12,39 @@ import authRoutes from './routes/authRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import expenseRoutes from './routes/expenseRoutes.js';
 import balanceRoutes from './routes/balanceRoutes.js';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import logger from './utils/logger.js';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-//console.log("GOOGLE_CLIENT_ID Loaded:", process.env.GOOGLE_CLIENT_ID);
+// logger.info("GOOGLE_CLIENT_ID Loaded: " + process.env.GOOGLE_CLIENT_ID);
 
 const app = express();
 app.set('trust proxy', 1); // Essential for Vercel/Passport to resolve https callback URLs
+
+// Security Middleware
+app.use(helmet());
+
+// Global API Rate Limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // Limit each IP to 50 requests per `window`
+  message: { message: 'Too many requests from this IP, please try again after 15 minutes' },
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+app.use('/api', apiLimiter);
+
+// Stricter Rate Limiter for Auth Routes (Prevents Brute Force)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Limit each IP to 20 requests for auth routes
+  message: { message: 'Too many login/register attempts from this IP, please try again after 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/auth', authLimiter);
 
 const PORT = process.env.PORT || 5000;
 
@@ -47,6 +75,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// HTTP request logging
+app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
+
 // Initialize Passport
 configurePassport();
 app.use(passport.initialize());
@@ -69,21 +100,15 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use((req, res) => {
-  res.status(404).json({ message: `Route ${req.originalUrl} not found` });
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error', error: err.message });
-});
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;
 
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   connectDB().then(() => {
     app.listen(PORT, () => {
-      console.log(`FairShare server running on http://localhost:${PORT}`);
+      logger.info(`FairShare server running on http://localhost:${PORT}`);
     });
   });
 }

@@ -60,6 +60,8 @@ Built with modern glassmorphism aesthetics, buttery-smooth micro-animations, int
 | **Authentication** | Passport.js, Google OAuth 2.0, JSON Web Tokens (JWT), `bcryptjs`, `cookie-parser` |
 | **Database** | MongoDB Atlas, Mongoose ODM |
 | **Analytics & Hosting** | Vercel Serverless Functions, Vercel Web Analytics, Vercel Speed Insights |
+    
+*Note: Requires MongoDB replica set (Atlas default, or `mongod --replSet` locally) — transactions will fail on standalone instances.*
 
 ---
 

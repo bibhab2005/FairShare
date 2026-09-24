@@ -7,10 +7,6 @@ export const createGroup = async (req, res) => {
   try {
     const { name, description } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ message: 'Group name is required' });
-    }
-
     const group = await Group.create({
       name,
       description: description || '',
@@ -96,10 +92,6 @@ export const updateGroup = async (req, res) => {
 export const addMember = async (req, res) => {
   try {
     const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
-    }
 
     const group = await Group.findById(req.params.id);
 

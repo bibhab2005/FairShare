@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from '../models/User.js';
+import logger from '../utils/logger.js';
 
 export const configurePassport = () => {
   passport.use(
@@ -47,7 +48,7 @@ export const configurePassport = () => {
           }
           return done(null, user);
         } catch (error) {
-          console.error('Passport Google strategy error:', error);
+          logger.error('Passport Google strategy error:', error);
           return done(error, null);
         }
       }

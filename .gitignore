@@ -5,9 +5,13 @@ dist/
 *.log
 secret key.txt
 atlas
-Photos/
+Photos
 
 atlas-credentials.env
 client_secret.json
 graphify-out/
 sample ss/
+
+# Agent Review Artifacts
+fairshare_comprehensive_review.md
+code_review.md

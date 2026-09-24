@@ -3,6 +3,11 @@ const simplifyDebts = (balances) => {
   const debtors = [];
 
   for (const [userId, amount] of Object.entries(balances)) {
+    // Current validation (Zod, Math.floor) should make this impossible, but this guards against future bypasses
+    if (!Number.isInteger(amount)) {
+      throw new Error(`Invariant violated: non-integer balance detected for user ${userId} — check upstream split calculation.`);
+    }
+
     if (amount > 0) {
       creditors.push({ userId, amount });
     } else if (amount < 0) {

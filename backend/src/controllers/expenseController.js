@@ -1,5 +1,6 @@
 import Expense from '../models/Expense.js';
 import Group from '../models/Group.js';
+import mongoose from 'mongoose';
 
 const validateGroupMembership = async (groupId, userId) => {
   const group = await Group.findById(groupId);
@@ -10,22 +11,22 @@ const validateGroupMembership = async (groupId, userId) => {
 };
 
 export const createExpense = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const { groupId, description, amountPaise, paidBy, splitType, splits } = req.body;
 
-    if (!groupId || !description || !amountPaise || !paidBy || !splitType) {
-      return res.status(400).json({ message: 'groupId, description, amountPaise, paidBy, and splitType are required' });
-    }
-
-    if (!Number.isInteger(amountPaise) || amountPaise <= 0) {
-      return res.status(400).json({ message: 'amountPaise must be a positive integer' });
-    }
-
     const { error, status, group } = await validateGroupMembership(groupId, req.user._id);
-    if (error) return res.status(status).json({ message: error });
+    if (error) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(status).json({ message: error });
+    }
 
     const paidByIsMember = group.members.some((m) => m.toString() === paidBy.toString());
     if (!paidByIsMember) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(400).json({ message: 'The payer must be a member of the group' });
     }
 
@@ -41,29 +42,14 @@ export const createExpense = async (req, res) => {
         amountPaise: index === 0 ? baseShare + remainder : baseShare,
       }));
     } else if (splitType === 'custom') {
-      if (!Array.isArray(splits) || splits.length === 0) {
-        return res.status(400).json({ message: 'Custom splits array is required' });
-      }
-
-      const splitTotal = splits.reduce((sum, s) => sum + s.amountPaise, 0);
-      if (splitTotal !== amountPaise) {
-        return res.status(400).json({
-          message: `Custom splits total (${splitTotal}) must equal amountPaise (${amountPaise})`,
-        });
-      }
-
-      for (const split of splits) {
-        if (!Number.isInteger(split.amountPaise) || split.amountPaise < 0) {
-          return res.status(400).json({ message: 'Each split amountPaise must be a non-negative integer' });
-        }
-      }
-
       computedSplits = splits;
     } else {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(400).json({ message: 'splitType must be "equal" or "custom"' });
     }
 
-    const expense = await Expense.create({
+    const [expense] = await Expense.create([{
       group: groupId,
       description,
       amountPaise,
@@ -71,7 +57,13 @@ export const createExpense = async (req, res) => {
       splits: computedSplits,
       createdBy: req.user._id,
       isSettlement: false,
-    });
+    }], { session });
+
+    group.updatedAt = new Date();
+    await group.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     await expense.populate('paidBy', 'name email avatar upiId username');
     await expense.populate('splits.user', 'name email avatar upiId username');
@@ -79,6 +71,8 @@ export const createExpense = async (req, res) => {
 
     res.status(201).json({ expense });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     res.status(500).json({ message: 'Failed to create expense', error: error.message });
   }
 };
@@ -122,21 +116,19 @@ export const deleteExpense = async (req, res) => {
 };
 
 export const createSettlement = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const { groupId, payerId, receiverId, amountPaise } = req.body;
 
-    if (!groupId || !payerId || !receiverId || !amountPaise) {
-      return res.status(400).json({ message: 'groupId, payerId, receiverId, and amountPaise are required' });
+    const { error, status, group } = await validateGroupMembership(groupId, req.user._id);
+    if (error) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(status).json({ message: error });
     }
 
-    if (!Number.isInteger(amountPaise) || amountPaise <= 0) {
-      return res.status(400).json({ message: 'amountPaise must be a positive integer' });
-    }
-
-    const { error, status } = await validateGroupMembership(groupId, req.user._id);
-    if (error) return res.status(status).json({ message: error });
-
-    const settlement = await Expense.create({
+    const [settlement] = await Expense.create([{
       group: groupId,
       groupName: group.name,
       description: 'Settlement Payment',
@@ -145,7 +137,13 @@ export const createSettlement = async (req, res) => {
       splits: [{ user: receiverId, amountPaise }],
       createdBy: req.user._id,
       isSettlement: true,
-    });
+    }], { session });
+
+    group.updatedAt = new Date();
+    await group.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     await settlement.populate('paidBy', 'name email avatar upiId username');
     await settlement.populate('splits.user', 'name email avatar upiId username');
@@ -153,6 +151,8 @@ export const createSettlement = async (req, res) => {
 
     res.status(201).json({ settlement });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     res.status(500).json({ message: 'Failed to record settlement', error: error.message });
   }
 };

@@ -20,14 +20,6 @@ export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Name, email, and password are required' });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
-    }
-
     const existingEmail = await User.findOne({ email: email.toLowerCase() });
     if (existingEmail) {
       return res.status(409).json({ message: 'An account with this email already exists' });
@@ -54,10 +46,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
-    }
 
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
@@ -128,15 +116,6 @@ export const checkUpiId = async (req, res) => {
 export const setUsername = async (req, res) => {
   try {
     const { username, upiId } = req.body;
-    
-    if (!username || username.length < 3) {
-      return res.status(400).json({ message: 'Username must be at least 3 characters' });
-    }
-    
-    const isValid = /^[a-zA-Z0-9_.-]+$/.test(username);
-    if (!isValid) {
-      return res.status(400).json({ message: 'Invalid characters in username' });
-    }
 
     // Check if user already has a username set
     const user = await User.findById(req.user._id);
@@ -209,15 +188,6 @@ export const updateProfile = async (req, res) => {
     if (username !== undefined) {
       if (username.trim() !== '') {
         const formattedUsername = username.trim().toLowerCase();
-        
-        if (formattedUsername.length < 3) {
-          return res.status(400).json({ message: 'Username must be at least 3 characters' });
-        }
-        
-        const isValid = /^[a-zA-Z0-9_.-]+$/.test(formattedUsername);
-        if (!isValid) {
-          return res.status(400).json({ message: 'Invalid characters in username' });
-        }
         
         const existingUsername = await User.findOne({ username: formattedUsername });
         if (existingUsername && existingUsername._id.toString() !== user._id.toString()) {
