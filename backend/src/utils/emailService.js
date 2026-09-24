@@ -214,6 +214,11 @@ export const sendSettlementEmail = async (receiverEmail, payerName, receiverName
                     <p style="margin: 0; font-size: 38px; color: #15803d; font-weight: 800;">₹${amount}</p>
                 </div>
                 <p>Check your balances in the app to confirm everything is up to date.</p>
+                <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px 20px; margin-top: 25px;">
+                    <p style="margin: 0; font-size: 14px; color: #92400e;">
+                        <b>Disclaimer:</b> Please check your bank account or payment app to ensure the money was actually credited. If you haven't received it, please contact <b>${payerName}</b> directly.
+                    </p>
+                </div>
             `)
         });
         
