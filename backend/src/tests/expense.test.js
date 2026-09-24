@@ -6,6 +6,8 @@ import Group from '../models/Group.js';
 import Expense from '../models/Expense.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { sendExpenseAddedEmail } from '../utils/emailService.js';
+
 
 describe('Expense Routes', () => {
   let token;
@@ -35,7 +37,8 @@ describe('Expense Routes', () => {
     jest.spyOn(Group, 'findById').mockResolvedValue({ 
       _id: mockGroupId, 
       members: [mockUserId],
-      save: jest.fn().mockResolvedValue()
+      save: jest.fn().mockResolvedValue(),
+      populate: jest.fn().mockReturnThis()
     });
     
     const mockExpense = {
@@ -121,7 +124,8 @@ describe('Expense Routes', () => {
       _id: mockGroupId, 
       name: 'Test Group',
       members: [mockUserId, mockReceiverId],
-      save: jest.fn().mockResolvedValue()
+      save: jest.fn().mockResolvedValue(),
+      populate: jest.fn().mockReturnThis()
     });
     
     const mockSettlement = {

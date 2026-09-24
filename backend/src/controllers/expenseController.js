@@ -1,6 +1,7 @@
 import Expense from '../models/Expense.js';
 import Group from '../models/Group.js';
 import mongoose from 'mongoose';
+import { sendExpenseAddedEmail } from '../utils/emailService.js';
 
 const validateGroupMembership = async (groupId, userId) => {
   const group = await Group.findById(groupId);
@@ -68,6 +69,19 @@ export const createExpense = async (req, res) => {
     await expense.populate('paidBy', 'name email avatar upiId username');
     await expense.populate('splits.user', 'name email avatar upiId username');
     await expense.populate('createdBy', 'name email avatar upiId username');
+
+    // Populate group members to get emails
+    await group.populate('members', 'email');
+    const memberEmails = group.members.map(m => m.email).filter(e => e);
+
+    // Send email notification (non-blocking)
+    sendExpenseAddedEmail(
+      memberEmails,
+      group.name,
+      expense.description,
+      (expense.amountPaise / 100).toFixed(2), // Convert from paise
+      expense.paidBy.name || req.user.name
+    ).catch(console.error);
 
     res.status(201).json({ expense });
   } catch (error) {

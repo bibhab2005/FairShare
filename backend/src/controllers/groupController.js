@@ -2,6 +2,7 @@ import Group from '../models/Group.js';
 import User from '../models/User.js';
 import Expense from '../models/Expense.js';
 import calculateBalances from '../utils/balanceCalculator.js';
+import { sendGroupInviteEmail } from '../utils/emailService.js';
 
 export const createGroup = async (req, res) => {
   try {
@@ -128,6 +129,9 @@ export const addMember = async (req, res) => {
 
     await group.populate('members', 'name email username avatar');
     await group.populate('createdBy', 'name email username avatar');
+
+    // Send email notification (non-blocking)
+    sendGroupInviteEmail(userToAdd.email, group.name, req.user.name).catch(console.error);
 
     res.status(200).json({ group });
   } catch (error) {
