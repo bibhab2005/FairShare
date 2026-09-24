@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import api from '../core/api/axiosInstance';
@@ -14,13 +14,16 @@ export default function SetUsername() {
   
   const { user, login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Redirect if already has username
   useEffect(() => {
     if (user?.username) {
-      navigate('/dashboard');
+      const params = new URLSearchParams(location.search);
+      const returnUrl = params.get('returnUrl') || '/dashboard';
+      navigate(returnUrl);
     }
-  }, [user, navigate]);
+  }, [user, navigate, location.search]);
 
   // Debounced username check
   useEffect(() => {
@@ -56,7 +59,10 @@ export default function SetUsername() {
       const { data } = await api.put('/auth/username', { username, upiId });
       // Update auth context user
       login(data.user);
-      navigate('/dashboard');
+      
+      const params = new URLSearchParams(location.search);
+      const returnUrl = params.get('returnUrl') || '/dashboard';
+      navigate(returnUrl);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to set username.');
     } finally {

@@ -216,7 +216,7 @@ export const deleteGroup = async (req, res) => {
 export const getGroupInviteInfo = async (req, res) => {
   try {
     const group = await Group.findById(req.params.id)
-      .populate('createdBy', 'name');
+      .populate('createdBy', 'name avatar');
 
     if (!group) {
       return res.status(404).json({ message: 'Group not found or invite link is invalid.' });
@@ -224,7 +224,8 @@ export const getGroupInviteInfo = async (req, res) => {
 
     res.status(200).json({ 
       groupName: group.name, 
-      creatorName: group.createdBy.name 
+      creatorName: group.createdBy.name,
+      creatorAvatar: group.createdBy.avatar
     });
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch invite info', error: error.message });

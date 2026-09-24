@@ -30,11 +30,11 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={`/login?returnUrl=${encodeURIComponent(location.pathname)}`} replace />;
   }
 
   if (!user.username && location.pathname !== '/set-username') {
-    return <Navigate to="/set-username" replace />;
+    return <Navigate to={`/set-username?returnUrl=${encodeURIComponent(location.pathname)}`} replace />;
   }
 
   return children;
@@ -42,10 +42,25 @@ const ProtectedRoute = ({ children }) => {
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) return null;
 
-  return user ? <Navigate to="/dashboard" replace /> : children;
+  if (user) {
+    const params = new URLSearchParams(location.search);
+    const urlReturn = params.get('returnUrl');
+    const localReturn = localStorage.getItem('authRedirectUrl');
+    
+    const returnUrl = urlReturn || localReturn;
+    
+    if (returnUrl) {
+      localStorage.removeItem('authRedirectUrl');
+      return <Navigate to={returnUrl} replace />;
+    }
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
 };
 
 const AppRoutes = () => {

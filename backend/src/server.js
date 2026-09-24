@@ -26,28 +26,6 @@ app.set('trust proxy', 1); // Essential for Vercel/Passport to resolve https cal
 // Security Middleware
 app.use(helmet());
 
-// Global API Rate Limiter
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // Limit each IP to 50 requests per `window`
-  message: { message: 'Too many requests from this IP, please try again after 15 minutes' },
-  standardHeaders: true, 
-  legacyHeaders: false,
-});
-app.use('/api', apiLimiter);
-
-// Stricter Rate Limiter for Auth Routes (Prevents Brute Force)
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 20 requests for auth routes
-  message: { message: 'Too many login/register attempts from this IP, please try again after 15 minutes' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use('/api/auth', authLimiter);
-
-const PORT = process.env.PORT || 5000;
-
 const allowedOrigins = [
   'https://www.fairshare.buzz',
   'https://fairshare.buzz',
@@ -71,6 +49,31 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
+// Global API Rate Limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500, // Increased to 500 requests per `window` to account for heavy app usage
+  message: { message: 'Too many requests from this IP, please try again after 15 minutes' },
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+app.use('/api', apiLimiter);
+
+// Stricter Rate Limiter for Auth Routes (Prevents Brute Force)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // Increased slightly to 30 requests for auth routes
+  message: { message: 'Too many login/register attempts from this IP, please try again after 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+const PORT = process.env.PORT || 5000;
+
+
 
 app.use(express.json());
 app.use(cookieParser());

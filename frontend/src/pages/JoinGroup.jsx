@@ -79,8 +79,14 @@ const JoinGroup = () => {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-8">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center shadow-inner">
-                  <Users size={48} className="text-emerald-500" />
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center shadow-md overflow-hidden ring-4 ring-white">
+                  {groupInfo?.creatorAvatar ? (
+                    <img src={groupInfo.creatorAvatar} alt={groupInfo?.creatorName} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-4xl font-bold text-emerald-600">
+                      {groupInfo?.creatorName?.charAt(0)?.toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 
                 <div>

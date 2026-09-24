@@ -368,50 +368,78 @@ const GroupDetails = () => {
           </div>
         )}
 
-        {showAddMember && (
-          <div className="bg-white border border-neutral-200 shadow-sm rounded-[2.5rem] p-8 md:p-10 mb-10">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-medium text-slate-900 tracking-tight">Add a member</h3>
-              <button
-                id="close-add-member-btn"
-                onClick={() => {
-                  setShowAddMember(false);
-                  setMemberError('');
-                  setMemberSuccess('');
-                }}
-                className="p-2 rounded-full text-neutral-400 hover:text-slate-900 hover:bg-neutral-200 transition-colors duration-200"
-              >
-                <X size={20} />
-              </button>
-            </div>
+        <AnimatePresence>
+          {showAddMember && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, y: -10 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="bg-white border border-neutral-200 shadow-xl rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 mb-10">
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
+                  <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">Add a member</h3>
+                  <button
+                    id="close-add-member-btn"
+                    onClick={() => {
+                      setShowAddMember(false);
+                      setMemberEmail('');
+                    }}
+                    className="p-1.5 sm:p-2 rounded-full text-neutral-400 hover:text-slate-900 hover:bg-neutral-100 transition-colors duration-200"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
 
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8 divide-y md:divide-y-0 md:divide-x divide-neutral-100">
+                  {/* Left Side: Invite Link */}
+                  <div className="flex flex-col md:pr-8 overflow-hidden w-full">
+                    <h4 className="text-xs sm:text-sm font-semibold text-slate-900 uppercase tracking-wider mb-1 sm:mb-2">Share Invite Link</h4>
+                    <p className="text-slate-500 text-xs sm:text-sm mb-4">Anyone with this link can instantly join your group.</p>
+                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl p-1.5 sm:p-2 mt-auto w-full min-w-0">
+                      <div className="flex-1 truncate px-2 sm:px-3 text-xs sm:text-sm text-slate-600 font-mono">
+                        {window.location.origin}/join/{id}
+                      </div>
+                      <button
+                        onClick={handleShareLink}
+                        className="shrink-0 p-2 sm:p-2.5 bg-white border border-slate-200 text-slate-700 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 sm:gap-2"
+                      >
+                        <LinkIcon size={14} className="sm:w-4 sm:h-4" />
+                        <span className="text-xs sm:text-sm font-medium">Copy</span>
+                      </button>
+                    </div>
+                  </div>
 
-
-            <form id="add-member-form" onSubmit={handleAddMember} className="flex flex-col sm:flex-row gap-4 mb-8">
-              <input
-                id="member-email-input"
-                type="text"
-                value={memberEmail}
-                onChange={(e) => setMemberEmail(e.target.value)}
-                placeholder="Enter email or @username"
-                className="flex-1 px-6 py-3.5 rounded-full bg-white border border-neutral-200 text-slate-900 placeholder-neutral-400 focus:outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200 shadow-sm"
-                required
-              />
-              <button
-                type="submit"
-                id="confirm-add-member-btn"
-                disabled={addingMember}
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-medium bg-slate-900 text-white hover:bg-slate-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-              >
-                {addingMember ? (
-                  <Loader2 size={20} className="animate-spin" />
-                ) : (
-                  'Add Member'
-                )}
-              </button>
-            </form>
-          </div>
-        )}
+                  {/* Right Side: Manual Add */}
+                  <div className="flex flex-col pt-6 md:pt-0 md:pl-8">
+                    <h4 className="text-xs sm:text-sm font-semibold text-slate-900 uppercase tracking-wider mb-1 sm:mb-2">Add Manually</h4>
+                    <p className="text-slate-500 text-xs sm:text-sm mb-4">Add a user directly by their email or username.</p>
+                    <form id="add-member-form" onSubmit={handleAddMember} className="flex flex-col gap-2.5 sm:gap-3 mt-auto">
+                      <input
+                        id="member-email-input"
+                        type="text"
+                        value={memberEmail}
+                        onChange={(e) => setMemberEmail(e.target.value)}
+                        placeholder="Email or @username"
+                        className="w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white border border-neutral-200 text-slate-900 placeholder-neutral-400 focus:outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-500/20 transition-all shadow-sm text-sm sm:text-base"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        id="confirm-add-member-btn"
+                        disabled={addingMember}
+                        className="w-full inline-flex items-center justify-center py-2.5 sm:py-3 rounded-xl font-medium bg-slate-900 text-white hover:bg-slate-800 transition-colors disabled:opacity-50 text-sm sm:text-base"
+                      >
+                        {addingMember ? <Loader2 size={18} className="animate-spin" /> : 'Add Member'}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
