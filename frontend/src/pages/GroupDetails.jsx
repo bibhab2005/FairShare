@@ -240,6 +240,13 @@ const GroupDetails = () => {
                   >
                     <Edit2 size={20} />
                   </button>
+                  <button
+                    onClick={handleShareLink}
+                    className="sm:hidden p-2 mt-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors"
+                    title="Share Link"
+                  >
+                    <LinkIcon size={20} />
+                  </button>
                 </div>
                 {group.description && (
                   <p className="text-slate-600 text-lg mt-2">{group.description}</p>
@@ -292,7 +299,7 @@ const GroupDetails = () => {
                 <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
                   <button
                     onClick={handleShareLink}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm whitespace-nowrap text-sm sm:text-base"
+                    className="hidden sm:inline-flex flex-1 sm:flex-none items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm whitespace-nowrap text-sm sm:text-base"
                     title="Copy Invite Link"
                   >
                     <LinkIcon size={18} />
