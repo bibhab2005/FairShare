@@ -74,8 +74,8 @@ export const createExpense = async (req, res) => {
     await group.populate('members', 'email');
     const memberEmails = group.members.map(m => m.email).filter(e => e);
 
-    // Send email notification (non-blocking)
-    sendExpenseAddedEmail(
+    // Send email notification (await required for serverless)
+    await sendExpenseAddedEmail(
       memberEmails,
       group.name,
       expense.description,

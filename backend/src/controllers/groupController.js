@@ -130,8 +130,8 @@ export const addMember = async (req, res) => {
     await group.populate('members', 'name email username avatar');
     await group.populate('createdBy', 'name email username avatar');
 
-    // Send email notification (non-blocking)
-    sendGroupInviteEmail(userToAdd.email, group.name, req.user.name).catch(console.error);
+    // Send email notification (await required for serverless)
+    await sendGroupInviteEmail(userToAdd.email, group.name, req.user.name).catch(console.error);
 
     res.status(200).json({ group });
   } catch (error) {
