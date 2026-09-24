@@ -10,32 +10,23 @@ const getEmailTemplate = (title, bodyContent) => `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
 </head>
-<body style="font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f3f4f6; margin: 0; padding: 0;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+<body style="font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #111111; margin: 0; padding: 0;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #111111; padding: 40px 20px;">
         <tr>
             <td align="center">
-                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); overflow: hidden; max-width: 600px; margin: 0 auto; width: 100%; max-width: 600px;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1c1c1c; border-radius: 12px; overflow: hidden; max-width: 600px; margin: 0 auto; width: 100%;">
                     <tr>
-                        <td style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); padding: 40px 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: 0.5px;">FairShare</h1>
+                        <td style="background-color: #4f46e5; padding: 30px; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: 0.5px;">FairShare</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 50px 40px; color: #374151; font-size: 18px; line-height: 1.7;">
+                        <td style="padding: 40px 40px 50px 40px; color: #e5e7eb; font-size: 16px; line-height: 1.6;">
                             ${bodyContent}
                         </td>
                     </tr>
-                    <tr>
-                        <td style="background-color: #f9fafb; padding: 30px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
-                            <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
-                                You are receiving this email because you are a part of a FairShare group.
-                            </p>
-                            <p style="margin: 10px 0 0 0; font-size: 14px; color: #9ca3af;">
-                                © ${new Date().getFullYear()} FairShare. All rights reserved.
-                            </p>
-                        </td>
-                    </tr>
                 </table>
+                <p style="text-align: center; color: #6b7280; font-size: 13px; margin-top: 25px;">© ${new Date().getFullYear()} FairShare. All rights reserved.</p>
             </td>
         </tr>
     </table>
@@ -87,14 +78,13 @@ export const sendGroupInviteEmail = async (userEmail, groupName, inviterName) =>
             subject: `You've been added to ${groupName}`,
             text: `Hello, ${inviterName} has added you to the group "${groupName}" on FairShare.`,
             html: getEmailTemplate('Added to Group', `
-                <h2 style="color: #111827; margin-top: 0; font-size: 26px; font-weight: 700;">Welcome to the Group!</h2>
-                <p>Hello,</p>
-                <p><b>${inviterName}</b> has just added you to a new group on FairShare.</p>
-                <div style="background-color: #eef2ff; border: 1px solid #c7d2fe; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
-                    <p style="margin: 0 0 10px 0; font-size: 15px; color: #4338ca; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Group Name</p>
-                    <p style="margin: 0; font-size: 28px; color: #4f46e5; font-weight: 800;">${groupName}</p>
+                <h2 style="color: #ffffff; margin-top: 0; font-size: 24px; font-weight: 600;">Welcome to the group!</h2>
+                <p style="color: #d1d5db; margin-bottom: 30px;">You have just been added to a new group on FairShare.</p>
+                <div style="background-color: #0f172a; border: 1px solid #1e293b; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 13px; color: #60a5fa; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Group Name</p>
+                    <p style="margin: 0; font-size: 28px; color: #bfdbfe; font-weight: 600;">${groupName}</p>
                 </div>
-                <p>Open the app to see shared expenses and start splitting costs with the group.</p>
+                <p style="color: #d1d5db;">Open the app to see shared expenses and start splitting costs.</p>
             `)
         });
         
@@ -119,15 +109,15 @@ export const sendExpenseAddedEmail = async (groupMembersEmails, groupName, expen
             subject: `New expense in ${groupName}: ${expenseDescription}`,
             text: `A new expense "${expenseDescription}" of ₹${amount} was added in "${groupName}" by ${payerName}.`,
             html: getEmailTemplate('New Expense', `
-                <h2 style="color: #111827; margin-top: 0; font-size: 26px; font-weight: 700;">New Expense Added</h2>
-                <p><b>${payerName}</b> just added a new expense in <b>${groupName}</b>.</p>
-                <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 30px; border-radius: 12px; margin: 30px 0;">
-                    <p style="margin: 0 0 6px 0; font-size: 13px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Description</p>
-                    <p style="margin: 0 0 20px 0; font-size: 20px; color: #111827; font-weight: 700;">${expenseDescription}</p>
-                    <p style="margin: 0 0 6px 0; font-size: 13px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Amount</p>
-                    <p style="margin: 0; font-size: 34px; color: #4f46e5; font-weight: 800;">₹${amount}</p>
+                <h2 style="color: #ffffff; margin-top: 0; font-size: 24px; font-weight: 600;">New expense added</h2>
+                <p style="color: #d1d5db; margin-bottom: 30px;"><b>${payerName}</b> just added a new expense in <b>${groupName}</b>.</p>
+                <div style="background-color: #111827; border: 1px solid #1f2937; padding: 25px; border-radius: 12px; margin: 30px 0;">
+                    <p style="margin: 0 0 6px 0; font-size: 13px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Description</p>
+                    <p style="margin: 0 0 20px 0; font-size: 20px; color: #ffffff; font-weight: 500;">${expenseDescription}</p>
+                    <p style="margin: 0 0 6px 0; font-size: 13px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Amount</p>
+                    <p style="margin: 0; font-size: 32px; color: #60a5fa; font-weight: 600;">₹${amount}</p>
                 </div>
-                <p>Check the app to see how this affects your balances.</p>
+                <p style="color: #d1d5db;">Check the app to see how this affects your balances.</p>
             `)
         });
         
@@ -152,16 +142,16 @@ export const sendGroupDeletedEmail = async (groupMembersEmails, groupName, delet
             subject: `Group Deleted: ${groupName}`,
             text: `Hello, the group "${groupName}" has been deleted by ${deleterName}. This action cannot be undone.`,
             html: getEmailTemplate('Group Deleted', `
-                <h2 style="color: #111827; margin-top: 0; font-size: 26px; font-weight: 700;">Group Deleted</h2>
-                <p>Hello,</p>
-                <p><b>${deleterName}</b> has deleted the group <b>${groupName}</b>.</p>
-                <div style="background-color: #fef2f2; border: 1px solid #fecaca; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
-                    <p style="margin: 0 0 10px 0; font-size: 15px; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Group Removed</p>
-                    <p style="margin: 0; font-size: 22px; color: #b91c1c; font-weight: 800;">${groupName}</p>
+                <h2 style="color: #ffffff; margin-top: 0; font-size: 24px; font-weight: 600;">Group deleted</h2>
+                <p style="color: #d1d5db;">Hello,</p>
+                <p style="color: #d1d5db; margin-bottom: 30px;"><b>${deleterName}</b> has deleted the group <b>${groupName}</b>.</p>
+                <div style="background-color: #450a0a; border: 1px solid #7f1d1d; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 13px; color: #ef4444; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Group Removed</p>
+                    <p style="margin: 0; font-size: 28px; color: #f87171; font-weight: 600;">${groupName}</p>
                 </div>
-                <p>All expenses, balances, and shared history for this group have been permanently removed and can no longer be accessed.</p>
-                <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px 20px; margin-top: 25px;">
-                    <p style="margin: 0; font-size: 14px; color: #92400e;">
+                <p style="color: #d1d5db;">All expenses, balances, and shared history for this group have been permanently removed and can no longer be accessed.</p>
+                <div style="background-color: #451a03; border-left: 4px solid #d97706; padding: 15px 20px; margin-top: 30px;">
+                    <p style="margin: 0; font-size: 14px; color: #fbbf24;">
                         <b>Note:</b> If you believe this was a mistake, please reach out to <b>${deleterName}</b> directly. This action cannot be undone from the app.
                     </p>
                 </div>
@@ -189,13 +179,13 @@ export const sendMemberJoinedEmail = async (creatorEmail, groupName, newMemberNa
             subject: `New member joined: ${groupName}`,
             text: `${newMemberName} has joined your group "${groupName}".`,
             html: getEmailTemplate('New Member Joined', `
-                <h2 style="color: #111827; margin-top: 0; font-size: 26px; font-weight: 700;">New Member Joined</h2>
-                <p>Good news — your group just grew.</p>
-                <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
-                    <p style="margin: 0 0 10px 0; font-size: 15px; color: #166534; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Joined</p>
-                    <p style="margin: 0; font-size: 26px; color: #15803d; font-weight: 800;">${newMemberName}</p>
+                <h2 style="color: #ffffff; margin-top: 0; font-size: 24px; font-weight: 600;">New member joined</h2>
+                <p style="color: #d1d5db; margin-bottom: 30px;">Good news, your group just grew.</p>
+                <div style="background-color: #052e16; border: 1px solid #14532d; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 13px; color: #22c55e; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Joined</p>
+                    <p style="margin: 0; font-size: 28px; color: #4ade80; font-weight: 600;">${newMemberName}</p>
                 </div>
-                <p><b>${newMemberName}</b> has joined <b>${groupName}</b>. They can now add and split expenses with the group.</p>
+                <p style="color: #d1d5db;"><b>${newMemberName}</b> has joined <b>${groupName}</b> and can now add and split expenses.</p>
             `)
         });
         
@@ -220,17 +210,17 @@ export const sendSettlementEmail = async (receiverEmail, payerName, receiverName
             subject: `Payment received in ${groupName}`,
             text: `Hello ${receiverName}, ${payerName} has recorded a payment of ₹${amount} to you in "${groupName}".`,
             html: getEmailTemplate('Payment Received', `
-                <h2 style="color: #111827; margin-top: 0; font-size: 26px; font-weight: 700;">Payment Received!</h2>
-                <p>Hello <b>${receiverName}</b>,</p>
-                <p><b>${payerName}</b> has recorded a settlement payment to you in <b>${groupName}</b>.</p>
-                <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
-                    <p style="margin: 0 0 10px 0; font-size: 15px; color: #166534; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Amount Settled</p>
-                    <p style="margin: 0; font-size: 38px; color: #15803d; font-weight: 800;">₹${amount}</p>
+                <h2 style="color: #ffffff; margin-top: 0; font-size: 24px; font-weight: 600;">Payment received!</h2>
+                <p style="color: #d1d5db;">Hello <b>${receiverName}</b>,</p>
+                <p style="color: #d1d5db; margin-bottom: 30px;"><b>${payerName}</b> has recorded a settlement payment to you in <b>${groupName}</b>.</p>
+                <div style="background-color: #052e16; border: 1px solid #14532d; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 13px; color: #22c55e; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Amount Settled</p>
+                    <p style="margin: 0; font-size: 38px; color: #4ade80; font-weight: 600;">₹${amount}</p>
                 </div>
-                <p>Check your balances in the app to confirm everything is up to date.</p>
-                <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px 20px; margin-top: 25px;">
-                    <p style="margin: 0; font-size: 14px; color: #92400e;">
-                        <b>Disclaimer:</b> Please check your bank account or payment app to ensure the money was actually credited. If you haven't received it, please contact <b>${payerName}</b> directly.
+                <p style="color: #d1d5db;">Check your balances in the app to confirm everything is up to date.</p>
+                <div style="background-color: #451a03; border-left: 4px solid #d97706; padding: 15px 20px; margin-top: 30px;">
+                    <p style="margin: 0; font-size: 14px; color: #fbbf24;">
+                        <b>Disclaimer:</b> please confirm the money was actually credited before marking this settled.
                     </p>
                 </div>
             `)
