@@ -31,10 +31,16 @@ router.get('/:groupId', async (req, res) => {
     const simplifiedDebts = simplifyDebts(rawBalances);
 
     const userIds = Object.keys(rawBalances);
-    const users = await User.find({ _id: { $in: userIds } }).select('name email upiId');
+    const users = await User.find({ _id: { $in: userIds } }).select('name email upiId avatar picture');
     const userMap = {};
     users.forEach((u) => {
-      userMap[u._id.toString()] = { name: u.name, email: u.email, upiId: u.upiId };
+      userMap[u._id.toString()] = { 
+        _id: u._id.toString(),
+        name: u.name, 
+        email: u.email, 
+        upiId: u.upiId,
+        avatar: u.avatar || u.picture
+      };
     });
 
     const namedBalances = Object.entries(rawBalances).map(([userId, amountPaise]) => ({
