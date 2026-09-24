@@ -30,4 +30,8 @@ jobs:
       
     - name: Run Tests
       working-directory: ./backend
+      env:
+        GOOGLE_CLIENT_ID: dummy_id
+        GOOGLE_CLIENT_SECRET: dummy_secret
+        JWT_SECRET: dummy_jwt
       run: npm run test
