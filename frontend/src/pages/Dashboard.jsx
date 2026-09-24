@@ -29,58 +29,48 @@ const Dashboard = () => {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
-  useEffect(() => {
-    let isMounted = true;
-    
-    const loadGroups = async () => {
-      try {
-        const res = await fetchGroups();
-        if (!isMounted) return;
-        const loadedGroups = res.data.groups;
-        setGroups(loadedGroups);
+  const loadGroups = async () => {
+    try {
+      const res = await fetchGroups();
+      const loadedGroups = res.data.groups;
+      setGroups(loadedGroups);
 
-        const balancesPromises = loadedGroups.map(async (g) => {
-          try {
-            const bRes = await fetchBalances(g._id);
-            const hasExpenses = bRes.data.balances && bRes.data.balances.length > 0;
-            return { groupId: g._id, simplifiedDebts: bRes.data.simplifiedDebts || [], hasExpenses };
-          } catch (e) {
-            return { groupId: g._id, simplifiedDebts: [], hasExpenses: false };
-          }
-        });
-        const balancesResults = await Promise.all(balancesPromises);
-        
-        if (!isMounted) return;
-        
-        const newBalancesMap = {};
-        const newHasExpensesMap = {};
-        balancesResults.forEach(r => {
-          let netBalance = 0;
-          r.simplifiedDebts.forEach(debt => {
-            if (debt.from === user?._id) netBalance -= debt.amountPaise;
-            if (debt.to === user?._id) netBalance += debt.amountPaise;
-          });
-          newBalancesMap[r.groupId] = netBalance;
-          newHasExpensesMap[r.groupId] = r.hasExpenses;
-        });
-        setBalancesMap(newBalancesMap);
-        setHasExpensesMap(newHasExpensesMap);
-        
-      } catch (err) {
-        if (isMounted && err?.response?.status !== 401) {
-          toast.error('Failed to load groups. Please try again later.');
+      const balancesPromises = loadedGroups.map(async (g) => {
+        try {
+          const bRes = await fetchBalances(g._id);
+          const hasExpenses = bRes.data.balances && bRes.data.balances.length > 0;
+          return { groupId: g._id, simplifiedDebts: bRes.data.simplifiedDebts || [], hasExpenses };
+        } catch (e) {
+          return { groupId: g._id, simplifiedDebts: [], hasExpenses: false };
         }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+      });
+      const balancesResults = await Promise.all(balancesPromises);
+      
+      const newBalancesMap = {};
+      const newHasExpensesMap = {};
+      balancesResults.forEach(r => {
+        let netBalance = 0;
+        r.simplifiedDebts.forEach(debt => {
+          if (debt.from === user?._id) netBalance -= debt.amountPaise;
+          if (debt.to === user?._id) netBalance += debt.amountPaise;
+        });
+        newBalancesMap[r.groupId] = netBalance;
+        newHasExpensesMap[r.groupId] = r.hasExpenses;
+      });
+      setBalancesMap(newBalancesMap);
+      setHasExpensesMap(newHasExpensesMap);
+      
+    } catch (err) {
+      if (err?.response?.status !== 401) {
+        toast.error('Failed to load groups. Please try again later.');
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadGroups();
-    return () => {
-      isMounted = false;
-    };
   }, [user?._id]);
 
   const handleCreateGroup = async (e) => {
