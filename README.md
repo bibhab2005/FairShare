@@ -48,6 +48,11 @@ Built with modern glassmorphism aesthetics, buttery-smooth micro-animations, int
 ### 💬 Direct Developer Feedback
 * **In-App Feedback Modal:** Integrated feedback modal accessible from the profile dropdown and home footer, providing a 1-click `mailto:` launch and copyable email button to reach the developer directly.
 
+### 🛡️ Code Quality & Reliability
+* **Comprehensive Testing:** High test coverage for backend API routes and utils using **Jest** and **Supertest**.
+* **Robust Request Validation:** All API inputs are rigorously validated using **Joi** schemas via centralized middleware.
+* **Continuous Integration (CI):** Automated **GitHub Actions** workflows enforce code quality (ESLint) and run tests on every commit.
+
 ---
 
 ## 🛠️ Technology Stack
@@ -56,7 +61,8 @@ Built with modern glassmorphism aesthetics, buttery-smooth micro-animations, int
 | :--- | :--- |
 | **Frontend** | React 18, Vite, Tailwind CSS, Framer Motion, Recharts, Lucide React, React Hot Toast |
 | **PWA** | `vite-plugin-pwa`, Workbox, Web App Manifest |
-| **Backend** | Node.js, Express.js (ES Modules) |
+| **Backend** | Node.js, Express.js (ES Modules), Joi, ESLint |
+| **Testing & CI** | Jest, Supertest, GitHub Actions |
 | **Authentication** | Passport.js, Google OAuth 2.0, JSON Web Tokens (JWT), `bcryptjs`, `cookie-parser` |
 | **Database** | MongoDB Atlas, Mongoose ODM |
 | **Analytics & Hosting** | Vercel Serverless Functions, Vercel Web Analytics, Vercel Speed Insights |
