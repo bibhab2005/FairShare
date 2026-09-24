@@ -82,7 +82,7 @@ export const sendGroupInviteEmail = async (userEmail, groupName, inviterName) =>
         if (!transporter) return; // If it still fails, silently exit
 
         const info = await transporter.sendMail({
-            from: `FairShare <${process.env.SMTP_USER || 'noreply@fairshare.com'}>`,
+            from: '"FairShare" <noreply@fairshare.buzz>',
             to: userEmail,
             subject: `You've been added to ${groupName}`,
             text: `Hello, ${inviterName} has added you to the group "${groupName}" on FairShare.`,
@@ -109,7 +109,7 @@ export const sendExpenseAddedEmail = async (groupMembersEmails, groupName, expen
         if (!transporter || !groupMembersEmails || groupMembersEmails.length === 0) return;
 
         const info = await transporter.sendMail({
-            from: `FairShare <${process.env.SMTP_USER || 'noreply@fairshare.com'}>`,
+            from: '"FairShare" <noreply@fairshare.buzz>',
             bcc: groupMembersEmails.join(','), // bcc so emails remain private
             subject: `New expense in ${groupName}: ${expenseDescription}`,
             text: `${payerName} added a new expense: "${expenseDescription}" for ₹${amount}.`,
@@ -142,7 +142,7 @@ export const sendGroupDeletedEmail = async (groupMembersEmails, groupName, delet
         if (!transporter || !groupMembersEmails || groupMembersEmails.length === 0) return;
 
         const info = await transporter.sendMail({
-            from: `FairShare <${process.env.SMTP_USER || 'noreply@fairshare.com'}>`,
+            from: '"FairShare" <noreply@fairshare.buzz>',
             bcc: groupMembersEmails.join(','), // bcc so emails remain private
             subject: `Group Deleted: ${groupName}`,
             text: `Hello, ${deleterName} has deleted the group "${groupName}". If this was against your knowledge, please contact them immediately.`,
