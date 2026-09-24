@@ -12,33 +12,37 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
       if (directImg) return directImg;
     }
 
-    // 2. Check if it's the current user via prop or user object
-    const currentUserName = typeof currentUser === 'string' ? currentUser : (currentUser?.name || user?.name);
+    // 2. Check if it's the current user via explicit 'You' or user ID
     const currentUserPic = currentUserAvatar || currentUser?.avatar || currentUser?.picture || user?.avatar || user?.picture;
+    const debtId = typeof debtObj === 'object' ? (debtObj?._id || debtObj?.id) : debtObj;
 
-    if (name === currentUserName || (debtObj && (debtObj._id === user?._id || debtObj === user?._id))) {
+    if (name === 'You' || (debtId && user?._id && debtId === user._id)) {
       if (currentUserPic) return currentUserPic;
     }
 
-    // 3. Search inside the group members array
-    const matchedMember = members.find(m => {
-      if (!m) return false;
-      if (typeof m === 'string') return m === name;
-      const mName = m.name || m.username || (m.user && (m.user.name || m.user.username));
-      const mId = m._id || m.id || (m.user && (m.user._id || m.user.id));
-      const debtId = typeof debtObj === 'object' ? (debtObj._id || debtObj.id) : debtObj;
-      
-      return mName === name || (mId && debtId && mId === debtId);
-    });
+    // 3. Search inside the group members array by ID first
+    let matchedMember = null;
+    if (debtId) {
+      matchedMember = members.find(m => {
+        if (!m) return false;
+        const mId = m._id || m.id || (m.user && (m.user._id || m.user.id));
+        return mId === debtId;
+      });
+    }
+
+    // 4. Fallback check by name only if ID matching failed
+    if (!matchedMember) {
+      matchedMember = members.find(m => {
+        if (!m) return false;
+        if (typeof m === 'string') return m === name;
+        const mName = m.name || m.username || (m.user && (m.user.name || m.user.username));
+        return mName === name;
+      });
+    }
 
     if (matchedMember) {
       const target = typeof matchedMember === 'object' && matchedMember.user ? matchedMember.user : matchedMember;
       return target.avatar || target.picture || target.profilePicture || target.imageUrl || target.photo || target.image;
-    }
-
-    // 4. Fallback check on the main user object if name matches
-    if (user && (user.name === name || user.username === name)) {
-      return user.avatar || user.picture || user.profilePicture;
     }
 
     return null;
