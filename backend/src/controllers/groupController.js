@@ -200,7 +200,10 @@ export const deleteGroup = async (req, res) => {
 
     // Populate members to get their emails before deleting the group
     await group.populate('members', 'email');
-    const memberEmails = group.members.map(m => m.email).filter(e => e);
+    const memberEmails = group.members
+      .map(m => m.email)
+      .filter(e => e && e !== req.user.email); // Don't send to the person who deleted it
+
 
     await group.deleteOne();
 
