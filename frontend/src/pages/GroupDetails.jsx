@@ -200,14 +200,23 @@ const GroupDetails = () => {
         <Navbar />
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16 relative z-0 isolate">
           <div className="mb-12">
-            <Link
-              to="/"
-              id="back-to-dashboard"
-              className="inline-flex items-center gap-2 px-4 py-2 -ml-4 rounded-full text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200 mb-6"
-            >
-              <ArrowLeft size={16} />
-              Back to Dashboard
-            </Link>
+            <div className="flex items-center gap-2 mb-6 -ml-4">
+              <Link
+                to="/"
+                id="back-to-dashboard"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-200"
+              >
+                <ArrowLeft size={16} />
+                Back to Dashboard
+              </Link>
+              <button
+                onClick={handleDeleteGroup}
+                className="p-2 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors duration-200 flex items-center justify-center"
+                title="Delete Group"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
 
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div>
@@ -272,82 +281,25 @@ const GroupDetails = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 sm:gap-3 shrink-0">
-                <button
-                  id="add-member-toggle-btn"
-                  onClick={() => setShowAddMember(!showAddMember)}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors duration-200 shadow-sm"
-                >
-                  <UserPlus size={18} />
-                  Add Member
-                </button>
-                <button
-                  id="add-expense-btn"
-                  onClick={() => setShowExpenseModal(true)}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200"
-                >
-                  <Plus size={18} />
-                  Add Expense
-                </button>
-                <div className="relative">
+              <div className="flex w-full md:w-auto shrink-0 mt-2 md:mt-0">
+                <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
                   <button
-                    onClick={() => setShowExportMenu(!showExportMenu)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm"
+                    id="add-member-toggle-btn"
+                    onClick={() => setShowAddMember(!showAddMember)}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors duration-200 shadow-sm whitespace-nowrap text-sm sm:text-base"
                   >
-                    <Download size={18} className="text-slate-500" />
-                    Export
-                    <ChevronDown size={16} className={`transition-transform duration-200 ${showExportMenu ? 'rotate-180' : ''}`} />
+                    <UserPlus size={18} />
+                    Add Member
                   </button>
-                  
-                  <AnimatePresence>
-                    {showExportMenu && (
-                      <>
-                        <div 
-                          className="fixed inset-0 z-40" 
-                          onClick={() => setShowExportMenu(false)}
-                        ></div>
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute left-0 mt-2 w-48 bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden z-50"
-                        >
-                          <div className="p-1.5">
-                            <button
-                              onClick={() => {
-                                exportExpensesToCSV(expenses, group.name);
-                                setShowExportMenu(false);
-                              }}
-                              className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors text-left"
-                            >
-                              <FileSpreadsheet size={16} className="text-emerald-500" />
-                              <span className="font-medium">Export as CSV</span>
-                            </button>
-                            <button
-                              onClick={() => {
-                                exportExpensesToPDF(expenses, group.name);
-                                setShowExportMenu(false);
-                              }}
-                              className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors text-left mt-1"
-                            >
-                              <FileText size={16} className="text-emerald-500" />
-                              <span className="font-medium">Export as PDF</span>
-                            </button>
-                          </div>
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
+                  <button
+                    id="add-expense-btn"
+                    onClick={() => setShowExpenseModal(true)}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
+                  >
+                    <Plus size={18} />
+                    Add Expense
+                  </button>
                 </div>
-                <button
-                  onClick={handleDeleteGroup}
-                  className="inline-flex items-center gap-2 px-4 py-3 rounded-full font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 transition-colors duration-200 shadow-sm ml-auto sm:ml-0"
-                  title="Delete Group"
-                >
-                  <Trash2 size={18} />
-                  <span className="hidden sm:inline">Delete</span>
-                </button>
               </div>
           </div>
         </div>
@@ -442,8 +394,62 @@ const GroupDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-medium tracking-tight text-slate-900">Activity</h2>
-              <span className="text-sm font-medium text-neutral-400">{actualExpensesCount} total</span>
+              <div className="flex items-center gap-4">
+                <h2 className="text-2xl font-medium tracking-tight text-slate-900">Activity</h2>
+                <span className="text-sm font-medium text-neutral-400 hidden sm:inline">{actualExpensesCount} total</span>
+              </div>
+              <div className="relative">
+                <button
+                  onClick={() => setShowExportMenu(!showExportMenu)}
+                  className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm"
+                >
+                  <Download size={16} className="text-slate-500" />
+                  <span className="hidden sm:inline">Export</span>
+                  <span className="sm:hidden">Export</span>
+                  <ChevronDown size={16} className={`transition-transform duration-200 ${showExportMenu ? 'rotate-180' : ''}`} />
+                </button>
+                
+                <AnimatePresence>
+                  {showExportMenu && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-40" 
+                        onClick={() => setShowExportMenu(false)}
+                      ></div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-48 bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden z-50"
+                      >
+                        <div className="p-1.5">
+                          <button
+                            onClick={() => {
+                              exportExpensesToCSV(expenses, group.name);
+                              setShowExportMenu(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors text-left"
+                          >
+                            <FileSpreadsheet size={16} className="text-emerald-500" />
+                            <span className="font-medium">Export as CSV</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              exportExpensesToPDF(expenses, group.name);
+                              setShowExportMenu(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-colors text-left mt-1"
+                          >
+                            <FileText size={16} className="text-emerald-500" />
+                            <span className="font-medium">Export as PDF</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {expenses.length > 0 && (
