@@ -2,7 +2,7 @@ import Group from '../models/Group.js';
 import User from '../models/User.js';
 import Expense from '../models/Expense.js';
 import calculateBalances from '../utils/balanceCalculator.js';
-import { sendGroupInviteEmail, sendGroupDeletedEmail } from '../utils/emailService.js';
+import { sendGroupInviteEmail, sendGroupDeletedEmail, sendMemberJoinedEmail } from '../utils/emailService.js';
 
 export const createGroup = async (req, res) => {
   try {
@@ -210,5 +210,51 @@ export const deleteGroup = async (req, res) => {
     res.status(200).json({ message: 'Group deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete group', error: error.message });
+  }
+};
+
+export const getGroupInviteInfo = async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id)
+      .populate('createdBy', 'name');
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found or invite link is invalid.' });
+    }
+
+    res.status(200).json({ 
+      groupName: group.name, 
+      creatorName: group.createdBy.name 
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch invite info', error: error.message });
+  }
+};
+
+export const joinGroupViaLink = async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id).populate('createdBy', 'email');
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found or invite link is invalid.' });
+    }
+
+    const alreadyMember = group.members.some(
+      (m) => m.toString() === req.user._id.toString()
+    );
+
+    if (alreadyMember) {
+      return res.status(409).json({ message: 'You are already a member of this group.' });
+    }
+
+    group.members.push(req.user._id);
+    await group.save();
+
+    // Notify the creator
+    await sendMemberJoinedEmail(group.createdBy.email, group.name, req.user.name).catch(console.error);
+
+    res.status(200).json({ message: 'Successfully joined the group!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to join group', error: error.message });
   }
 };

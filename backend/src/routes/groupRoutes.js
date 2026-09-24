@@ -7,6 +7,8 @@ import {
   addMember,
   removeMember,
   deleteGroup,
+  getGroupInviteInfo,
+  joinGroupViaLink,
 } from '../controllers/groupController.js';
 import protect from '../middleware/authMiddleware.js';
 import { validateBody } from '../middleware/validateMiddleware.js';
@@ -23,5 +25,7 @@ router.put('/:id', validateBody(updateGroupSchema), updateGroup);
 router.post('/:id/members', validateBody(addMemberSchema), addMember);
 router.delete('/:id/members/:memberId', removeMember);
 router.delete('/:id', deleteGroup);
+router.get('/:id/invite-info', getGroupInviteInfo);
+router.post('/:id/join', joinGroupViaLink);
 
 export default router;

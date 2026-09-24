@@ -102,3 +102,26 @@ export const sendGroupDeletedEmail = async (groupMembersEmails, groupName, delet
         console.error('Error sending group deleted email:', error);
     }
 };
+
+export const sendMemberJoinedEmail = async (creatorEmail, groupName, newMemberName) => {
+    if (process.env.NODE_ENV === 'test') return;
+    try {
+        if (!transporter) await initEmailService();
+        if (!transporter || !creatorEmail) return;
+
+        const info = await transporter.sendMail({
+            from: `FairShare <${process.env.SMTP_USER || 'noreply@fairshare.com'}>`,
+            to: creatorEmail,
+            subject: `New member joined: ${groupName}`,
+            text: `Great news! ${newMemberName} has joined your group "${groupName}" on FairShare.`,
+            html: `<h3>New Member Alert!</h3><p><b>${newMemberName}</b> has just used your invite link to join your expense group <b>${groupName}</b>.</p>`
+        });
+        
+        console.log(`📨 Email sent to ${creatorEmail} [Member joined via link]`);
+        if (info.messageId && nodemailer.getTestMessageUrl(info)) {
+            console.log("👀 Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        }
+    } catch (error) {
+        console.error('Error sending member joined email:', error);
+    }
+};

@@ -7,3 +7,5 @@ export const addMemberToGroup = (id, email) => api.post(`/groups/${id}/members`,
 export const removeMemberFromGroup = (id, memberId) => api.delete(`/groups/${id}/members/${memberId}`);
 export const updateGroup = (id, data) => api.put(`/groups/${id}`, data);
 export const deleteGroup = (id) => api.delete(`/groups/${id}`);
+export const getGroupInviteInfo = (id) => api.get(`/groups/${id}/invite-info`);
+export const joinGroupViaLink = (id) => api.post(`/groups/${id}/join`);

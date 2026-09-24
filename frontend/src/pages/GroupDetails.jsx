@@ -13,7 +13,7 @@ import { formatPaise } from '../core/utils/formatCurrency';
 import {
   Plus, Trash2, ArrowLeft, Users, UserPlus, AlertCircle,
   Loader2, IndianRupee, CheckCircle2, X, ChevronDown, ChevronUp, Edit2,
-  Download, FileText, FileSpreadsheet
+  Download, FileText, FileSpreadsheet, Link as LinkIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -79,6 +79,12 @@ const GroupDetails = () => {
     window.scrollTo(0, 0);
     loadAll();
   }, [loadAll]);
+
+  const handleShareLink = () => {
+    const link = `${window.location.origin}/join/${id}`;
+    navigator.clipboard.writeText(link);
+    toast.success('Invite link copied to clipboard!');
+  };
 
   const handleAddMember = async (e) => {
     e.preventDefault();
@@ -284,6 +290,14 @@ const GroupDetails = () => {
               </div>
               <div className="flex w-full md:w-auto shrink-0 mt-2 md:mt-0">
                 <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
+                  <button
+                    onClick={handleShareLink}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm whitespace-nowrap text-sm sm:text-base"
+                    title="Copy Invite Link"
+                  >
+                    <LinkIcon size={18} />
+                    <span className="hidden sm:inline">Share Link</span>
+                  </button>
                   <button
                     id="add-member-toggle-btn"
                     onClick={() => setShowAddMember(!showAddMember)}

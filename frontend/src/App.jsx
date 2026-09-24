@@ -11,6 +11,7 @@ import GroupDetails from './pages/GroupDetails';
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
 import SetUsername from './pages/SetUsername';
+import JoinGroup from './pages/JoinGroup';
 import { Loader2 } from 'lucide-react';
 
 const ProtectedRoute = ({ children }) => {
@@ -95,6 +96,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <SetUsername />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/join/:id"
+        element={
+          <ProtectedRoute>
+            <JoinGroup />
           </ProtectedRoute>
         }
       />
