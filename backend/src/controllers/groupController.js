@@ -2,7 +2,7 @@ import Group from '../models/Group.js';
 import User from '../models/User.js';
 import Expense from '../models/Expense.js';
 import calculateBalances from '../utils/balanceCalculator.js';
-import { sendGroupInviteEmail } from '../utils/emailService.js';
+import { sendGroupInviteEmail, sendGroupDeletedEmail } from '../utils/emailService.js';
 
 export const createGroup = async (req, res) => {
   try {
@@ -197,7 +197,15 @@ export const deleteGroup = async (req, res) => {
       { $set: { groupName: group.name } }
     );
     await Expense.deleteMany({ group: group._id, isSettlement: { $ne: true } });
+
+    // Populate members to get their emails before deleting the group
+    await group.populate('members', 'email');
+    const memberEmails = group.members.map(m => m.email).filter(e => e);
+
     await group.deleteOne();
+
+    // Send the deletion warning email to all members
+    await sendGroupDeletedEmail(memberEmails, group.name, req.user.name).catch(console.error);
 
     res.status(200).json({ message: 'Group deleted successfully' });
   } catch (error) {

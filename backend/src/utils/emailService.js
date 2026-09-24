@@ -79,3 +79,26 @@ export const sendExpenseAddedEmail = async (groupMembersEmails, groupName, expen
         console.error('Error sending expense added email:', error);
     }
 };
+
+export const sendGroupDeletedEmail = async (groupMembersEmails, groupName, deleterName) => {
+    if (process.env.NODE_ENV === 'test') return;
+    try {
+        if (!transporter) await initEmailService();
+        if (!transporter || !groupMembersEmails || groupMembersEmails.length === 0) return;
+
+        const info = await transporter.sendMail({
+            from: `FairShare <${process.env.SMTP_USER || 'noreply@fairshare.com'}>`,
+            bcc: groupMembersEmails.join(','), // bcc so emails remain private
+            subject: `Group Deleted: ${groupName}`,
+            text: `Hello, ${deleterName} has deleted the group "${groupName}". If this was against your knowledge, please contact them immediately.`,
+            html: `<h3>Group Deleted</h3><p><b>${deleterName}</b> has deleted the group <b>${groupName}</b>.</p><p style="color: red; font-size: 0.9em;">If this was against your knowledge, please contact them immediately.</p>`
+        });
+        
+        console.log(`📨 Email sent to group members [Group deleted: ${groupName}]`);
+        if (info.messageId && nodemailer.getTestMessageUrl(info)) {
+            console.log("👀 Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        }
+    } catch (error) {
+        console.error('Error sending group deleted email:', error);
+    }
+};
