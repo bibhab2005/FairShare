@@ -1,7 +1,7 @@
 import Expense from '../models/Expense.js';
 import Group from '../models/Group.js';
 import mongoose from 'mongoose';
-import { sendExpenseAddedEmail } from '../utils/emailService.js';
+import { sendExpenseAddedEmail, sendSettlementEmail } from '../utils/emailService.js';
 
 const validateGroupMembership = async (groupId, userId) => {
   const group = await Group.findById(groupId);
@@ -162,6 +162,20 @@ export const createSettlement = async (req, res) => {
     await settlement.populate('paidBy', 'name email avatar upiId username');
     await settlement.populate('splits.user', 'name email avatar upiId username');
     await settlement.populate('createdBy', 'name email avatar upiId username');
+
+    // Send settlement email to the receiver
+    const payerName = settlement.paidBy.name || req.user.name;
+    const receiver = settlement.splits[0].user;
+    if (receiver && receiver.email) {
+      const amount = (amountPaise / 100).toFixed(2);
+      await sendSettlementEmail(
+        receiver.email,
+        payerName,
+        receiver.name || 'Member',
+        amount,
+        group.name
+      ).catch(console.error);
+    }
 
     res.status(201).json({ settlement });
   } catch (error) {

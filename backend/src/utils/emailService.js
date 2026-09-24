@@ -125,3 +125,26 @@ export const sendMemberJoinedEmail = async (creatorEmail, groupName, newMemberNa
         console.error('Error sending member joined email:', error);
     }
 };
+
+export const sendSettlementEmail = async (receiverEmail, payerName, receiverName, amount, groupName) => {
+    if (process.env.NODE_ENV === 'test') return;
+    try {
+        if (!transporter) await initEmailService();
+        if (!transporter || !receiverEmail) return;
+
+        const info = await transporter.sendMail({
+            from: `FairShare <${process.env.SMTP_USER || 'noreply@fairshare.com'}>`,
+            to: receiverEmail,
+            subject: `Payment received in ${groupName}`,
+            text: `Hello ${receiverName}, ${payerName} has recorded a payment of ₹${amount} to you in "${groupName}".`,
+            html: `<h3>Payment Received!</h3><p><b>${payerName}</b> has recorded a settlement payment of <b>₹${amount}</b> to you in <b>${groupName}</b>.</p>`
+        });
+        
+        console.log(`📨 Email sent to ${receiverEmail} [Settlement received]`);
+        if (info.messageId && nodemailer.getTestMessageUrl(info)) {
+            console.log("👀 Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        }
+    } catch (error) {
+        console.error('Error sending settlement email:', error);
+    }
+};
