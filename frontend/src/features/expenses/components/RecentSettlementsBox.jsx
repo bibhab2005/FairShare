@@ -3,20 +3,18 @@ import { formatPaise } from '../../../core/utils/formatCurrency';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 
 const RecentSettlementsBox = ({ expenses, currentUserId }) => {
-  // Filter for settlements where the current user is the receiver
+  // Filter for settlements where the current user is involved (payer or receiver)
   const myRecentSettlements = expenses.filter(expense => {
     if (!expense.isSettlement) return false;
     
-    // Check if current user is the receiver (in splits)
     const isReceiver = expense.splits.some(split => 
       (split.user?._id || split.user) === currentUserId
     );
     
-    // Check if someone else paid (not the current user)
     const payerId = expense.paidBy?._id || expense.paidBy;
-    const isSomeoneElse = payerId !== currentUserId;
+    const isPayer = payerId === currentUserId;
     
-    return isReceiver && isSomeoneElse;
+    return isReceiver || isPayer;
   });
 
   if (myRecentSettlements.length === 0) return null;
@@ -33,8 +31,10 @@ const RecentSettlementsBox = ({ expenses, currentUserId }) => {
             minute: '2-digit'
           });
           
-          const payerName = settlement.paidBy?.name || 'Someone';
-          const payerAvatar = settlement.paidBy?.avatar || null;
+          const isPayer = (settlement.paidBy?._id || settlement.paidBy) === currentUserId;
+          const otherUser = isPayer ? settlement.splits[0].user : settlement.paidBy;
+          const otherUserName = otherUser?.name || 'Someone';
+          const otherUserAvatar = otherUser?.avatar || null;
           
           return (
             <motion.div
@@ -49,23 +49,23 @@ const RecentSettlementsBox = ({ expenses, currentUserId }) => {
               
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
-                  {payerAvatar ? (
+                  {otherUserAvatar ? (
                     <img 
-                      src={payerAvatar} 
-                      alt={payerName} 
+                      src={otherUserAvatar} 
+                      alt={otherUserName} 
                       referrerPolicy="no-referrer"
                       className="w-10 h-10 rounded-full object-cover shadow-sm border border-emerald-100" 
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-sm font-medium text-emerald-600 shadow-sm">
-                      {payerName.charAt(0).toUpperCase()}
+                      {otherUserName.charAt(0).toUpperCase()}
                     </div>
                   )}
                   
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-slate-900">{payerName}</span>
-                      <span className="text-sm text-slate-500">paid you</span>
+                      <span className="font-semibold text-slate-900">{isPayer ? 'You' : otherUserName}</span>
+                      <span className="text-sm text-slate-500">{isPayer ? `paid ${otherUserName}` : 'paid you'}</span>
                     </div>
                     <p className="text-xs text-neutral-400 mt-0.5">{date}</p>
                   </div>

@@ -67,14 +67,13 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
           const currentUserId = user?._id;
           const currentUserNameStr = typeof currentUser === 'string' ? currentUser : (currentUser?.name || user?.name);
 
-          const isCurrentUserOwed = (currentUserId && toId) 
-            ? (toId === currentUserId || toName === 'You') 
-            : (toName === currentUserNameStr || toName === 'You');
-          
-          const textColor = isCurrentUserOwed ? 'text-emerald-500' : 'text-red-500';
-          
           const finalDisplayFrom = fromName === 'You' ? 'You' : ((currentUserId && fromId) ? (fromId === currentUserId ? 'You' : fromName) : (fromName === currentUserNameStr ? 'You' : fromName));
           const finalDisplayTo = toName === 'You' ? 'You' : ((currentUserId && toId) ? (toId === currentUserId ? 'You' : toName) : (toName === currentUserNameStr ? 'You' : toName));
+          
+          // Absolute foolproof check based on BalanceSummary's formatting
+          const isCurrentUserOwed = debt.to === 'You' || finalDisplayTo === 'You';
+          
+          const textColor = isCurrentUserOwed ? 'text-emerald-500' : 'text-red-500';
           
           const fromAvatarUrl = getAvatar(fromName, debt.originalDebt ? debt.originalDebt.from : debt.from);
           const toAvatarUrl = getAvatar(toName, debt.originalDebt ? debt.originalDebt.to : debt.to);
