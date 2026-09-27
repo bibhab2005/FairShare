@@ -37,9 +37,9 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to={`/set-username?returnUrl=${encodeURIComponent(location.pathname)}`} replace />;
   }
 
-  const localReturn = localStorage.getItem('authRedirectUrl');
+  const localReturn = sessionStorage.getItem('authRedirectUrl');
   if (localReturn) {
-    localStorage.removeItem('authRedirectUrl');
+    sessionStorage.removeItem('authRedirectUrl');
     return <Navigate to={localReturn} replace />;
   }
 
@@ -55,12 +55,12 @@ const PublicRoute = ({ children }) => {
   if (user) {
     const params = new URLSearchParams(location.search);
     const urlReturn = params.get('returnUrl');
-    const localReturn = localStorage.getItem('authRedirectUrl');
+    const localReturn = sessionStorage.getItem('authRedirectUrl');
     
     const returnUrl = urlReturn || localReturn;
     
     if (returnUrl) {
-      localStorage.removeItem('authRedirectUrl');
+      sessionStorage.removeItem('authRedirectUrl');
       return <Navigate to={returnUrl} replace />;
     }
     return <Navigate to="/dashboard" replace />;

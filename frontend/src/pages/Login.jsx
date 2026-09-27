@@ -28,7 +28,7 @@ export default function Login() {
     const params = new URLSearchParams(location.search);
     const returnUrl = params.get('returnUrl');
     if (returnUrl) {
-      localStorage.setItem('authRedirectUrl', returnUrl);
+      sessionStorage.setItem('authRedirectUrl', returnUrl);
     }
     window.location.href = import.meta.env.DEV ? `http://${window.location.hostname}:5000/api/auth/google` : '/api/auth/google';
   };
