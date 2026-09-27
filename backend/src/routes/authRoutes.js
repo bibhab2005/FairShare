@@ -38,8 +38,8 @@ router.get(
       const token = generateToken(user._id);
       setTokenCookie(res, token);
 
-      // Redirect straight back to the frontend app root
-      return res.redirect(`${frontendUrl}/?token=${token}`);
+      // Redirect straight back to the dashboard to avoid extra hops and skewed analytics
+      return res.redirect(`${frontendUrl}/dashboard?token=${token}`);
     })(req, res, next);
   }
 );

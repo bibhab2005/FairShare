@@ -37,6 +37,12 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to={`/set-username?returnUrl=${encodeURIComponent(location.pathname)}`} replace />;
   }
 
+  const localReturn = localStorage.getItem('authRedirectUrl');
+  if (localReturn) {
+    localStorage.removeItem('authRedirectUrl');
+    return <Navigate to={localReturn} replace />;
+  }
+
   return children;
 };
 
