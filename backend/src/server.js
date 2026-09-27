@@ -16,6 +16,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import logger from './utils/logger.js';
+import RequestLog from './models/RequestLog.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // logger.info("GOOGLE_CLIENT_ID Loaded: " + process.env.GOOGLE_CLIENT_ID);
@@ -80,6 +81,19 @@ app.use(cookieParser());
 
 // HTTP request logging
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
+
+// Database Request Logging
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    RequestLog.create({
+      ip: req.ip,
+      method: req.method,
+      path: req.path,
+      status: res.statusCode
+    }).catch(err => logger.error('Failed to save request log:', err));
+  });
+  next();
+});
 
 // Initialize Passport
 configurePassport();
