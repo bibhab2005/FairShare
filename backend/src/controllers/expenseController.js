@@ -15,13 +15,19 @@ export const createExpense = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { groupId, description, amountPaise, paidBy, splitType, splits, category, isRecurring, recurringFrequency, originalCurrency } = req.body;
+    const { groupId, description, amountPaise, paidBy, splitType, splits, category, isRecurring, recurringFrequency, originalCurrency, receiptImage } = req.body;
 
     const { error, status, group } = await validateGroupMembership(groupId, req.user._id);
     if (error) {
       await session.abortTransaction();
       session.endSession();
       return res.status(status).json({ message: error });
+    }
+
+    if (group.isArchived) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: 'Cannot add expenses to an archived group' });
     }
 
     const paidByIsMember = group.members.some((m) => m.toString() === paidBy.toString());
@@ -72,6 +78,7 @@ export const createExpense = async (req, res) => {
       recurringFrequency: recurringFrequency || 'none',
       nextRecurringDate: nextDate,
       originalCurrency: originalCurrency || 'INR',
+      receiptImage: receiptImage || null,
     }], { session });
 
     group.updatedAt = new Date();
@@ -134,8 +141,12 @@ export const deleteExpense = async (req, res) => {
       return res.status(404).json({ message: 'Expense not found' });
     }
 
-    const { error, status } = await validateGroupMembership(expense.group, req.user._id);
+    const { error, status, group } = await validateGroupMembership(expense.group, req.user._id);
     if (error) return res.status(status).json({ message: error });
+
+    if (group.isArchived) {
+      return res.status(400).json({ message: 'Cannot delete expenses from an archived group' });
+    }
 
     await expense.deleteOne();
 
@@ -156,6 +167,12 @@ export const createSettlement = async (req, res) => {
       await session.abortTransaction();
       session.endSession();
       return res.status(status).json({ message: error });
+    }
+
+    if (group.isArchived) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: 'Cannot create settlements in an archived group' });
     }
 
     const [settlement] = await Expense.create([{

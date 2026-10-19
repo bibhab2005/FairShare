@@ -63,7 +63,7 @@ export const getGroupById = async (req, res) => {
 
 export const updateGroup = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, isArchived } = req.body;
     const group = await Group.findById(req.params.id);
 
     if (!group) {
@@ -78,6 +78,7 @@ export const updateGroup = async (req, res) => {
 
     if (name) group.name = name;
     if (description !== undefined) group.description = description;
+    if (isArchived !== undefined) group.isArchived = isArchived;
 
     await group.save();
     

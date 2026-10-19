@@ -24,6 +24,10 @@ const groupSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

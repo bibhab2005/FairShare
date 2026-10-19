@@ -14,7 +14,7 @@ import { formatPaise } from '../core/utils/formatCurrency';
 import {
   Plus, Trash2, ArrowLeft, Users, UserPlus, AlertCircle,
   Loader2, IndianRupee, CheckCircle2, X, ChevronDown, ChevronUp, Edit2,
-  Download, FileText, FileSpreadsheet, Link as LinkIcon
+  Download, FileText, FileSpreadsheet, Link as LinkIcon, Archive
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -150,10 +150,35 @@ const GroupDetails = () => {
     };
   }, [loadAll]);
 
-  const handleShareLink = () => {
+  const [lightboxImage, setLightboxImage] = useState(null);
+
+  const handleShareLink = async () => {
     const link = `${window.location.origin}/join/${id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Join ${group?.name || 'group'} on FairShare`,
+          text: `Hey, join our group "${group?.name || 'group'}" on FairShare to track and split expenses:`,
+          url: link,
+        });
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
     navigator.clipboard.writeText(link);
     toast.success('Invite link copied to clipboard!');
+  };
+
+  const handleToggleArchive = async () => {
+    const targetState = !group?.isArchived;
+    try {
+      await updateGroup(id, { isArchived: targetState });
+      toast.success(targetState ? 'Trip wrapped up and archived! Expenses are locked.' : 'Trip unarchived.');
+      await loadAll();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update group archival status.');
+    }
   };
 
   const handleAddMember = async (e) => {
@@ -295,6 +320,26 @@ const GroupDetails = () => {
               </button>
             </div>
 
+            {group.isArchived && (
+              <div className="mb-6 p-4 sm:p-5 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-900 flex items-center justify-center shrink-0">
+                    <Archive size={20} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-amber-950">Trip Wrapped Up & Frozen</p>
+                    <p className="text-xs text-amber-800">This group has been archived in read-only mode to preserve past trip history.</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleToggleArchive}
+                  className="px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-amber-900 border border-amber-300 shadow-apple-xs hover:bg-amber-50 active:scale-95 transition-all shrink-0"
+                >
+                  Unarchive Trip
+                </button>
+              </div>
+            )}
+
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div>
                 <div className="flex items-center gap-3">
@@ -383,31 +428,47 @@ const GroupDetails = () => {
                 </div>
               </div>
               <div className="flex w-full md:w-auto shrink-0 mt-2 md:mt-0">
-                <div className="flex w-full sm:w-auto gap-2.5 sm:gap-3">
+                <div className="flex w-full sm:w-auto gap-2.5 sm:gap-3 flex-wrap">
                   <button
                     onClick={handleShareLink}
-                    className="hidden sm:inline-flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 sm:px-6 py-3.5 rounded-full font-semibold text-slate-700 apple-glass hover:bg-white border border-black/[0.08] active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none"
-                    title="Copy Invite Link"
+                    className="hidden sm:inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 rounded-full font-semibold text-slate-700 apple-glass hover:bg-white border border-black/[0.08] active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none"
+                    title="Share Invite Link"
                   >
                     <LinkIcon size={18} />
-                    <span className="hidden sm:inline">Share Link</span>
+                    <span>Share</span>
                   </button>
                   <button
-                    id="add-member-toggle-btn"
-                    onClick={() => setShowAddMember(!showAddMember)}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3.5 rounded-full font-semibold text-emerald-800 bg-emerald-50/90 hover:bg-emerald-100 border border-emerald-500/20 active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none"
+                    onClick={handleToggleArchive}
+                    className={`inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 rounded-full font-semibold border active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none ${
+                      group.isArchived
+                        ? 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
+                        : 'bg-black/[0.04] text-slate-700 border-black/[0.08] hover:bg-black/[0.07]'
+                    }`}
+                    title={group.isArchived ? "Unarchive Trip" : "Wrap Up & Archive Trip"}
                   >
-                    <UserPlus size={18} />
-                    Add Member
+                    <Archive size={18} />
+                    <span className="hidden sm:inline">{group.isArchived ? 'Unarchive' : 'Wrap Up Trip'}</span>
                   </button>
-                  <button
-                    id="add-expense-btn"
-                    onClick={() => setShowExpenseModal(true)}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-apple-xs hover:shadow-apple active:scale-95 transition-all whitespace-nowrap text-sm sm:text-base select-none"
-                  >
-                    <Plus size={18} />
-                    Add Expense
-                  </button>
+                  {!group.isArchived && (
+                    <>
+                      <button
+                        id="add-member-toggle-btn"
+                        onClick={() => setShowAddMember(!showAddMember)}
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 rounded-full font-semibold text-emerald-800 bg-emerald-50/90 hover:bg-emerald-100 border border-emerald-500/20 active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none"
+                      >
+                        <UserPlus size={18} />
+                        Add Member
+                      </button>
+                      <button
+                        id="add-expense-btn"
+                        onClick={() => setShowExpenseModal(true)}
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-apple-xs hover:shadow-apple active:scale-95 transition-all whitespace-nowrap text-sm sm:text-base select-none"
+                      >
+                        <Plus size={18} />
+                        Add Expense
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
           </div>
@@ -685,6 +746,20 @@ const GroupDetails = () => {
                                   <span>{expense.originalCurrency}</span>
                                 </span>
                               )}
+                              {expense.receiptImage && (
+                                <button 
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setLightboxImage(expense.receiptImage);
+                                  }}
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition-colors shadow-apple-xs shrink-0 select-none cursor-pointer"
+                                  title="View receipt bill"
+                                >
+                                  <span>📸</span>
+                                  <span>Bill</span>
+                                </button>
+                              )}
                             </div>
                             <p className="text-neutral-400 text-xs sm:text-sm mt-0.5 sm:mt-1 truncate">
                               Paid by{' '}
@@ -705,16 +780,18 @@ const GroupDetails = () => {
                               </p>
                             )}
                           </div>
-                          <button
-                            id={`delete-expense-${expense._id}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(expense._id);
-                            }}
-                            className="p-1.5 sm:p-3 rounded-full text-neutral-400 hover:text-red-600 hover:bg-slate-100 shadow-sm transition-all duration-200"
-                          >
-                            <Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" />
-                          </button>
+                          {!group.isArchived && (
+                            <button
+                              id={`delete-expense-${expense._id}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(expense._id);
+                              }}
+                              className="p-1.5 sm:p-3 rounded-full text-neutral-400 hover:text-red-600 hover:bg-slate-100 shadow-sm transition-all duration-200"
+                            >
+                              <Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </button>
+                          )}
                           <div className="p-0.5 sm:p-1 rounded-full text-neutral-400">
                             {isExpanded ? <ChevronUp size={18} className="sm:w-5 sm:h-5" /> : <ChevronDown size={18} className="sm:w-5 sm:h-5" />}
                           </div>
@@ -797,6 +874,48 @@ const GroupDetails = () => {
             onClose={() => setShowExpenseModal(false)}
             onSuccess={loadAll}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Receipt Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+              onClick={() => setLightboxImage(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative max-w-2xl max-h-[90vh] z-10 flex flex-col items-center"
+            >
+              <button
+                onClick={() => setLightboxImage(null)}
+                className="absolute -top-12 right-0 p-2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all"
+                title="Close"
+              >
+                <X size={20} />
+              </button>
+              <img
+                src={lightboxImage}
+                alt="Receipt full size"
+                className="max-h-[75vh] w-auto object-contain rounded-2xl shadow-apple-lg border border-white/20"
+              />
+              <a
+                href={lightboxImage}
+                download="receipt.jpg"
+                className="mt-3 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5"
+              >
+                Download Receipt Image
+              </a>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 

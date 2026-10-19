@@ -11,7 +11,8 @@ import GroupCard from '../features/groups/components/GroupCard';
 import SettlementHistoryModal from '../features/expenses/components/SettlementHistoryModal';
 import { 
   Users, Plus, LogOut, ArrowRight, Wallet, TrendingUp, AlertCircle, 
-  Settings, User, HelpCircle, Receipt, IndianRupee, Menu, X, Folders, Loader2, Search
+  Settings, User, HelpCircle, Receipt, IndianRupee, Menu, X, Folders, Loader2, Search,
+  Archive, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -24,6 +25,7 @@ const Dashboard = () => {
   
   const [showModal, setShowModal] = useState(false);
   const [showSettlementsModal, setShowSettlementsModal] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [newGroupDesc, setNewGroupDesc] = useState('');
   const [creating, setCreating] = useState(false);
@@ -273,57 +275,131 @@ const Dashboard = () => {
           </div>
         ) : (
           <div>
-            <div className="flex items-center justify-between mb-8">
-              <span className="text-xs font-semibold text-neutral-400 tracking-widest uppercase">YOUR GROUPS</span>
-              <span className="text-sm text-neutral-400 font-medium">
-                {groups.length} {groups.length === 1 ? 'group' : 'groups'}
-              </span>
-            </div>
-            
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ staggerChildren: 0.1 }}
-            >
-              {groups.map((group, idx) => {
-                const netBalance = balancesMap[group._id] || 0;
-                const netBalanceRupees = netBalance / 100;
-                
-                return (
-                  <Link key={group._id} to={`/groups/${group._id}`}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                    >
-                      <GroupCard 
-                        groupName={group.name}
-                        members={group.members.length}
-                        date={new Date(group.createdAt).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
+            {(() => {
+              const activeGroups = groups.filter((g) => !g.isArchived);
+              const archivedGroups = groups.filter((g) => g.isArchived);
+
+              return (
+                <div className="space-y-12">
+                  <div>
+                    <div className="flex items-center justify-between mb-8">
+                      <span className="text-xs font-semibold text-neutral-400 tracking-widest uppercase">
+                        ACTIVE GROUPS ({activeGroups.length})
+                      </span>
+                      <span className="text-sm text-neutral-400 font-medium">
+                        {activeGroups.length} {activeGroups.length === 1 ? 'group' : 'groups'}
+                      </span>
+                    </div>
+
+                    {activeGroups.length === 0 ? (
+                      <div className="p-8 text-center bg-black/[0.02] rounded-3xl border border-black/[0.04]">
+                        <p className="text-sm text-slate-500 font-medium">No active groups. All groups are archived or create a new one!</p>
+                      </div>
+                    ) : (
+                      <motion.div 
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ staggerChildren: 0.1 }}
+                      >
+                        {activeGroups.map((group, idx) => {
+                          const netBalance = balancesMap[group._id] || 0;
+                          const netBalanceRupees = netBalance / 100;
+                          
+                          return (
+                            <Link key={group._id} to={`/groups/${group._id}`}>
+                              <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                              >
+                                <GroupCard 
+                                  groupName={group.name}
+                                  members={group.members.length}
+                                  date={new Date(group.createdAt).toLocaleDateString('en-IN', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  })}
+                                  status={
+                                    !hasExpensesMap[group._id] ? "No expenses" :
+                                    netBalanceRupees > 0 ? `Gets back ₹${netBalanceRupees}` : 
+                                    netBalanceRupees < 0 ? `Owes ₹${Math.abs(netBalanceRupees)}` : 
+                                    "Settled up"
+                                  }
+                                  statusType={
+                                    !hasExpensesMap[group._id] ? "settled" :
+                                    netBalanceRupees > 0 ? 'owed' : 
+                                    netBalanceRupees < 0 ? 'owe' : 
+                                    'settled'
+                                  }
+                                  imageUrl={group.imageUrl}
+                                />
+                              </motion.div>
+                            </Link>
+                          );
                         })}
-                        status={
-                          !hasExpensesMap[group._id] ? "No expenses" :
-                          netBalanceRupees > 0 ? `Gets back ₹${netBalanceRupees}` : 
-                          netBalanceRupees < 0 ? `Owes ₹${Math.abs(netBalanceRupees)}` : 
-                          "Settled up"
-                        }
-                        statusType={
-                          !hasExpensesMap[group._id] ? "settled" :
-                          netBalanceRupees > 0 ? 'owed' : 
-                          netBalanceRupees < 0 ? 'owe' : 
-                          'settled'
-                        }
-                        imageUrl={group.imageUrl}
-                      />
-                    </motion.div>
-                  </Link>
-                );
-              })}
-            </motion.div>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  {archivedGroups.length > 0 && (
+                    <div className="pt-6 border-t border-black/[0.06]">
+                      <button
+                        onClick={() => setShowArchived(!showArchived)}
+                        className="flex items-center justify-between w-full p-4 rounded-2xl apple-glass-card border border-black/[0.06] hover:bg-black/[0.02] transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+                            <Archive size={18} />
+                          </div>
+                          <div className="text-left">
+                            <span className="font-bold text-slate-800 text-sm block">Archived Trips</span>
+                            <span className="text-xs text-slate-400">
+                              {archivedGroups.length} {archivedGroups.length === 1 ? 'trip' : 'trips'} frozen & settled
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-2 text-slate-400">
+                          {showArchived ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                        </div>
+                      </button>
+
+                      <AnimatePresence>
+                        {showArchived && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                          >
+                            {archivedGroups.map((group) => {
+                              return (
+                                <Link key={group._id} to={`/groups/${group._id}`} className="opacity-80 hover:opacity-100 transition-opacity">
+                                  <GroupCard 
+                                    groupName={group.name}
+                                    members={group.members.length}
+                                    date={new Date(group.createdAt).toLocaleDateString('en-IN', {
+                                      day: 'numeric',
+                                      month: 'short',
+                                      year: 'numeric',
+                                    })}
+                                    status="Archived · Read-Only"
+                                    statusType="settled"
+                                    imageUrl={group.imageUrl}
+                                  />
+                                </Link>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
       </main>

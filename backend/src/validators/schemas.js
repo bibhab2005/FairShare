@@ -37,6 +37,7 @@ export const createGroupSchema = z.object({
 export const updateGroupSchema = z.object({
   name: z.string().min(2, 'Group name must be at least 2 characters').optional(),
   description: z.string().optional(),
+  isArchived: z.boolean().optional(),
 });
 
 export const addMemberSchema = z.object({
@@ -60,6 +61,7 @@ export const createExpenseSchema = z.object({
   isRecurring: z.boolean().optional().default(false),
   recurringFrequency: z.enum(['none', 'daily', 'weekly', 'monthly']).optional().default('none'),
   originalCurrency: z.string().optional().default('INR'),
+  receiptImage: z.string().optional().nullable(),
 }).refine(data => {
   if (data.splitType === 'custom') {
     return Array.isArray(data.splits) && data.splits.length > 0;
