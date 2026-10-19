@@ -56,6 +56,7 @@ export const createExpenseSchema = z.object({
   paidBy: objectIdSchema,
   splitType: z.enum(['equal', 'custom'], { required_error: 'splitType must be "equal" or "custom"' }),
   splits: z.array(splitSchema).optional(),
+  category: z.enum(['general', 'food', 'travel', 'groceries', 'utilities', 'rent', 'entertainment']).optional().default('general'),
 }).refine(data => {
   if (data.splitType === 'custom') {
     return Array.isArray(data.splits) && data.splits.length > 0;

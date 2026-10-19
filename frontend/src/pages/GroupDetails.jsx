@@ -5,7 +5,7 @@ import { fetchExpenses, deleteExpense } from '../features/expenses/api/expenseSe
 import { fetchBalances } from '../features/groups/api/balanceService';
 import { useAuth } from '../features/auth/context/AuthContext';
 import Navbar from '../core/components/Navbar';
-import ExpenseModal from '../features/expenses/components/ExpenseModal';
+import ExpenseModal, { EXPENSE_CATEGORIES } from '../features/expenses/components/ExpenseModal';
 import BalanceSummary from '../features/groups/components/BalanceSummary';
 import RecentSettlementsBox from '../features/expenses/components/RecentSettlementsBox';
 import ConfirmModal from '../core/components/ConfirmModal';
@@ -621,10 +621,21 @@ const GroupDetails = () => {
                             )}
                           </div>
                           <div className="min-w-0">
-                            <p className="text-base sm:text-lg font-medium text-slate-900 truncate tracking-tight">{expense.description}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="text-base sm:text-lg font-bold text-slate-900 truncate tracking-tight">{expense.description}</p>
+                              {expense.category && expense.category !== 'general' && (
+                                <span 
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100/90 text-slate-600 border border-slate-200/60 shadow-apple-xs shrink-0 select-none"
+                                  title={`Category: ${expense.category}`}
+                                >
+                                  <span>{EXPENSE_CATEGORIES.find(c => c.id === expense.category)?.icon || '📝'}</span>
+                                  <span className="capitalize hidden sm:inline">{expense.category}</span>
+                                </span>
+                              )}
+                            </div>
                             <p className="text-neutral-400 text-xs sm:text-sm mt-0.5 sm:mt-1 truncate">
                               Paid by{' '}
-                              <span className="font-medium text-neutral-700">
+                              <span className="font-semibold text-neutral-700">
                                 {expense.paidBy?._id === user?._id ? 'you' : expense.paidBy?.name}
                               </span>{' '}
                               <span className="mx-1 opacity-50">·</span> {date}

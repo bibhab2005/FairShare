@@ -6,10 +6,21 @@ import { formatPaise, rupeeToRoundedPaise } from '../../../core/utils/formatCurr
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
+export const EXPENSE_CATEGORIES = [
+  { id: 'general', label: 'General', icon: '📝' },
+  { id: 'food', label: 'Food & Dining', icon: '🍽️' },
+  { id: 'travel', label: 'Travel & Cab', icon: '🚗' },
+  { id: 'groceries', label: 'Groceries', icon: '🛒' },
+  { id: 'utilities', label: 'Bills & Utilities', icon: '⚡' },
+  { id: 'rent', label: 'Rent & Housing', icon: '🏠' },
+  { id: 'entertainment', label: 'Entertainment', icon: '🍿' },
+];
+
 const ExpenseModal = ({ group, onClose, onSuccess }) => {
   const { user } = useAuth();
   const [description, setDescription] = useState('');
   const [amountRupees, setAmountRupees] = useState('');
+  const [category, setCategory] = useState('general');
   const [paidBy, setPaidBy] = useState(user?._id || '');
   const [splitType, setSplitType] = useState('equal');
   const [customSplits, setCustomSplits] = useState([]);
@@ -72,6 +83,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
         amountPaise,
         paidBy,
         splitType,
+        category,
         ...(splitType === 'custom' && {
           splits: customSplits
             .filter((s) => rupeeToRoundedPaise(s.amountRupees) > 0)
@@ -155,6 +167,27 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               step="0.01"
               className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400 font-semibold text-lg"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-800 mb-2">Category</label>
+            <div className="flex flex-wrap gap-2">
+              {EXPENSE_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 flex items-center gap-1.5 ${
+                    category === cat.id
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-apple-xs'
+                      : 'bg-black/[0.03] text-slate-700 border-black/[0.06] hover:bg-black/[0.06]'
+                  }`}
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>

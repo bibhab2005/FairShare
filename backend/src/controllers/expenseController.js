@@ -15,7 +15,7 @@ export const createExpense = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { groupId, description, amountPaise, paidBy, splitType, splits } = req.body;
+    const { groupId, description, amountPaise, paidBy, splitType, splits, category } = req.body;
 
     const { error, status, group } = await validateGroupMembership(groupId, req.user._id);
     if (error) {
@@ -58,6 +58,7 @@ export const createExpense = async (req, res) => {
       splits: computedSplits,
       createdBy: req.user._id,
       isSettlement: false,
+      category: category || 'general',
     }], { session });
 
     group.updatedAt = new Date();

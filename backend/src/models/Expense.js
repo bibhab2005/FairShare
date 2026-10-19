@@ -61,6 +61,11 @@ const expenseSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    category: {
+      type: String,
+      enum: ['general', 'food', 'travel', 'groceries', 'utilities', 'rent', 'entertainment'],
+      default: 'general',
+    },
   },
   { timestamps: true }
 );

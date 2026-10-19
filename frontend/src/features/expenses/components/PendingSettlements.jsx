@@ -1,10 +1,18 @@
-import { ArrowRight, AlertTriangle, X } from 'lucide-react';
+import { ArrowRight, AlertTriangle, X, Copy, Check, QrCode, ExternalLink, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import { QRCodeSVG } from 'qrcode.react';
 
 const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [], user, onSettle }) => {
   const [selectedUpiDebt, setSelectedUpiDebt] = useState(null);
+  const [copiedUpi, setCopiedUpi] = useState(false);
+
+  const handleRemind = (debtorName, amount) => {
+    const text = `Hey ${debtorName}, you have a pending settlement of ₹${amount.toFixed(2)} on FairShare for our group expenses. You can check and settle it here: ${window.location.href}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
   const getAvatar = (name, debtObj) => {
     // 1. Check if the debt object itself contains an avatar/picture property
     if (debtObj && typeof debtObj === 'object') {
@@ -128,7 +136,7 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                 <div className={`text-base sm:text-lg font-bold ${textColor} whitespace-nowrap`}>
                   ₹{debt.amount.toFixed(2)}
                 </div>
-                {!isCurrentUserOwed && (
+                {!isCurrentUserOwed ? (
                   <div className="flex items-center gap-2 shrink-0">
                     {debt.toUpiId && (
                       <button 
@@ -150,6 +158,24 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                       Settle
                     </button>
                   </div>
+                ) : (
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button 
+                      onClick={() => handleRemind(finalDisplayFrom, debt.amount)}
+                      className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-500/20 active:scale-95 shadow-apple-xs px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap"
+                      title="Send WhatsApp settlement reminder"
+                    >
+                      <MessageCircle size={14} className="text-emerald-600" />
+                      Remind
+                    </button>
+                    <button 
+                      onClick={() => onSettle && onSettle(debt)}
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 active:scale-95 shadow-apple-xs px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap"
+                      title="Mark balance as received"
+                    >
+                      Mark Received
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -157,7 +183,7 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
         })}
       </div>
       
-      {/* Security Warning Modal */}
+      {/* Dynamic UPI QR Code & Settlement Modal */}
       {createPortal(
         <AnimatePresence>
           {selectedUpiDebt && (
@@ -175,30 +201,79 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.94, y: 12 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 320 }}
-                className="relative w-full max-w-sm apple-glass-card rounded-[2rem] shadow-apple-lg p-6 sm:p-7 z-10 border border-white/80 flex flex-col items-center text-center"
+                className="relative w-full max-w-sm apple-glass-card rounded-[2.25rem] shadow-apple-lg p-6 sm:p-7 z-10 border border-white/80 flex flex-col items-center text-center"
               >
-                <div className="w-13 h-13 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center mb-4 p-3 shadow-apple-xs">
-                  <AlertTriangle size={26} />
+                <button
+                  onClick={() => setSelectedUpiDebt(null)}
+                  className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-800 hover:bg-black/[0.04] active:scale-90 rounded-full transition-all"
+                  title="Close"
+                >
+                  <X size={18} />
+                </button>
+
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                    UPI Instant Pay
+                  </span>
                 </div>
-                
-                <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Security Warning</h3>
-                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                  FairShare does not verify UPI IDs. When your UPI app opens, please manually verify that the registered receiver name matches <strong className="text-slate-900">{selectedUpiDebt.finalDisplayTo}</strong>.
+
+                <h3 className="text-xl font-bold text-slate-900 tracking-tight mt-2 mb-0.5">
+                  Pay {selectedUpiDebt.finalDisplayTo}
+                </h3>
+                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-4">
+                  ₹{selectedUpiDebt.amount.toFixed(2)}
+                </div>
+
+                {/* QR Code Canvas */}
+                <div className="p-3.5 bg-white rounded-2xl shadow-apple-sm border border-black/[0.06] mb-3">
+                  <QRCodeSVG 
+                    value={`upi://pay?pa=${selectedUpiDebt.toUpiId}&pn=${encodeURIComponent(selectedUpiDebt.finalDisplayTo)}&am=${selectedUpiDebt.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent('FairShare Settlement')}`} 
+                    size={170} 
+                    level="M" 
+                    includeMargin={false} 
+                    className="w-40 h-40 rounded-lg"
+                  />
+                </div>
+
+                <p className="text-xs text-slate-400 font-medium mb-3">
+                  Scan using Google Pay, PhonePe, or Paytm
                 </p>
-                
-                <div className="flex flex-col w-full gap-2.5 mt-1">
-                  <a 
-                    href={`upi://pay?pa=${selectedUpiDebt.toUpiId}&pn=${encodeURIComponent(selectedUpiDebt.finalDisplayTo)}&am=${selectedUpiDebt.amount.toFixed(2)}&cu=INR`}
-                    onClick={() => setSelectedUpiDebt(null)}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3.5 rounded-full font-semibold shadow-apple-xs active:scale-95 transition-all flex items-center justify-center gap-2"
+
+                {/* Copy UPI ID Pill */}
+                <div className="flex items-center justify-center gap-2 bg-slate-100/80 rounded-full px-3.5 py-1.5 mb-5 border border-black/[0.05] w-full max-w-[260px]">
+                  <span className="text-xs font-mono font-medium text-slate-700 truncate select-all">
+                    {selectedUpiDebt.toUpiId}
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedUpiDebt.toUpiId);
+                      setCopiedUpi(true);
+                      setTimeout(() => setCopiedUpi(false), 2000);
+                    }}
+                    className="text-slate-500 hover:text-slate-900 active:scale-90 transition-transform p-0.5 rounded-full shrink-0"
+                    title="Copy UPI ID"
                   >
-                    Continue to Pay
+                    {copiedUpi ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                  </button>
+                </div>
+
+                <div className="flex flex-col w-full gap-2.5">
+                  <a 
+                    href={`upi://pay?pa=${selectedUpiDebt.toUpiId}&pn=${encodeURIComponent(selectedUpiDebt.finalDisplayTo)}&am=${selectedUpiDebt.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent('FairShare Settlement')}`}
+                    className="w-full bg-[#118A45] hover:bg-[#0c6b35] text-white py-3 rounded-full font-semibold shadow-apple-xs active:scale-95 transition-all flex items-center justify-center gap-2 text-sm"
+                  >
+                    <ExternalLink size={16} />
+                    Open in UPI App
                   </a>
                   <button 
-                    onClick={() => setSelectedUpiDebt(null)}
-                    className="w-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 py-3 rounded-full font-semibold active:scale-95 transition-all"
+                    onClick={() => {
+                      const debtToSettle = selectedUpiDebt;
+                      setSelectedUpiDebt(null);
+                      if (onSettle) onSettle(debtToSettle);
+                    }}
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-full font-semibold shadow-apple-xs active:scale-95 transition-all text-sm"
                   >
-                    Cancel
+                    Mark as Settled
                   </button>
                 </div>
               </motion.div>
