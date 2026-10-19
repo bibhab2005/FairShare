@@ -3,9 +3,12 @@
 This document outlines planned and proposed future features for FairShare, organized by priority tier, expected user impact, and technical implementation considerations.
 
 > [!NOTE]
-> **Recently Shipped on `feature/apple-design-system`:**
-> - **Apple Design System:** Fluid spring physics (`damping: 25, stiffness: 300`), diffused multi-stop elevation shadows, universal tactile active feedback (`:active { transform: scale(0.972); }`), frosted glass materials, and optical tracking typography.
-> - **Adaptive Real-Time Sync & Live Badge:** Instant window focus / visibility revalidation and 8s background polling with real-time peer notification toasts ("New expense added").
+> **All Tiers Fully Shipped on `feature/apple-design-system`:**
+> - **Apple Design System & Adaptive Real-Time Sync:** Fluid spring physics (`damping: 25, stiffness: 300`), frosted glass materials, 8s background polling, and real-time live sync.
+> - **Tier 1 (High Impact):** Dynamic On-Screen UPI QR Code, WhatsApp/SMS Settlement Reminders, Category Spending Analytics & Chart toggle.
+> - **Tier 2 (Real-World Splitting):** Itemized Dish-by-Dish Bill Splitting with tax/tip distribution, Offline PWA Queue & Sync, Export to PDF & CSV.
+> - **Tier 3 (Automation & Intelligence):** Receipt OCR Scanner (`tesseract.js`), Recurring Expenses Scheduler, Multi-Currency Support (INR, USD, EUR, GBP, AED, THB, JPY).
+> - **Tier 4 (Power User & Travel):** Split by Shares & Percentages, Receipt Photo Attachments & Full-Screen Lightbox, Spotlight Quick Search (`⌘K`), Trip Wrap-Up & Group Archiving, Multi-Payer Expenses, Native Mobile Share Sheet (`navigator.share`).
 
 ---
 
