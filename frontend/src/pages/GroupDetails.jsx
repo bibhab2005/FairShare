@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { fetchGroupById, addMemberToGroup, deleteGroup, updateGroup, removeMemberFromGroup } from '../features/groups/api/groupService';
-import { fetchExpenses, deleteExpense } from '../features/expenses/api/expenseService';
+import { fetchExpenses, deleteExpense, createExpense } from '../features/expenses/api/expenseService';
+import { syncOfflineExpenses } from '../core/utils/offlineQueue';
 import { fetchBalances } from '../features/groups/api/balanceService';
 import { useAuth } from '../features/auth/context/AuthContext';
 import Navbar from '../core/components/Navbar';
@@ -53,6 +54,7 @@ const GroupDetails = () => {
   const [deletingId, setDeletingId] = useState(null);
   const [showBalances, setShowBalances] = useState(true);
   const [isLiveSyncing, setIsLiveSyncing] = useState(false);
+  const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
   const previousExpenseCountRef = useRef(null);
 
   const loadAll = useCallback(async (isSilent = false) => {
@@ -103,17 +105,38 @@ const GroupDetails = () => {
 
     // Adaptive real-time polling & focus revalidation
     const handleRevalidate = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === 'visible' && navigator.onLine) {
         loadAll(true);
       }
     };
 
+    const handleOnline = async () => {
+      setIsOnline(true);
+      const syncedCount = await syncOfflineExpenses(createExpense);
+      if (syncedCount > 0) {
+        toast.success(`Synced ${syncedCount} offline expense${syncedCount > 1 ? 's' : ''}!`, { id: 'offline-sync-alert', icon: '⚡' });
+        loadAll(true);
+      }
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      toast('You are now in offline mode', { id: 'network-status', icon: '📡' });
+    };
+
     window.addEventListener('focus', handleRevalidate);
     document.addEventListener('visibilitychange', handleRevalidate);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
-    // Poll every 8s while the tab is active/visible
+    // Sync any pending items if online on initial load
+    if (typeof navigator !== 'undefined' && navigator.onLine) {
+      handleOnline();
+    }
+
+    // Poll every 8s while the tab is active/visible and online
     const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === 'visible' && navigator.onLine) {
         loadAll(true);
       }
     }, 8000);
@@ -122,6 +145,8 @@ const GroupDetails = () => {
       clearInterval(interval);
       window.removeEventListener('focus', handleRevalidate);
       document.removeEventListener('visibilitychange', handleRevalidate);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, [loadAll]);
 
@@ -309,13 +334,23 @@ const GroupDetails = () => {
                     Total:{' '}
                     <span className="text-slate-900 font-bold">{formatPaise(totalSpent)}</span>
                   </span>
-                  <span 
-                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 shadow-apple-xs select-none"
-                    title="Real-time live sync active"
-                  >
-                    <span className={`w-1.5 h-1.5 rounded-full bg-emerald-500 ${isLiveSyncing ? 'animate-ping' : 'animate-pulse'}`} />
-                    Live
-                  </span>
+                  {isOnline ? (
+                    <span 
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 shadow-apple-xs select-none"
+                      title="Real-time live sync active"
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full bg-emerald-500 ${isLiveSyncing ? 'animate-ping' : 'animate-pulse'}`} />
+                      Live
+                    </span>
+                  ) : (
+                    <span 
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-700 border border-amber-500/20 shadow-apple-xs select-none"
+                      title="Offline mode active. Expenses are saved locally and synced automatically."
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      Offline
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2 mt-4">
                   {group.members.map(member => (

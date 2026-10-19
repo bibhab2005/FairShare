@@ -82,17 +82,19 @@ export const exportExpensesToPDF = (expenses, groupName) => {
     doc.setLineWidth(0.3);
     doc.line(14, 60, pageWidth - 14, 60);
 
-    // === Table (no Category column) ===
-    const tableColumn = ['#', 'Date', 'Description', 'Paid By', 'Amount'];
+    // === Table with Category ===
+    const tableColumn = ['#', 'Date', 'Description', 'Category', 'Paid By', 'Amount'];
     const tableRows = filtered.map((expense, i) => {
       const name = expense.paidBy?.name || 'Unknown';
       const username = expense.paidBy?.username;
       const paidByText = username ? `${name} (@${username})` : name;
+      const categoryText = expense.category ? expense.category.charAt(0).toUpperCase() + expense.category.slice(1) : 'General';
       
       return [
         i + 1,
         format(new Date(expense.createdAt), 'dd MMM yyyy'),
         expense.description,
+        categoryText,
         paidByText,
         formatCurrency(expense.amountPaise)
       ];
@@ -107,11 +109,11 @@ export const exportExpensesToPDF = (expenses, groupName) => {
         fillColor: [16, 185, 129], // Emerald 500
         textColor: [255, 255, 255],
         fontStyle: 'bold',
-        fontSize: 11,
+        fontSize: 10,
         cellPadding: 5,
       },
       bodyStyles: {
-        fontSize: 10,
+        fontSize: 9.5,
         cellPadding: 4.5,
         textColor: [51, 65, 85],
       },
@@ -119,8 +121,10 @@ export const exportExpensesToPDF = (expenses, groupName) => {
         fillColor: [248, 250, 252], // Slate 50
       },
       columnStyles: {
-        0: { cellWidth: 12, halign: 'center' },
-        4: { halign: 'right', fontStyle: 'bold', textColor: [30, 41, 59] },
+        0: { cellWidth: 10, halign: 'center' },
+        1: { cellWidth: 25 },
+        3: { cellWidth: 24 },
+        5: { halign: 'right', fontStyle: 'bold', textColor: [30, 41, 59] },
       },
       styles: {
         lineColor: [226, 232, 240],
