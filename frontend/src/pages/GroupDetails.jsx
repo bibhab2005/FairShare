@@ -611,7 +611,7 @@ const GroupDetails = () => {
                   {showExportMenu && (
                     <>
                       <div 
-                        className="fixed inset-0 z-40" 
+                        className="fixed inset-0 z-35" 
                         onClick={() => setShowExportMenu(false)}
                       ></div>
                       <motion.div
@@ -619,7 +619,7 @@ const GroupDetails = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-48 bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden z-50"
+                        className="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-xl border border-white/60 shadow-apple-lg rounded-2xl overflow-hidden z-40"
                       >
                         <div className="p-1.5">
                           <button
@@ -880,37 +880,38 @@ const GroupDetails = () => {
       {/* Receipt Lightbox Modal */}
       <AnimatePresence>
         {lightboxImage && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+              className="absolute inset-0 bg-black/85 backdrop-blur-xl"
               onClick={() => setLightboxImage(null)}
             />
+            {/* Fixed Close Button always accessible */}
+            <button
+              onClick={() => setLightboxImage(null)}
+              className="fixed top-4 right-4 sm:top-6 sm:right-6 z-20 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 active:scale-90 text-white flex items-center justify-center transition-all shadow-apple-sm backdrop-blur-md border border-white/20"
+              title="Close (Esc)"
+            >
+              <X size={20} />
+            </button>
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              exit={{ opacity: 0, scale: 0.94 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="relative max-w-2xl max-h-[90vh] z-10 flex flex-col items-center"
             >
-              <button
-                onClick={() => setLightboxImage(null)}
-                className="absolute -top-12 right-0 p-2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all"
-                title="Close"
-              >
-                <X size={20} />
-              </button>
               <img
                 src={lightboxImage}
                 alt="Receipt full size"
-                className="max-h-[75vh] w-auto object-contain rounded-2xl shadow-apple-lg border border-white/20"
+                className="max-h-[75vh] w-auto object-contain rounded-2xl shadow-apple-2xl border border-white/20"
               />
               <a
                 href={lightboxImage}
                 download="receipt.jpg"
-                className="mt-3 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5"
+                className="mt-4 px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold backdrop-blur-md border border-white/20 transition-all flex items-center gap-2 active:scale-95 shadow-apple-xs"
               >
                 Download Receipt Image
               </a>

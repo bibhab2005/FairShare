@@ -101,7 +101,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#fbfbfd] text-slate-900 font-sans overflow-x-hidden">
-      <header className="sticky top-0 z-50 apple-glass-nav">
+      <header className="sticky top-0 z-30 apple-glass-nav">
         <div className="w-full px-6 sm:px-10 lg:px-12 h-20 sm:h-24 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3.5 group select-none">
             <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-apple-xs group-hover:scale-105 group-active:scale-95 transition-transform duration-200">

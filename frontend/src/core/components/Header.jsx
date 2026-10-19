@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const Header = ({ onLoginClick }) => {
     return (
-        <header className="sticky top-0 z-40 flex items-center justify-between px-6 py-4 apple-glass-nav border-b border-black/[0.06] transition-all">
+        <header className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 apple-glass-nav border-b border-black/[0.06] transition-all">
             <Link to="/" className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900 active:scale-95 transition-transform">
                 <div className="flex items-center justify-center w-7 h-7 bg-slate-950 text-white rounded-lg shadow-apple-xs">
                     <span className="text-sm font-bold">→</span>
