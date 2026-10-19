@@ -71,7 +71,7 @@ const ProfileDropdown = ({ name = "Bibhab Talukdar", email = "bibhabtalukdar2005
     <div 
       ref={menuRef}
       className="absolute w-72 apple-glass rounded-3xl shadow-apple-lg py-2.5 border border-black/[0.06] animate-in fade-in zoom-in-95 duration-200" 
-      style={{ top: dropdownPos.top, right: dropdownPos.right, zIndex: 999999 }}
+      style={{ top: dropdownPos.top, right: dropdownPos.right, zIndex: 40 }}
     >
       <div className="px-4 py-3 border-b border-black/[0.04] mb-1 flex items-center gap-3">
         {avatarUrl ? (

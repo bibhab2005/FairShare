@@ -21,7 +21,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="sticky top-0" style={{ zIndex: 9999 }}>
+    <div className="sticky top-0 z-30">
       <header className="w-full apple-glass-nav transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-12 h-20 sm:h-24 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3.5 group select-none">

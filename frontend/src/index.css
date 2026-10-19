@@ -42,6 +42,16 @@
     letter-spacing: -0.005em;
   }
 
+  /* Hide number input spinners for clean Apple numeric displays */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
   ::selection {
     background: rgba(16, 185, 129, 0.2);
     color: #064e3b;
@@ -193,6 +203,13 @@
   }
   .animate-bg-pan {
     animation: gradient-pan 15s ease-in-out infinite;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 

@@ -502,159 +502,175 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overflow-hidden">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="absolute inset-0 bg-black/40 backdrop-blur-md" 
+        className="absolute inset-0 bg-black/45 backdrop-blur-md" 
         onClick={onClose} 
       />
       <motion.div 
-        initial={{ opacity: 0, y: 30, scale: 0.96 }}
+        initial={{ opacity: 0, y: 24, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 30, scale: 0.96 }}
-        transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-        className="relative w-full sm:max-w-lg apple-glass-card rounded-t-[2.25rem] sm:rounded-[2rem] shadow-apple-lg border border-white/80 p-6 sm:p-7 max-h-[92vh] overflow-y-auto pb-8 sm:pb-6"
+        exit={{ opacity: 0, y: 24, scale: 0.97 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 350 }}
+        className="relative w-full sm:max-w-lg apple-glass-card rounded-t-[2.25rem] sm:rounded-[2.25rem] shadow-apple-2xl border border-white/80 flex flex-col max-h-[90vh] overflow-hidden bg-white/95 backdrop-blur-2xl"
       >
         {/* Mobile drag handle */}
-        <div className="flex justify-center mb-4 sm:hidden">
-          <div className="w-12 h-1.5 rounded-full bg-neutral-300" />
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-12 h-1.5 rounded-full bg-slate-300" />
         </div>
-        <div className="flex items-center justify-between mb-6">
+
+        {/* Modal Header (Fixed) */}
+        <div className="px-6 py-4 border-b border-black/[0.05] flex items-center justify-between shrink-0 bg-white/60">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-apple-xs">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-apple-xs">
               <IndianRupee size={20} />
             </div>
             <div>
-              <h2 className="font-bold text-xl text-slate-900 tracking-tight">Add Expense</h2>
-              <p className="text-sm text-slate-500 font-medium">{group.name}</p>
+              <div className="flex items-center gap-2">
+                <h2 className="font-bold text-lg sm:text-xl text-slate-900 tracking-tight">Add Expense</h2>
+                <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 rounded-full max-w-[130px] truncate">
+                  {group.name}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 font-medium">Split bills, meals & trips with group</p>
             </div>
           </div>
           <button
             id="expense-modal-close"
+            type="button"
             onClick={onClose}
-            className="p-2 rounded-full text-slate-400 hover:text-slate-800 hover:bg-black/[0.05] active:scale-90 transition-all"
+            className="w-8 h-8 rounded-full bg-black/[0.04] hover:bg-black/[0.08] text-slate-400 hover:text-slate-800 flex items-center justify-center active:scale-90 transition-all"
+            title="Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        <form id="add-expense-form" onSubmit={handleSubmit} className="space-y-5">
-          {/* Description & Receipt OCR Scan */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-slate-800" htmlFor="expense-description">Description</label>
-              <label 
-                htmlFor="receipt-upload-input" 
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all active:scale-95 border ${
-                  isScanningReceipt 
-                    ? 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'
-                    : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                }`}
-              >
-                {isScanningReceipt ? (
-                  <>
-                    <Loader2 size={13} className="animate-spin" />
-                    <span>Scanning OCR...</span>
-                  </>
-                ) : (
-                  <>
-                    <Camera size={13} />
-                    <span>Scan Receipt</span>
-                  </>
-                )}
-              </label>
-              <input 
-                id="receipt-upload-input" 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                onChange={handleReceiptScan} 
-                disabled={isScanningReceipt}
-              />
-            </div>
-            <input
-              id="expense-description"
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Dinner at restaurant"
-              className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400"
-              autoFocus
-            />
-
-            {/* Receipt Preview Thumbnail */}
-            {receiptImage && (
-              <div className="mt-2.5 p-2 rounded-2xl bg-black/[0.03] border border-black/[0.06] flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <img src={receiptImage} alt="Receipt preview" className="w-10 h-10 object-cover rounded-xl border border-black/[0.08]" />
-                  <div>
-                    <p className="text-xs font-semibold text-slate-800">Receipt Photo Attached</p>
-                    <p className="text-[10px] text-slate-400">Saved with expense & viewable in lightbox</p>
-                  </div>
+        <form id="add-expense-form" onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+            {/* Hero Amount Display */}
+            {splitType !== 'itemized' ? (
+              <div className="py-3 px-4 rounded-3xl bg-gradient-to-b from-slate-50 to-slate-100/50 border border-slate-200/60 flex flex-col items-center justify-center shadow-apple-xs">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                  Total Amount
+                </span>
+                <div className="flex items-center justify-center gap-1.5 w-full">
+                  <span className="text-3xl sm:text-4xl font-semibold text-slate-400 select-none">
+                    {currencySymbol}
+                  </span>
+                  <input
+                    id="expense-amount"
+                    type="number"
+                    value={amountRupees}
+                    onChange={(e) => setAmountRupees(e.target.value)}
+                    placeholder="0.00"
+                    min="0.01"
+                    step="0.01"
+                    className="w-48 sm:w-56 text-center text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 bg-transparent border-none p-0 focus:outline-none placeholder-slate-300"
+                    autoFocus
+                  />
                 </div>
-                <button 
-                  type="button" 
-                  onClick={() => setReceiptImage(null)}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
-                  title="Remove receipt photo"
-                >
-                  <Trash2 size={15} />
-                </button>
+                <div className="mt-2.5 flex items-center gap-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-black/[0.08] shadow-apple-xs transition-colors cursor-pointer">
+                    <Globe size={13} className="text-slate-500" />
+                    <select
+                      id="expense-currency-select"
+                      value={currency}
+                      onChange={(e) => setCurrency(e.target.value)}
+                      className="text-xs font-semibold text-slate-700 bg-transparent border-none p-0 focus:outline-none cursor-pointer"
+                    >
+                      {CURRENCIES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {currency !== 'INR' && amountRupees && (
+                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">
+                      ≈ ₹{convertToINR(amountRupees, currency).toFixed(2)} INR
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="py-3 px-4 rounded-3xl bg-emerald-50/60 border border-emerald-500/20 flex items-center justify-between shadow-apple-xs">
+                <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">Itemized Total</span>
+                <span className="text-2xl font-extrabold text-emerald-700 tracking-tight">
+                  {currencySymbol}{calculateItemizedSummary().finalTotal.toFixed(2)}
+                </span>
               </div>
             )}
-          </div>
 
-          {/* Amount & Currency Selector */}
-          {splitType !== 'itemized' && (
+            {/* Description & Receipt OCR Scan */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-semibold text-slate-800" htmlFor="expense-amount">
-                  Total Amount ({currencySymbol})
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider" htmlFor="expense-description">
+                  Description
                 </label>
-                <div className="flex items-center gap-1.5 bg-black/[0.04] px-2.5 py-1 rounded-full border border-black/[0.04]">
-                  <Globe size={13} className="text-slate-500" />
-                  <select
-                    id="expense-currency-select"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="text-xs font-semibold text-slate-700 bg-transparent border-none p-0 focus:outline-none cursor-pointer"
-                  >
-                    {CURRENCIES.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="relative">
-                <input
-                  id="expense-amount"
-                  type="number"
-                  value={amountRupees}
-                  onChange={(e) => setAmountRupees(e.target.value)}
-                  placeholder="0.00"
-                  min="0.01"
-                  step="0.01"
-                  className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400 font-semibold text-lg"
+                <label 
+                  htmlFor="receipt-upload-input" 
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all active:scale-95 border ${
+                    isScanningReceipt 
+                      ? 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-apple-xs'
+                  }`}
+                >
+                  {isScanningReceipt ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" />
+                      <span>Scanning OCR...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Camera size={13} />
+                      <span>Scan Receipt</span>
+                    </>
+                  )}
+                </label>
+                <input 
+                  id="receipt-upload-input" 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  onChange={handleReceiptScan} 
+                  disabled={isScanningReceipt}
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400 pointer-events-none">
-                  {currencySymbol}
-                </div>
               </div>
-              {currency !== 'INR' && amountRupees && (
-                <p className="mt-1.5 text-xs font-semibold text-emerald-700 flex items-center gap-1.5">
-                  <span>≈ ₹{convertToINR(amountRupees, currency).toFixed(2)} INR</span>
-                  <span className="text-slate-400 font-normal">
-                    (1 {currency} = ₹{CURRENCIES.find((c) => c.code === currency)?.rateToINR})
-                  </span>
-                </p>
+              <input
+                id="expense-description"
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="e.g. Dinner at restaurant, flight, groceries"
+                className="w-full px-4 py-3 rounded-2xl apple-input text-slate-900 placeholder-slate-400 font-medium text-sm"
+              />
+
+              {/* Receipt Preview Thumbnail */}
+              {receiptImage && (
+                <div className="mt-2.5 p-2 rounded-2xl bg-black/[0.03] border border-black/[0.06] flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <img src={receiptImage} alt="Receipt preview" className="w-10 h-10 object-cover rounded-xl border border-black/[0.08]" />
+                    <div>
+                      <p className="text-xs font-semibold text-slate-800">Receipt Photo Attached</p>
+                      <p className="text-[10px] text-slate-400">Saved with expense & viewable in lightbox</p>
+                    </div>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => setReceiptImage(null)}
+                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                    title="Remove receipt photo"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               )}
             </div>
-          )}
 
           {/* Category Picker */}
           <div>
@@ -1161,13 +1177,15 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4 mt-6 border-t border-black/[0.06]">
+          </div>
+
+          {/* Fixed Bottom Action Bar */}
+          <div className="p-4 sm:p-5 bg-white/90 backdrop-blur-md border-t border-black/[0.06] flex items-center gap-3 shrink-0">
             <button
               type="button"
               id="cancel-expense-btn"
               onClick={onClose}
-              className="flex-1 py-3.5 px-5 rounded-full font-medium text-neutral-700 bg-slate-100 hover:bg-slate-200/80 active:scale-95 transition-all"
+              className="py-3 px-5 rounded-full font-semibold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all text-center"
             >
               Cancel
             </button>
@@ -1175,15 +1193,17 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               type="submit"
               id="submit-expense-btn"
               disabled={loading}
-              className="flex-1 py-3.5 px-5 rounded-full font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-apple-xs hover:shadow-apple active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="flex-1 py-3 px-5 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-apple-sm hover:shadow-apple active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 size={18} className="animate-spin" />
-                  Adding...
-                </span>
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Adding Expense...</span>
+                </>
               ) : (
-                'Add Expense'
+                <span>
+                  Add Expense • {currencySymbol}{enteredAmount > 0 ? enteredAmount.toFixed(2) : (splitType === 'itemized' ? calculateItemizedSummary().finalTotal.toFixed(2) : '0.00')}
+                </span>
               )}
             </button>
           </div>
