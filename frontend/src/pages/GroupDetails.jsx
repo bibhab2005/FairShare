@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { fetchGroupById, addMemberToGroup, deleteGroup, updateGroup, removeMemberFromGroup } from '../features/groups/api/groupService';
 import { fetchExpenses, deleteExpense } from '../features/expenses/api/expenseService';
@@ -52,32 +52,77 @@ const GroupDetails = () => {
 
   const [deletingId, setDeletingId] = useState(null);
   const [showBalances, setShowBalances] = useState(true);
+  const [isLiveSyncing, setIsLiveSyncing] = useState(false);
+  const previousExpenseCountRef = useRef(null);
 
-  const loadAll = useCallback(async () => {
+  const loadAll = useCallback(async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
+    else setIsLiveSyncing(true);
+
     try {
       const [groupRes, expenseRes, balanceRes] = await Promise.all([
         fetchGroupById(id),
         fetchExpenses(id),
         fetchBalances(id),
       ]);
+
+      const newExpenses = expenseRes.data.expenses || [];
+      
+      // Notify user with feedback when an expense is added or modified by a peer
+      if (isSilent && previousExpenseCountRef.current !== null) {
+        if (newExpenses.length > previousExpenseCountRef.current) {
+          const newest = newExpenses[0];
+          if (newest) {
+            toast.success(`New expense added: ${newest.description}`, { id: 'live-sync-alert', icon: '✨' });
+          }
+        } else if (newExpenses.length < previousExpenseCountRef.current) {
+          toast('Expenses updated', { id: 'live-sync-alert', icon: '🔄' });
+        }
+      }
+
+      previousExpenseCountRef.current = newExpenses.length;
       setGroup(groupRes.data.group);
-      setExpenses(expenseRes.data.expenses);
-      setBalances(balanceRes.data.balances);
-      setSimplifiedDebts(balanceRes.data.simplifiedDebts);
+      setExpenses(newExpenses);
+      setBalances(balanceRes.data.balances || []);
+      setSimplifiedDebts(balanceRes.data.simplifiedDebts || []);
     } catch (err) {
       if (err.response?.status === 403 || err.response?.status === 404) {
         navigate('/');
-      } else {
+      } else if (!isSilent) {
         toast.error('Failed to load group data. Please try again.');
       }
     } finally {
       setLoading(false);
+      setIsLiveSyncing(false);
     }
   }, [id, navigate]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    loadAll();
+    loadAll(false);
+
+    // Adaptive real-time polling & focus revalidation
+    const handleRevalidate = () => {
+      if (document.visibilityState === 'visible') {
+        loadAll(true);
+      }
+    };
+
+    window.addEventListener('focus', handleRevalidate);
+    document.addEventListener('visibilitychange', handleRevalidate);
+
+    // Poll every 8s while the tab is active/visible
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadAll(true);
+      }
+    }, 8000);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleRevalidate);
+      document.removeEventListener('visibilitychange', handleRevalidate);
+    };
   }, [loadAll]);
 
   const handleShareLink = () => {
@@ -263,6 +308,13 @@ const GroupDetails = () => {
                   <span className="text-sm text-slate-500 font-medium">
                     Total:{' '}
                     <span className="text-slate-900 font-bold">{formatPaise(totalSpent)}</span>
+                  </span>
+                  <span 
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 shadow-apple-xs select-none"
+                    title="Real-time live sync active"
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full bg-emerald-500 ${isLiveSyncing ? 'animate-ping' : 'animate-pulse'}`} />
+                    Live
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-4">

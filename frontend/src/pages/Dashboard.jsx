@@ -29,7 +29,8 @@ const Dashboard = () => {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
-  const loadGroups = async () => {
+  const loadGroups = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const res = await fetchGroups();
       const loadedGroups = res.data.groups;
@@ -61,7 +62,7 @@ const Dashboard = () => {
       setHasExpensesMap(newHasExpensesMap);
       
     } catch (err) {
-      if (err?.response?.status !== 401) {
+      if (!isSilent && err?.response?.status !== 401) {
         toast.error('Failed to load groups. Please try again later.');
       }
     } finally {
@@ -70,7 +71,29 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    loadGroups();
+    loadGroups(false);
+
+    const handleRevalidate = () => {
+      if (document.visibilityState === 'visible') {
+        loadGroups(true);
+      }
+    };
+
+    window.addEventListener('focus', handleRevalidate);
+    document.addEventListener('visibilitychange', handleRevalidate);
+
+    // Poll every 12s while the dashboard tab is active/visible
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadGroups(true);
+      }
+    }, 12000);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleRevalidate);
+      document.removeEventListener('visibilitychange', handleRevalidate);
+    };
   }, [user?._id]);
 
   const handleCreateGroup = async (e) => {
