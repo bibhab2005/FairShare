@@ -2,6 +2,11 @@
 
 This document outlines planned and proposed future features for FairShare, organized by priority tier, expected user impact, and technical implementation considerations.
 
+> [!NOTE]
+> **Recently Shipped on `feature/apple-design-system`:**
+> - **Apple Design System:** Fluid spring physics (`damping: 25, stiffness: 300`), diffused multi-stop elevation shadows, universal tactile active feedback (`:active { transform: scale(0.972); }`), frosted glass materials, and optical tracking typography.
+> - **Adaptive Real-Time Sync & Live Badge:** Instant window focus / visibility revalidation and 8s background polling with real-time peer notification toasts ("New expense added").
+
 ---
 
 ## 🚀 Tier 1: High Impact & Quick Wins (Friction Reducers)
@@ -93,3 +98,53 @@ This document outlines planned and proposed future features for FairShare, organ
 - **Problem:** International trips involve multiple currencies (USD, EUR, GBP, JPY, AED, etc.).
 - **Solution:** Allow selecting the transaction currency when logging an expense. Automatically converts to INR (or group base currency) using cached daily exchange rates.
 - **Technical Path:** Cached free FX API (e.g., Frankfurter API or ExchangeRate-API) with offline fallback.
+
+---
+
+## ⚡ Tier 4: Power User & Travel Experience
+
+### 10. Split by Shares, Ratios, or Percentages (Unequal Splits)
+- **Problem:** Expenses are currently split equally or by manual custom paise calculations. Doesn't account for couples (2 shares vs 1 share), variable trip days (stayed 2 nights vs 4 nights), or percentage contributions (60% / 40%).
+- **Solution:** Add "By Shares" and "By Percentage" tabs in `ExpenseModal`.
+- **Technical Path:** Pure client-side math converting ratios/shares into individual `amountPaise` entries in the existing `splits` schema. Zero backend changes required.
+
+---
+
+### 11. Receipt Photo Attachments & Full-Screen Lightbox
+- **Problem:** Group members frequently ask for bill photos or need invoice proof for reimbursements.
+- **Solution:** Optional image/receipt photo attachment in the expense modal. Displays a subtle thumbnail pill on expense rows that opens into an Apple-style fluid zoom lightbox.
+- **Technical Path:** Lightweight image compression client-side, stored as an image URL or cloud storage reference on the `Expense` model.
+
+---
+
+### 12. Spotlight Quick Search & Command Palette (`Cmd + K` / `Ctrl + K`)
+- **Problem:** Searching for past expenses, transactions, or specific members across multiple groups becomes tedious.
+- **Solution:** Apple Spotlight-inspired command palette:
+  - Search any past expense by title, date, or member across all groups.
+  - Instant navigation shortcuts (*"Go to Goa Trip"*, *"Create new group"*, *"Add expense"*).
+- **Technical Path:** Client-side modal index with keyboard shortcut listener.
+
+---
+
+### 13. Trip Wrap-Up & Group Archiving ("Settle & Freeze")
+- **Problem:** Old vacation groups clutter the active dashboard long after debts are settled.
+- **Solution:** A "Wrap Up Group" action available when all simplified debts reach ₹0:
+  - Locks group from accidental edits or unwanted additions.
+  - Generates a celebratory summary card (Total group spend, top contributors).
+  - Moves the group to a collapsible "Archived Groups" section.
+- **Technical Path:** Add `isArchived: { type: Boolean, default: false }` to `Group` model.
+
+---
+
+### 14. Multi-Payer Expenses ("Multiple People Paid")
+- **Problem:** For large collective expenses (e.g., villa deposit or restaurant banquet), two people often split the payment at the counter (*"Alice paid ₹6,000 and Bob paid ₹4,000"*).
+- **Solution:** Allow adding multiple payers with individual paid amounts that sum to the total bill, resolving debt balances accurately in one single transaction.
+- **Technical Path:** Support array of payers or split settlement records.
+
+---
+
+### 15. Native Mobile Share Sheet (`navigator.share`)
+- **Problem:** Copying invite links to the clipboard requires opening WhatsApp or Messages manually to find the contact.
+- **Solution:** Use Web Share API (`navigator.share`) on mobile devices to trigger the native iOS/Android share drawer, letting users share directly to WhatsApp, Telegram, or iMessage in one tap with automatic fallback to clipboard copy on desktop.
+- **Technical Path:** Standard browser API check `if (navigator.share) { navigator.share(...) }`.
+
