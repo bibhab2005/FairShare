@@ -124,24 +124,28 @@ const ProfileSettingsModal = ({ isOpen, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-md"
             onClick={onClose}
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="relative w-full max-w-sm sm:max-w-md bg-white rounded-3xl sm:rounded-[2rem] shadow-2xl p-6 sm:p-8 my-auto z-10 border border-slate-100"
+            initial={{ opacity: 0, scale: 0.94, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 12 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            className="relative w-full max-w-sm sm:max-w-md apple-glass-card rounded-[2.25rem] shadow-apple-lg p-6 sm:p-8 my-auto z-10 border border-white/80"
           >
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-slate-800">Profile Settings</h2>
+                <div>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900">Profile Settings</h2>
+                  <p className="text-slate-500 text-xs sm:text-sm mt-0.5 font-medium">Update your account details</p>
+                </div>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                  className="p-2 hover:bg-black/[0.05] active:scale-90 rounded-full transition-all text-slate-400 hover:text-slate-800"
                 >
-                  <X className="w-5 h-5 text-slate-500" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 

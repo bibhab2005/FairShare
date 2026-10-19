@@ -21,7 +21,7 @@ const RecentSettlementsBox = ({ expenses, currentUserId }) => {
 
   return (
     <div className="mt-8">
-      <h2 className="text-2xl font-medium tracking-tight text-slate-900 mb-6">Recent Settlements</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-5">Recent Settlements</h2>
       <div className="space-y-3">
         {myRecentSettlements.map((settlement, idx) => {
           const date = new Date(settlement.createdAt).toLocaleDateString('en-IN', {
@@ -42,32 +42,32 @@ const RecentSettlementsBox = ({ expenses, currentUserId }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              className="bg-white border border-emerald-100 rounded-3xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+              className="apple-card-surface border border-emerald-500/15 rounded-[1.75rem] p-5 shadow-apple-xs relative overflow-hidden"
             >
               {/* Decorative background element */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full blur-2xl -mr-10 -mt-10 opacity-60"></div>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full blur-2xl -mr-10 -mt-10 opacity-70 pointer-events-none"></div>
               
               <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3.5">
                   {otherUserAvatar ? (
                     <img 
                       src={otherUserAvatar} 
                       alt={otherUserName} 
                       referrerPolicy="no-referrer"
-                      className="w-10 h-10 rounded-full object-cover shadow-sm border border-emerald-100" 
+                      className="w-10 h-10 rounded-full object-cover shadow-apple-xs border border-emerald-500/20" 
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-sm font-medium text-emerald-600 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-500/20 flex items-center justify-center text-sm font-bold text-emerald-700 shadow-apple-xs">
                       {otherUserName.charAt(0).toUpperCase()}
                     </div>
                   )}
                   
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-slate-900">{isPayer ? 'You' : otherUserName}</span>
-                      <span className="text-sm text-slate-500">{isPayer ? `paid ${otherUserName}` : 'paid you'}</span>
+                      <span className="font-bold text-slate-900">{isPayer ? 'You' : otherUserName}</span>
+                      <span className="text-sm text-slate-500 font-medium">{isPayer ? `paid ${otherUserName}` : 'paid you'}</span>
                     </div>
-                    <p className="text-xs text-neutral-400 mt-0.5">{date}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{date}</p>
                   </div>
                 </div>
                 
@@ -75,9 +75,9 @@ const RecentSettlementsBox = ({ expenses, currentUserId }) => {
                   <span className="text-lg font-bold text-emerald-600">
                     +{formatPaise(settlement.amountPaise)}
                   </span>
-                  <div className="flex items-center gap-1 mt-1 bg-emerald-50 px-2 py-0.5 rounded-full">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                    <span className="text-[10px] font-medium text-emerald-700 uppercase tracking-wider">Settled</span>
+                  <div className="flex items-center gap-1 mt-1 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Settled</span>
                   </div>
                 </div>
               </div>

@@ -52,9 +52,10 @@ const JoinGroup = () => {
         <Navbar />
         <main className="max-w-2xl mx-auto px-4 sm:px-6 py-16 sm:py-24 relative z-0">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl rounded-3xl p-8 sm:p-12 text-center"
+            initial={{ opacity: 0, y: 15, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="apple-glass-card border border-white/80 shadow-apple-lg rounded-[2.5rem] p-8 sm:p-12 text-center"
           >
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 gap-4">
@@ -63,23 +64,23 @@ const JoinGroup = () => {
               </div>
             ) : error ? (
               <div className="flex flex-col items-center gap-6">
-                <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center">
-                  <AlertCircle size={40} className="text-red-500" />
+                <div className="w-20 h-20 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-600 shadow-apple-xs">
+                  <AlertCircle size={36} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900 mb-2">Invite Not Found</h2>
-                  <p className="text-slate-500">{error}</p>
+                  <h2 className="text-2xl font-bold text-slate-900 mb-2 tracking-tight">Invite Not Found</h2>
+                  <p className="text-slate-500 font-medium">{error}</p>
                 </div>
                 <Link
                   to="/"
-                  className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+                  className="mt-4 inline-flex items-center justify-center px-6 py-3.5 rounded-full font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 active:scale-95 transition-all"
                 >
                   Return to Dashboard
                 </Link>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-8">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center shadow-md overflow-hidden ring-4 ring-white">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center shadow-apple-xs overflow-hidden ring-4 ring-white/80">
                   {groupInfo?.creatorAvatar ? (
                     <img src={groupInfo.creatorAvatar} alt={groupInfo?.creatorName} className="w-full h-full object-cover" />
                   ) : (
@@ -90,20 +91,20 @@ const JoinGroup = () => {
                 </div>
                 
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-3">
+                  <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">
                     You've been invited!
                   </h2>
-                  <p className="text-slate-500 text-lg">
-                    <span className="font-semibold text-slate-700">{groupInfo?.creatorName}</span> invited you to join <br/>
-                    <span className="font-bold text-slate-900 text-xl block mt-2">"{groupInfo?.groupName}"</span>
+                  <p className="text-slate-500 text-base sm:text-lg font-medium">
+                    <span className="font-semibold text-slate-800">{groupInfo?.creatorName}</span> invited you to join <br/>
+                    <span className="font-bold text-slate-900 text-xl sm:text-2xl block mt-2">"{groupInfo?.groupName}"</span>
                   </p>
                 </div>
 
-                <div className="w-full flex flex-col gap-3 mt-4">
+                <div className="w-full flex flex-col gap-3 mt-2">
                   <button
                     onClick={handleJoin}
                     disabled={joining}
-                    className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:hover:translate-y-0"
+                    className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-apple-xs hover:shadow-apple active:scale-95 transition-all disabled:opacity-50"
                   >
                     {joining ? (
                       <Loader2 size={20} className="animate-spin" />
@@ -114,7 +115,7 @@ const JoinGroup = () => {
                   </button>
                   <Link
                     to="/"
-                    className="w-full inline-flex items-center justify-center px-8 py-4 rounded-2xl font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+                    className="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-full font-medium text-slate-500 hover:text-slate-800 hover:bg-black/[0.04] active:scale-95 transition-all"
                   >
                     Decline
                   </Link>

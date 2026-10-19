@@ -2,18 +2,18 @@ import { Link } from 'react-router-dom';
 
 const Header = ({ onLoginClick }) => {
     return (
-        <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
-            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                <div className="flex items-center justify-center w-6 h-6 bg-black text-white rounded-md">
+        <header className="sticky top-0 z-40 flex items-center justify-between px-6 py-4 apple-glass-nav border-b border-black/[0.06] transition-all">
+            <Link to="/" className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900 active:scale-95 transition-transform">
+                <div className="flex items-center justify-center w-7 h-7 bg-slate-950 text-white rounded-lg shadow-apple-xs">
                     <span className="text-sm font-bold">→</span>
                 </div>
-                FairShare
+                <span>FairShare</span>
             </Link>
             
             <button 
                 type="button"
                 onClick={onLoginClick}
-                className="text-sm font-semibold text-gray-700 hover:text-black px-4 py-2 rounded-full hover:bg-gray-50 transition-colors"
+                className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-4 py-2 rounded-full hover:bg-black/[0.04] active:scale-95 transition-all shadow-apple-xs border border-black/[0.06] bg-white/70"
             >
                 Sign up
             </button>

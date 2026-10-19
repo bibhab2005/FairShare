@@ -75,38 +75,38 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
 
   return (
     <div className="space-y-6">
-      <div className={`rounded-3xl p-6 border ${
+      <div className={`rounded-[2rem] p-6 border transition-all ${
         netBalance > 0 
-          ? 'bg-emerald-50 border-emerald-100 shadow-sm' 
+          ? 'bg-emerald-500/[0.08] border-emerald-500/20 shadow-apple-xs' 
           : netBalance < 0 
-            ? 'bg-red-50 border-red-100 shadow-sm'
-            : 'bg-slate-50 border-white/40'
+            ? 'bg-rose-500/[0.08] border-rose-500/20 shadow-apple-xs' 
+            : 'apple-card-surface border border-black/[0.06]'
       }`}>
-        <h3 className={`text-sm font-semibold tracking-wide uppercase mb-4 ${
-          netBalance > 0 ? 'text-emerald-700' : netBalance < 0 ? 'text-red-700' : 'text-slate-600'
+        <h3 className={`text-xs font-bold tracking-wider uppercase mb-3 ${
+          netBalance > 0 ? 'text-emerald-700' : netBalance < 0 ? 'text-rose-700' : 'text-slate-500'
         }`}>Your Overall Balance</h3>
         {myBalance ? (
           <div className="flex items-center gap-3">
             {netBalance > 0 ? (
               <>
-                <span className="text-3xl font-medium tracking-tight text-green-600">
+                <span className="text-3xl sm:text-4xl font-bold tracking-tight text-emerald-600">
                   +{formatPaise(netBalance)}
                 </span>
-                <span className="text-sm font-medium text-slate-600">gets back</span>
+                <span className="text-sm font-semibold text-emerald-700/80">gets back</span>
               </>
             ) : netBalance < 0 ? (
               <>
-                <span className="text-3xl font-medium tracking-tight text-red-600">
+                <span className="text-3xl sm:text-4xl font-bold tracking-tight text-rose-600">
                   {formatPaise(Math.abs(netBalance))}
                 </span>
-                <span className="text-sm font-medium text-slate-600">you owe</span>
+                <span className="text-sm font-semibold text-rose-700/80">you owe</span>
               </>
             ) : (
-              <span className="text-3xl font-medium tracking-tight text-slate-900">Settled up</span>
+              <span className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">Settled up</span>
             )}
           </div>
         ) : (
-          <p className="text-slate-600 font-medium">Not involved in any expenses yet.</p>
+          <p className="text-slate-500 font-medium">Not involved in any expenses yet.</p>
         )}
       </div>
 
@@ -122,22 +122,22 @@ const BalanceSummary = ({ balances, simplifiedDebts, groupId, onSettled }) => {
       )}
 
       {simplifiedDebts.length > 0 && (
-        <div className="bg-white/60 backdrop-blur-lg border border-white/40 shadow-sm rounded-3xl p-6">
-          <h3 className="text-sm font-semibold tracking-wide text-slate-600 uppercase mb-4">All Group Debts</h3>
-          <div className="space-y-3">
+        <div className="apple-card-surface rounded-[2rem] p-6 border border-black/[0.06]">
+          <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-4">All Group Debts</h3>
+          <div className="space-y-2">
             {simplifiedDebts.map((debt, idx) => {
               const fromUser = findUser(debt.from);
               const toUser = findUser(debt.to);
               const fromName = debt.from === user?._id ? 'You' : (fromUser?.name || 'Unknown');
               const toName = debt.to === user?._id ? 'You' : (toUser?.name || 'Unknown');
               return (
-                <div key={`all-debt-${idx}`} className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/60 backdrop-blur-lg transition-colors duration-200">
+                <div key={`all-debt-${idx}`} className="flex items-center justify-between p-3 rounded-2xl hover:bg-black/[0.03] transition-colors duration-150">
                   <div className="flex items-center gap-2 text-neutral-600 text-sm">
-                    <span className="font-medium text-slate-900">{fromName}</span>
-                    <ArrowRight size={14} className="text-neutral-300" />
-                    <span className="font-medium text-slate-900">{toName}</span>
+                    <span className="font-semibold text-slate-900">{fromName}</span>
+                    <ArrowRight size={14} className="text-slate-400" />
+                    <span className="font-semibold text-slate-900">{toName}</span>
                   </div>
-                  <span className="font-medium text-slate-600">{formatPaise(debt.amountPaise)}</span>
+                  <span className="font-bold text-slate-900">{formatPaise(debt.amountPaise)}</span>
                 </div>
               );
             })}

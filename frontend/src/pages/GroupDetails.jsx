@@ -228,30 +228,30 @@ const GroupDetails = () => {
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900">{group.name}</h1>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900">{group.name}</h1>
                   <button
                     onClick={() => {
                       setEditName(group.name);
                       setEditDesc(group.description || '');
                       setShowEditGroup(true);
                     }}
-                    className="p-2 mt-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors"
+                    className="p-2 mt-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/80 active:scale-90 rounded-full transition-all"
                     title="Edit Group"
                   >
                     <Edit2 size={20} />
                   </button>
                   <button
                     onClick={handleShareLink}
-                    className="sm:hidden p-2 mt-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors"
+                    className="sm:hidden p-2 mt-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/80 active:scale-90 rounded-full transition-all"
                     title="Share Link"
                   >
                     <LinkIcon size={20} />
                   </button>
                 </div>
                 {group.description && (
-                  <p className="text-slate-600 text-lg mt-2">{group.description}</p>
+                  <p className="text-slate-500 text-base sm:text-lg mt-2 font-medium">{group.description}</p>
                 )}
-                <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-6">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-5">
                   <span className="flex items-center gap-2 text-sm text-slate-500 font-medium">
                     <Users size={16} className="text-slate-400" />
                     {group.members.length} {group.members.length === 1 ? 'member' : 'members'}
@@ -262,7 +262,7 @@ const GroupDetails = () => {
                   </span>
                   <span className="text-sm text-slate-500 font-medium">
                     Total:{' '}
-                    <span className="text-slate-900">{formatPaise(totalSpent)}</span>
+                    <span className="text-slate-900 font-bold">{formatPaise(totalSpent)}</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-4">
@@ -272,10 +272,10 @@ const GroupDetails = () => {
                       onClick={() => handleRemoveMember(member._id, member.name)}
                       disabled={member._id === user?._id}
                       title={member._id === user?._id ? "You cannot remove yourself" : `Click to remove ${member.name}`}
-                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors shadow-sm ${
+                      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-semibold transition-all shadow-apple-xs active:scale-95 ${
                         member._id === user?._id 
-                          ? 'bg-slate-100 text-slate-600 cursor-default'
-                          : 'bg-emerald-50 text-emerald-700 hover:bg-red-50 hover:text-red-700'
+                          ? 'bg-slate-100 text-slate-700 cursor-default border border-slate-200/60'
+                          : 'bg-emerald-50 text-emerald-800 border border-emerald-500/20 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200'
                       }`}
                     >
                       {(member.avatar || member.picture) ? (
@@ -283,10 +283,10 @@ const GroupDetails = () => {
                           src={member.avatar || member.picture} 
                           alt={member.name} 
                           referrerPolicy="no-referrer"
-                          className="w-5 h-5 rounded-full object-cover shadow-sm"
+                          className="w-5 h-5 rounded-full object-cover shadow-apple-xs"
                         />
                       ) : (
-                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center font-bold text-xs shadow-sm">
+                        <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-apple-xs">
                           {member.name.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -296,10 +296,10 @@ const GroupDetails = () => {
                 </div>
               </div>
               <div className="flex w-full md:w-auto shrink-0 mt-2 md:mt-0">
-                <div className="flex w-full sm:w-auto gap-2 sm:gap-3">
+                <div className="flex w-full sm:w-auto gap-2.5 sm:gap-3">
                   <button
                     onClick={handleShareLink}
-                    className="hidden sm:inline-flex flex-1 sm:flex-none items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-colors duration-200 shadow-sm whitespace-nowrap text-sm sm:text-base"
+                    className="hidden sm:inline-flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 sm:px-6 py-3.5 rounded-full font-semibold text-slate-700 apple-glass hover:bg-white border border-black/[0.08] active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none"
                     title="Copy Invite Link"
                   >
                     <LinkIcon size={18} />
@@ -308,7 +308,7 @@ const GroupDetails = () => {
                   <button
                     id="add-member-toggle-btn"
                     onClick={() => setShowAddMember(!showAddMember)}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors duration-200 shadow-sm whitespace-nowrap text-sm sm:text-base"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3.5 rounded-full font-semibold text-emerald-800 bg-emerald-50/90 hover:bg-emerald-100 border border-emerald-500/20 active:scale-95 transition-all shadow-apple-xs whitespace-nowrap text-sm sm:text-base select-none"
                   >
                     <UserPlus size={18} />
                     Add Member
@@ -316,7 +316,7 @@ const GroupDetails = () => {
                   <button
                     id="add-expense-btn"
                     onClick={() => setShowExpenseModal(true)}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-full font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-apple-xs hover:shadow-apple active:scale-95 transition-all whitespace-nowrap text-sm sm:text-base select-none"
                   >
                     <Plus size={18} />
                     Add Expense

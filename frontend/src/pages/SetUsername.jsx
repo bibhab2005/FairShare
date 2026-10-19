@@ -71,38 +71,34 @@ export default function SetUsername() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-[2rem] shadow-sm p-8 sm:p-10 border border-neutral-100">
-        <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 text-xl font-bold mx-auto">
+    <div className="min-h-screen bg-[#fbfbfd] flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md apple-glass-card rounded-[2.25rem] shadow-apple-lg p-8 sm:p-10 border border-white/80">
+        <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl flex items-center justify-center mb-6 text-2xl font-bold mx-auto shadow-apple-xs">
           @
         </div>
         
-        <h1 className="text-2xl font-bold text-center text-neutral-900 mb-2">Choose your username</h1>
-        <p className="text-center text-neutral-500 mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-slate-900 tracking-tight mb-2">Choose your username</h1>
+        <p className="text-center text-slate-500 text-sm mb-8 font-medium">
           This is how your friends will find you and add you to groups.
         </p>
 
         {error && (
-          <div className="flex items-center gap-3 p-4 rounded-2xl bg-red-50 text-red-600 text-sm mb-6">
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-rose-50 text-rose-600 text-sm mb-6">
             <AlertCircle size={16} className="shrink-0" />
-            <span className="font-medium">{error}</span>
+            <span className="font-semibold">{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 font-medium">@</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">@</span>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ''))}
                 placeholder="username"
-                className={`w-full bg-neutral-50 border rounded-2xl py-4 pl-8 pr-12 text-lg outline-none transition-all placeholder:text-neutral-300
-                  ${available === false ? 'border-red-300 focus:border-red-400 focus:ring-4 focus:ring-red-100' : 
-                    available === true ? 'border-emerald-300 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100' : 
-                    'border-neutral-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 focus:bg-white'}
-                `}
+                className="w-full apple-input rounded-full py-3.5 pl-9 pr-12 text-base font-medium placeholder:text-slate-400"
                 required
                 minLength={3}
               />
@@ -122,28 +118,28 @@ export default function SetUsername() {
             </div>
             
             {username.length > 0 && username.length < 3 && (
-              <p className="text-sm text-neutral-500 mt-2 ml-1">Must be at least 3 characters</p>
+              <p className="text-xs text-slate-400 mt-2 ml-2 font-medium">Must be at least 3 characters</p>
             )}
             {available === false && (
-              <p className="text-sm text-red-500 mt-2 ml-1">This username is already taken</p>
+              <p className="text-xs text-rose-500 mt-2 ml-2 font-semibold">This username is already taken</p>
             )}
             {available === true && (
-              <p className="text-sm text-emerald-600 mt-2 ml-1">Username available!</p>
+              <p className="text-xs text-emerald-600 mt-2 ml-2 font-semibold">Username available!</p>
             )}
           </div>
 
           <div>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 font-medium">₹</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
               <input
                 type="text"
                 value={upiId}
                 onChange={(e) => setUpiId(e.target.value)}
                 placeholder="UPI ID (optional)"
-                className="w-full bg-neutral-50 border border-neutral-200 rounded-2xl py-4 pl-8 pr-4 text-lg outline-none transition-all placeholder:text-neutral-300 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 focus:bg-white"
+                className="w-full apple-input rounded-full py-3.5 pl-9 pr-4 text-base font-medium placeholder:text-slate-400"
               />
             </div>
-            <p className="text-xs text-neutral-500 mt-2 ml-1 leading-relaxed">
+            <p className="text-xs text-slate-400 mt-2 ml-2 leading-relaxed">
               Adding a UPI ID makes it easy to receive payments from friends. You can add any valid UPI ID.
             </p>
           </div>
@@ -151,7 +147,7 @@ export default function SetUsername() {
           <button
             type="submit"
             disabled={loading || available !== true}
-            className="w-full bg-emerald-500 text-white rounded-full py-4 px-6 font-medium text-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full py-3.5 px-6 font-semibold shadow-apple-xs hover:shadow-apple active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? 'Saving...' : 'Complete Profile'}
           </button>

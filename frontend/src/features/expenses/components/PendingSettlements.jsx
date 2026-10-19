@@ -49,8 +49,8 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
   };
 
   return (
-    <div className="border border-white/40 rounded-[1.5rem] p-5 shadow-sm bg-white/60 backdrop-blur-lg">
-      <h3 className="text-xs font-bold text-slate-600 tracking-wider mb-4 uppercase">
+    <div className="apple-card-surface rounded-[2rem] p-5 sm:p-6 border border-black/[0.06]">
+      <h3 className="text-xs font-bold text-slate-500 tracking-wider mb-4 uppercase">
         Your Settlements
       </h3>
       
@@ -73,16 +73,16 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
           // Absolute foolproof check based on BalanceSummary's formatting
           const isCurrentUserOwed = debt.to === 'You' || finalDisplayTo === 'You';
           
-          const textColor = isCurrentUserOwed ? 'text-emerald-500' : 'text-red-500';
+          const textColor = isCurrentUserOwed ? 'text-emerald-600' : 'text-rose-600';
           
           const fromAvatarUrl = getAvatar(fromName, debt.originalDebt ? debt.originalDebt.from : debt.from);
           const toAvatarUrl = getAvatar(toName, debt.originalDebt ? debt.originalDebt.to : debt.to);
 
           return (
-            <div key={index} className="flex flex-col gap-4 bg-slate-50 rounded-2xl p-4">
+            <div key={index} className="flex flex-col gap-3.5 bg-black/[0.02] border border-black/[0.04] rounded-2xl p-4">
               <div className="flex items-center gap-3">
                 {finalDisplayFrom === 'You' ? (
-                  <span className="text-sm font-medium text-neutral-800">You</span>
+                  <span className="text-sm font-semibold text-neutral-900">You</span>
                 ) : (
                   <div className="flex items-center gap-2">
                     {fromAvatarUrl ? (
@@ -90,21 +90,21 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                         src={fromAvatarUrl} 
                         alt={finalDisplayFrom} 
                         referrerPolicy="no-referrer"
-                        className="w-8 h-8 rounded-full object-cover shadow-sm border border-neutral-200" 
+                        className="w-8 h-8 rounded-full object-cover shadow-apple-xs border border-neutral-200" 
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-white/60 backdrop-blur-lg border border-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-600 shadow-sm">
+                      <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shadow-apple-xs">
                         {finalDisplayFrom?.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className="text-sm font-medium text-neutral-800">{finalDisplayFrom}</span>
+                    <span className="text-sm font-semibold text-neutral-900">{finalDisplayFrom}</span>
                   </div>
                 )}
                 
-                <ArrowRight className="w-3 h-3 text-slate-600" />
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
                 
                 {finalDisplayTo === 'You' ? (
-                  <span className="text-sm font-medium text-neutral-800">You</span>
+                  <span className="text-sm font-semibold text-neutral-900">You</span>
                 ) : (
                   <div className="flex items-center gap-2">
                     {toAvatarUrl ? (
@@ -112,20 +112,20 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                         src={toAvatarUrl} 
                         alt={finalDisplayTo} 
                         referrerPolicy="no-referrer"
-                        className="w-8 h-8 rounded-full object-cover shadow-sm border border-neutral-200" 
+                        className="w-8 h-8 rounded-full object-cover shadow-apple-xs border border-neutral-200" 
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-white/60 backdrop-blur-lg border border-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-600 shadow-sm">
+                      <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shadow-apple-xs">
                         {finalDisplayTo?.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className="text-sm font-medium text-neutral-800">{finalDisplayTo}</span>
+                    <span className="text-sm font-semibold text-neutral-900">{finalDisplayTo}</span>
                   </div>
                 )}
               </div>
               
-              <div className="flex items-center justify-between pl-1 flex-nowrap gap-2">
-                <div className={`text-base font-medium ${textColor} whitespace-nowrap`}>
+              <div className="flex items-center justify-between pl-1 flex-nowrap gap-2 pt-1 border-t border-black/[0.04]">
+                <div className={`text-base sm:text-lg font-bold ${textColor} whitespace-nowrap`}>
                   ₹{debt.amount.toFixed(2)}
                 </div>
                 {!isCurrentUserOwed && (
@@ -133,7 +133,7 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                     {debt.toUpiId && (
                       <button 
                         onClick={() => setSelectedUpiDebt({ ...debt, finalDisplayTo })}
-                        className="bg-[#118A45] hover:bg-[#0c6b35] text-white hover:shadow-lg hover:shadow-[#118A45]/30 hover:-translate-y-0.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
+                        className="bg-[#118A45] hover:bg-[#0c6b35] text-white active:scale-95 shadow-apple-xs px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M12.9842 16.273H10.1245V7.71714H12.9842C15.1167 7.71714 16.5936 8.78453 16.5936 11.9951C16.5936 15.2056 15.1167 16.273 12.9842 16.273ZM12.7214 9.94086H12.2858V14.0493H12.7214C13.6896 14.0493 14.2811 13.5658 14.2811 11.9951C14.2811 10.4243 13.6896 9.94086 12.7214 9.94086Z" fill="currentColor"/>
@@ -143,12 +143,12 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                         Pay UPI
                       </button>
                     )}
-                      <button 
-                        onClick={() => onSettle && onSettle(debt)}
-                        className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 text-slate-900 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap"
-                      >
-                        Settle
-                      </button>
+                    <button 
+                      onClick={() => onSettle && onSettle(debt)}
+                      className="bg-slate-900 hover:bg-slate-800 text-white active:scale-95 shadow-apple-xs px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap"
+                    >
+                      Settle
+                    </button>
                   </div>
                 )}
               </div>
@@ -166,36 +166,37 @@ const PendingSettlements = ({ debts, currentUser, currentUserAvatar, members = [
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 bg-black/40 backdrop-blur-md"
                 onClick={() => setSelectedUpiDebt(null)}
               />
               <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                initial={{ opacity: 0, scale: 0.94, y: 12 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                transition={{ duration: 0.2 }}
-                className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-6 z-10 border border-slate-100 flex flex-col items-center text-center"
+                exit={{ opacity: 0, scale: 0.94, y: 12 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+                className="relative w-full max-w-sm apple-glass-card rounded-[2rem] shadow-apple-lg p-6 sm:p-7 z-10 border border-white/80 flex flex-col items-center text-center"
               >
-                <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
-                  <AlertTriangle size={24} />
+                <div className="w-13 h-13 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center mb-4 p-3 shadow-apple-xs">
+                  <AlertTriangle size={26} />
                 </div>
                 
-                <h3 className="text-xl font-bold text-slate-900 mb-2">Security Warning</h3>
-                <p className="text-slate-600 mb-6 leading-relaxed">
+                <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Security Warning</h3>
+                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
                   FairShare does not verify UPI IDs. When your UPI app opens, please manually verify that the registered receiver name matches <strong className="text-slate-900">{selectedUpiDebt.finalDisplayTo}</strong>.
                 </p>
                 
-                <div className="flex flex-col w-full gap-2.5 mt-2">
+                <div className="flex flex-col w-full gap-2.5 mt-1">
                   <a 
                     href={`upi://pay?pa=${selectedUpiDebt.toUpiId}&pn=${encodeURIComponent(selectedUpiDebt.finalDisplayTo)}&am=${selectedUpiDebt.amount.toFixed(2)}&cu=INR`}
                     onClick={() => setSelectedUpiDebt(null)}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3.5 rounded-2xl font-semibold transition-all duration-300 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3.5 rounded-full font-semibold shadow-apple-xs active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     Continue to Pay
                   </a>
                   <button 
                     onClick={() => setSelectedUpiDebt(null)}
-                    className="w-full bg-transparent hover:bg-slate-100 text-slate-500 hover:text-slate-800 py-3 rounded-2xl font-semibold transition-all duration-200"
+                    className="w-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 py-3 rounded-full font-semibold active:scale-95 transition-all"
                   >
                     Cancel
                   </button>

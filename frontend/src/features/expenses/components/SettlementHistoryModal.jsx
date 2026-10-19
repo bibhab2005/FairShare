@@ -81,36 +81,37 @@ const SettlementHistoryModal = ({ isOpen, onClose }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={onClose}
-        className="fixed inset-0 bg-slate-900/40 backdrop-blur-md"
+        className="fixed inset-0 bg-black/40 backdrop-blur-md"
       />
 
       {/* Modal Dialog */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        initial={{ opacity: 0, scale: 0.94, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        transition={{ duration: 0.2 }}
-        className="relative w-[95vw] md:w-[672px] bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/60 overflow-hidden flex flex-col max-h-[85vh] z-10"
+        exit={{ opacity: 0, scale: 0.94, y: 12 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+        className="relative w-[95vw] md:w-[672px] apple-glass-card rounded-[2.25rem] shadow-apple-lg border border-white/80 overflow-hidden flex flex-col max-h-[85vh] z-10"
       >
         {/* Header */}
-        <div className="p-6 pb-4 border-b border-slate-100 flex items-start justify-between">
+        <div className="p-6 pb-4 border-b border-black/[0.05] flex items-start justify-between">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-apple-xs">
               <Receipt size={24} />
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 Settlement History
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                Permanent 1-to-1 payment records, even if a group card was deleted
+              <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-medium">
+                Permanent 1-to-1 payment records, even if a group was deleted
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-2 rounded-full hover:bg-black/[0.05] active:scale-90 text-slate-400 hover:text-slate-800 transition-all"
           >
             <X size={20} />
           </button>

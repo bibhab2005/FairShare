@@ -100,25 +100,25 @@ const Home = () => {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans overflow-x-hidden">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/40">
+    <div className="min-h-screen bg-[#fbfbfd] text-slate-900 font-sans overflow-x-hidden">
+      <header className="sticky top-0 z-50 apple-glass-nav">
         <div className="w-full px-6 sm:px-10 lg:px-12 h-20 sm:h-24 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3.5 group">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
+          <Link to="/" className="flex items-center gap-3.5 group select-none">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-apple-xs group-hover:scale-105 group-active:scale-95 transition-transform duration-200">
               <SplitSquareVertical size={24} className="text-white" />
             </div>
-            <span className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
+            <span className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 group-hover:text-emerald-600 transition-colors">
               FairShare
             </span>
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden sm:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-3">
             <a
               href="https://github.com/bibhab2005/FairShare"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors flex items-center"
+              className="p-2.5 text-slate-500 hover:text-emerald-600 hover:bg-black/[0.04] active:scale-90 rounded-full transition-all flex items-center"
               title="GitHub Repository"
               aria-label="GitHub Repository"
             >
@@ -126,13 +126,13 @@ const Home = () => {
             </a>
             <Link
               to="/login"
-              className="px-6 py-3 rounded-full font-medium text-lg text-neutral-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200"
+              className="px-5 py-2.5 rounded-full font-semibold text-base text-slate-600 hover:text-emerald-600 hover:bg-black/[0.04] active:scale-95 transition-all"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="inline-flex items-center justify-center px-8 py-3 rounded-full font-medium text-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 hover:opacity-90 shadow-lg shadow-emerald-500/30 transition-all duration-200 hover:scale-105"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full font-semibold text-base bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-apple-xs hover:shadow-apple active:scale-95 transition-all select-none"
             >
               Get Started
             </Link>

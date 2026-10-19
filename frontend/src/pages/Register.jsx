@@ -72,15 +72,15 @@ export default function Register() {
           </div>
         )}
 
-        <div className="w-full max-w-[560px] bg-white/80 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_8px_40px_rgba(0,0,0,0.04)] p-6 sm:p-10 md:p-12 border border-white">
-          <h1 className="text-3xl font-medium tracking-tighter text-neutral-900 mb-2">Create account</h1>
-          <p className="text-neutral-500 text-lg mb-10">Join FairShare and start splitting expenses fairly.</p>
+        <div className="w-full max-w-[540px] apple-glass-card rounded-[2.25rem] shadow-apple-lg p-7 sm:p-10 md:p-12 border border-white/80">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 mb-2">Create account</h1>
+          <p className="text-slate-500 text-base sm:text-lg mb-8 font-medium">Join FairShare and start splitting expenses fairly.</p>
 
           {/* 1. Primary Auth: Google */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full bg-white border border-neutral-200 text-neutral-900 rounded-full py-4 px-6 flex items-center justify-center gap-3 hover:bg-neutral-50 hover:border-emerald-200 hover:shadow-sm hover:text-emerald-600 transition-all duration-300"
+            className="w-full bg-white/90 border border-black/[0.08] text-slate-900 rounded-full py-3.5 px-6 flex items-center justify-center gap-3 shadow-apple-xs hover:bg-white active:scale-95 transition-all duration-200"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -100,49 +100,49 @@ export default function Register() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span className="font-extrabold text-base bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent animate-gradient-x bg-[length:200%_auto]">
+            <span className="font-semibold text-base text-slate-800">
               Continue with Google
             </span>
           </button>
 
           {/* Separator */}
-          <div className="relative flex items-center justify-center my-8">
-            <div className="border-t border-neutral-200 w-full"></div>
-            <span className="bg-neutral-50 px-4 text-xs font-medium text-neutral-400 absolute tracking-wider">OR</span>
+          <div className="relative flex items-center justify-center my-7">
+            <div className="border-t border-black/[0.06] w-full"></div>
+            <span className="bg-[#fbfbfd] px-3 text-xs font-semibold text-slate-400 absolute tracking-wider">OR</span>
           </div>
 
           {/* 2. Secondary Auth: Manual Form */}
-          <form onSubmit={handleManualRegister} className="space-y-5">
+          <form onSubmit={handleManualRegister} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2 pl-1">Full name</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5 pl-1">Full name</label>
               <input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="First Last"
-                className="w-full bg-neutral-50/50 border border-neutral-200 rounded-full py-4 px-6 text-base outline-none focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all placeholder:text-neutral-400"
+                className="w-full apple-input rounded-full py-3.5 px-5 text-base font-medium placeholder:text-slate-400"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2 pl-1">Email address</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5 pl-1">Email address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-neutral-50/50 border border-neutral-200 rounded-full py-4 px-6 text-base outline-none focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all placeholder:text-neutral-400"
+                className="w-full apple-input rounded-full py-3.5 px-5 text-base font-medium placeholder:text-slate-400"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2 pl-1">Password</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5 pl-1">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min. 6 characters"
-                className="w-full bg-neutral-50/50 border border-neutral-200 rounded-full py-4 px-6 text-base outline-none focus:border-emerald-300 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all placeholder:text-neutral-400"
+                className="w-full apple-input rounded-full py-3.5 px-5 text-base font-medium placeholder:text-slate-400"
                 minLength={6}
                 required
               />
@@ -150,7 +150,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full py-4 px-6 font-medium text-base hover:opacity-90 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-300 mt-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full py-3.5 px-6 font-semibold text-base shadow-apple-xs hover:shadow-apple active:scale-95 transition-all mt-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -167,10 +167,10 @@ export default function Register() {
           </form>
 
           {/* Footer Navigation */}
-          <div className="mt-10 pt-8 border-t border-neutral-100 text-center">
-            <p className="text-neutral-600 text-sm">
+          <div className="mt-8 pt-6 border-t border-black/[0.04] text-center">
+            <p className="text-slate-500 text-sm font-medium">
               Already have an account?{' '}
-              <Link to={`/login${location.search}`} className="text-emerald-600 font-medium hover:text-teal-600 hover:underline transition-colors">
+              <Link to={`/login${location.search}`} className="text-emerald-600 font-semibold hover:text-emerald-700 transition-colors">
                 Log in
               </Link>
             </p>

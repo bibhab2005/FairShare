@@ -126,20 +126,20 @@ const Dashboard = () => {
         <Navbar />
         
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 relative z-0 isolate">
-          <div className="relative mb-16">
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
+          <div className="relative mb-12 sm:mb-16">
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-2 flex-wrap">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-slate-900">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
                   Hello, {user?.name?.split(' ')[0]} 👋
                 </h1>
                 {user?.username && (
-                  <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full border border-emerald-200">
+                  <span className="px-3.5 py-1 bg-emerald-500/10 text-emerald-700 text-sm font-semibold rounded-full border border-emerald-500/20">
                     @{user.username}
                   </span>
                 )}
               </div>
-              <p className="text-slate-600 text-lg max-w-xl">
+              <p className="text-slate-500 text-base sm:text-lg max-w-xl">
                 Here's where you stand with your shared expenses.
               </p>
             </div>
@@ -147,16 +147,16 @@ const Dashboard = () => {
               <button
                 id="create-group-btn"
                 onClick={() => setShowModal(true)}
-                className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium px-4 sm:px-6 py-3 rounded-full hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base"
+                className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold px-5 sm:px-6 py-3.5 rounded-full shadow-apple-xs hover:shadow-apple active:scale-95 transition-all text-sm sm:text-base select-none"
               >
                 <Plus size={18} className="shrink-0" />
                 <span className="whitespace-nowrap">New Group</span>
               </button>
               <button
                 onClick={() => setShowSettlementsModal(true)}
-                className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 bg-white/80 hover:bg-white text-slate-700 font-medium px-4 sm:px-5 py-3 rounded-full border border-slate-200/80 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-sm sm:text-base"
+                className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 apple-glass hover:bg-white text-slate-700 font-semibold px-5 py-3.5 rounded-full border border-black/[0.08] shadow-apple-xs active:scale-95 transition-all text-sm sm:text-base select-none"
               >
-                <Receipt size={18} className="text-emerald-500 shrink-0" />
+                <Receipt size={18} className="text-emerald-600 shrink-0" />
                 <span className="hidden sm:inline">Settlement History</span>
                 <span className="sm:hidden">History</span>
               </button>
@@ -166,52 +166,53 @@ const Dashboard = () => {
           {/* Stat Cards */}
           {groups.length > 0 && (
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+              transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-5"
             >
-              <div className="bg-white/60 backdrop-blur-lg rounded-[2rem] p-6 border border-white/40 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+              <div className="apple-card-surface p-6 sm:p-7 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-slate-600 font-medium">Total Balance</span>
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                    <IndianRupee size={20} className="text-slate-500" />
+                  <span className="text-slate-500 font-semibold text-sm">Total Balance</span>
+                  <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center shadow-apple-xs">
+                    <IndianRupee size={20} className="text-slate-600" />
                   </div>
                 </div>
                 <div>
-                  <div className={`text-3xl font-semibold tracking-tight ${totalBalance > 0 ? 'text-emerald-500' : totalBalance < 0 ? 'text-rose-500' : 'text-slate-900'}`}>
+                  <div className={`text-3xl sm:text-4xl font-bold tracking-tight ${totalBalance > 0 ? 'text-emerald-600' : totalBalance < 0 ? 'text-rose-600' : 'text-slate-900'}`}>
                     {totalBalance > 0 ? '+' : ''}{totalBalance < 0 ? '-' : ''}₹{Math.abs(totalBalance).toFixed(2)}
                   </div>
-                  <span className="text-sm text-slate-500 mt-1 block">Across all groups</span>
+                  <span className="text-xs sm:text-sm text-slate-400 mt-1.5 block font-medium">Across all groups</span>
                 </div>
               </div>
 
-              <div className="bg-white/60 backdrop-blur-lg rounded-[2rem] p-6 border border-white/40 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+              <div className="apple-card-surface p-6 sm:p-7 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-slate-600 font-medium">You Owe</span>
-                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center">
-                    <AlertCircle size={20} className="text-rose-500" />
+                  <span className="text-slate-500 font-semibold text-sm">You Owe</span>
+                  <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shadow-apple-xs">
+                    <AlertCircle size={20} />
                   </div>
                 </div>
                 <div>
-                  <div className="text-3xl font-semibold tracking-tight text-slate-900">
+                  <div className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
                     ₹{totalYouOwe.toFixed(2)}
                   </div>
-                  <span className="text-sm text-rose-500 mt-1 block font-medium">To be paid</span>
+                  <span className="text-xs sm:text-sm text-rose-600 mt-1.5 block font-semibold">To be paid</span>
                 </div>
               </div>
 
-              <div className="bg-white/60 backdrop-blur-lg rounded-[2rem] p-6 border border-white/40 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+              <div className="apple-card-surface p-6 sm:p-7 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-slate-600 font-medium">You are Owed</span>
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
-                    <ArrowRight size={20} className="text-emerald-500" />
+                  <span className="text-slate-500 font-semibold text-sm">You are Owed</span>
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-apple-xs">
+                    <ArrowRight size={20} />
                   </div>
                 </div>
                 <div>
-                  <div className="text-3xl font-semibold tracking-tight text-slate-900">
+                  <div className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
                     ₹{totalYouAreOwed.toFixed(2)}
                   </div>
-                  <span className="text-sm text-emerald-500 mt-1 block font-medium">To be collected</span>
+                  <span className="text-xs sm:text-sm text-emerald-600 mt-1.5 block font-semibold">To be collected</span>
                 </div>
               </div>
             </motion.div>
@@ -311,68 +312,73 @@ const Dashboard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-white/80 backdrop-blur-sm" 
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-black/40 backdrop-blur-md" 
               onClick={() => setShowModal(false)} 
             />
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-md bg-white border border-neutral-200 shadow-2xl rounded-[2.5rem] p-8"
+              initial={{ opacity: 0, scale: 0.94, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 12 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+              className="relative w-full max-w-md apple-glass-card border border-white/80 shadow-apple-lg rounded-[2.25rem] p-7 sm:p-8"
             >
-              <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-medium text-slate-900 tracking-tight">Create a Group</h2>
-              <button
-                id="close-modal-btn"
-                onClick={() => setShowModal(false)}
-                className="p-2 rounded-full text-neutral-400 hover:text-rose-500 hover:bg-rose-50 transition-colors duration-200"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form id="create-group-form" onSubmit={handleCreateGroup} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">Group Name</label>
-                <input
-                  id="group-name-input"
-                  type="text"
-                  value={newGroupName}
-                  onChange={(e) => setNewGroupName(e.target.value)}
-                  placeholder="Trip to Goa, Flatmates..."
-                  className="w-full px-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-neutral-200 focus:border-emerald-300 transition-all duration-200"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-2">
-                  Description <span className="text-neutral-400 font-normal">(Optional)</span>
-                </label>
-                <input
-                  id="group-desc-input"
-                  type="text"
-                  value={newGroupDesc}
-                  onChange={(e) => setNewGroupDesc(e.target.value)}
-                  placeholder="What's this group for?"
-                  className="w-full px-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white border border-neutral-200 focus:border-emerald-300 transition-all duration-200"
-                />
-              </div>
-              
-              <div className="pt-2">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create a Group</h2>
+                  <p className="text-slate-500 text-sm mt-0.5 font-medium">Start tracking split expenses together</p>
+                </div>
                 <button
-                  type="submit"
-                  id="confirm-create-group-btn"
-                  disabled={creating}
-                  className="w-full inline-flex items-center justify-center py-3.5 rounded-full font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+                  id="close-modal-btn"
+                  onClick={() => setShowModal(false)}
+                  className="p-2 rounded-full text-slate-400 hover:text-slate-800 hover:bg-black/[0.05] active:scale-90 transition-all"
                 >
-                  {creating ? (
-                    <Loader2 size={20} className="animate-spin" />
-                  ) : (
-                    'Create Group'
-                  )}
+                  <X size={20} />
                 </button>
               </div>
-            </form>
+
+              <form id="create-group-form" onSubmit={handleCreateGroup} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-800 mb-2">Group Name</label>
+                  <input
+                    id="group-name-input"
+                    type="text"
+                    value={newGroupName}
+                    onChange={(e) => setNewGroupName(e.target.value)}
+                    placeholder="Trip to Goa, Flatmates..."
+                    className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400 font-medium"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-800 mb-2">
+                    Description <span className="text-slate-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    id="group-desc-input"
+                    type="text"
+                    value={newGroupDesc}
+                    onChange={(e) => setNewGroupDesc(e.target.value)}
+                    placeholder="What's this group for?"
+                    className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400 font-medium"
+                  />
+                </div>
+                
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    id="confirm-create-group-btn"
+                    disabled={creating}
+                    className="w-full inline-flex items-center justify-center py-3.5 rounded-full font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-apple-xs hover:shadow-apple active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {creating ? (
+                      <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                      'Create Group'
+                    )}
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}
