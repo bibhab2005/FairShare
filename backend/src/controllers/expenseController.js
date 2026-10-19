@@ -15,7 +15,7 @@ export const createExpense = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { groupId, description, amountPaise, paidBy, splitType, splits, category } = req.body;
+    const { groupId, description, amountPaise, paidBy, splitType, splits, category, isRecurring, recurringFrequency, originalCurrency } = req.body;
 
     const { error, status, group } = await validateGroupMembership(groupId, req.user._id);
     if (error) {
@@ -50,6 +50,15 @@ export const createExpense = async (req, res) => {
       return res.status(400).json({ message: 'splitType must be "equal" or "custom"' });
     }
 
+    let nextDate = null;
+    if (isRecurring && recurringFrequency && recurringFrequency !== 'none') {
+      const now = new Date();
+      if (recurringFrequency === 'daily') now.setDate(now.getDate() + 1);
+      else if (recurringFrequency === 'weekly') now.setDate(now.getDate() + 7);
+      else if (recurringFrequency === 'monthly') now.setMonth(now.getMonth() + 1);
+      nextDate = now;
+    }
+
     const [expense] = await Expense.create([{
       group: groupId,
       description,
@@ -59,6 +68,10 @@ export const createExpense = async (req, res) => {
       createdBy: req.user._id,
       isSettlement: false,
       category: category || 'general',
+      isRecurring: !!isRecurring,
+      recurringFrequency: recurringFrequency || 'none',
+      nextRecurringDate: nextDate,
+      originalCurrency: originalCurrency || 'INR',
     }], { session });
 
     group.updatedAt = new Date();

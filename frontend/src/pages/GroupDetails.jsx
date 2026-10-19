@@ -656,7 +656,7 @@ const GroupDetails = () => {
                             )}
                           </div>
                           <div className="min-w-0">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                               <p className="text-base sm:text-lg font-bold text-slate-900 truncate tracking-tight">{expense.description}</p>
                               {expense.category && expense.category !== 'general' && (
                                 <span 
@@ -665,6 +665,24 @@ const GroupDetails = () => {
                                 >
                                   <span>{EXPENSE_CATEGORIES.find(c => c.id === expense.category)?.icon || '📝'}</span>
                                   <span className="capitalize hidden sm:inline">{expense.category}</span>
+                                </span>
+                              )}
+                              {expense.isRecurring && (
+                                <span 
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/60 shadow-apple-xs shrink-0 select-none"
+                                  title={`Repeats: ${expense.recurringFrequency}`}
+                                >
+                                  <span>🔄</span>
+                                  <span className="capitalize hidden sm:inline">{expense.recurringFrequency}</span>
+                                </span>
+                              )}
+                              {expense.originalCurrency && expense.originalCurrency !== 'INR' && (
+                                <span 
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/60 shadow-apple-xs shrink-0 select-none"
+                                  title={`Paid in ${expense.originalCurrency}`}
+                                >
+                                  <span>🌐</span>
+                                  <span>{expense.originalCurrency}</span>
                                 </span>
                               )}
                             </div>

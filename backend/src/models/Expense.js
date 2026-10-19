@@ -66,6 +66,22 @@ const expenseSchema = new mongoose.Schema(
       enum: ['general', 'food', 'travel', 'groceries', 'utilities', 'rent', 'entertainment'],
       default: 'general',
     },
+    isRecurring: {
+      type: Boolean,
+      default: false,
+    },
+    recurringFrequency: {
+      type: String,
+      enum: ['none', 'daily', 'weekly', 'monthly'],
+      default: 'none',
+    },
+    nextRecurringDate: {
+      type: Date,
+    },
+    originalCurrency: {
+      type: String,
+      default: 'INR',
+    },
   },
   { timestamps: true }
 );

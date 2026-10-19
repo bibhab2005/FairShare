@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { X, IndianRupee, AlertCircle, ChevronDown, Equal, Sliders, Loader2, Plus, Trash2, ListOrdered } from 'lucide-react';
+import { X, IndianRupee, AlertCircle, ChevronDown, Equal, Sliders, Loader2, Plus, Trash2, ListOrdered, Camera, RefreshCw, Globe } from 'lucide-react';
 import { createExpense } from '../api/expenseService';
 import { useAuth } from '../../auth/context/AuthContext';
 import { formatPaise, rupeeToRoundedPaise } from '../../../core/utils/formatCurrency';
 import { enqueueOfflineExpense } from '../../../core/utils/offlineQueue';
+import { parseReceiptImage } from '../../../core/utils/receiptParser';
+import { CURRENCIES, convertToINR } from '../../../core/utils/currencyUtils';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -21,6 +23,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
   const { user } = useAuth();
   const [description, setDescription] = useState('');
   const [amountRupees, setAmountRupees] = useState('');
+  const [currency, setCurrency] = useState('INR');
   const [category, setCategory] = useState('general');
   const [paidBy, setPaidBy] = useState(user?._id || '');
   const [splitType, setSplitType] = useState('equal');
@@ -29,11 +32,19 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
     { id: 1, name: '', amountRupees: '', sharedWith: [] }
   ]);
   const [taxTipRupees, setTaxTipRupees] = useState('');
+  const [isScanningReceipt, setIsScanningReceipt] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFrequency, setRecurringFrequency] = useState('monthly');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const members = group?.members || [];
-  const amountPaise = rupeeToRoundedPaise(amountRupees);
+  const currObj = CURRENCIES.find((c) => c.code === currency) || CURRENCIES[0];
+  const currencySymbol = currObj.symbol;
+
+  const enteredAmount = parseFloat(amountRupees) || 0;
+  const convertedTotalRupees = currency === 'INR' ? enteredAmount : convertToINR(enteredAmount, currency);
+  const amountPaise = rupeeToRoundedPaise(convertedTotalRupees);
 
   useEffect(() => {
     if (members.length > 0) {
@@ -54,10 +65,41 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
   }, []);
 
   const customTotal = customSplits.reduce(
-    (sum, s) => sum + rupeeToRoundedPaise(s.amountRupees),
+    (sum, s) => sum + (parseFloat(s.amountRupees) || 0),
     0
   );
-  const splitDifference = amountPaise - customTotal;
+  const splitDifference = Math.round((enteredAmount - customTotal) * 100) / 100;
+
+  const handleCustomSplitChange = (userId, value) => {
+    setCustomSplits((prev) =>
+      prev.map((s) => (s.user === userId ? { ...s, amountRupees: value } : s))
+    );
+  };
+
+  const handleReceiptScan = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsScanningReceipt(true);
+    const toastId = toast.loading('Scanning receipt with OCR...');
+    try {
+      const data = await parseReceiptImage(file);
+      if (data.description && (!description || description.trim() === '')) {
+        setDescription(data.description);
+      }
+      if (data.amount) {
+        setAmountRupees(data.amount);
+      }
+      if (data.category) {
+        setCategory(data.category);
+      }
+      toast.success('Receipt details extracted!', { id: toastId, icon: '📸' });
+    } catch (err) {
+      toast.error('Could not extract receipt data. Please enter manually.', { id: toastId });
+    } finally {
+      setIsScanningReceipt(false);
+      e.target.value = '';
+    }
+  };
 
   const handleAddItem = () => {
     setItemizedList((prev) => [
@@ -140,14 +182,16 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
         return toast.error('Each item must be shared with at least one member.');
       }
 
-      const itemizedTotalPaise = Math.round(finalTotal * 100);
+      const inrFinalTotal = currency === 'INR' ? finalTotal : convertToINR(finalTotal, currency);
+      const itemizedTotalPaise = Math.round(inrFinalTotal * 100);
       let runningSum = 0;
       const computedSplits = members.map((m, idx) => {
         if (idx === members.length - 1) {
           const share = Math.max(0, itemizedTotalPaise - runningSum);
           return { user: m._id, amountPaise: share };
         }
-        const share = Math.round((memberShares[m._id] || 0) * 100);
+        const inrVal = currency === 'INR' ? (memberShares[m._id] || 0) : convertToINR(memberShares[m._id] || 0, currency);
+        const share = Math.round(inrVal * 100);
         runningSum += share;
         return { user: m._id, amountPaise: share };
       }).filter((s) => s.amountPaise > 0);
@@ -159,6 +203,9 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
         paidBy,
         splitType: 'custom',
         category,
+        isRecurring,
+        recurringFrequency: isRecurring ? recurringFrequency : 'none',
+        originalCurrency: currency,
         splits: computedSplits,
       };
 
@@ -196,13 +243,25 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
     if (splitType === 'custom') {
       if (splitDifference !== 0) {
         return toast.error(
-          `Custom splits must equal the total. Difference: ${formatPaise(Math.abs(splitDifference))} ${splitDifference > 0 ? 'remaining' : 'over'}.`
+          `Custom splits must equal the total. Difference: ${currencySymbol}${Math.abs(splitDifference).toFixed(2)} ${splitDifference > 0 ? 'remaining' : 'over'}.`
         );
       }
-      if (customSplits.some((s) => rupeeToRoundedPaise(s.amountRupees) < 0)) {
+      if (customSplits.some((s) => (parseFloat(s.amountRupees) || 0) < 0)) {
         return toast.error('Split amounts cannot be negative.');
       }
     }
+
+    const validCustomSplits = customSplits.filter((s) => (parseFloat(s.amountRupees) || 0) > 0);
+    let runningSplitSum = 0;
+    const computedCustomSplits = validCustomSplits.map((s, idx) => {
+      if (idx === validCustomSplits.length - 1) {
+        return { user: s.user, amountPaise: Math.max(0, amountPaise - runningSplitSum) };
+      }
+      const inrVal = currency === 'INR' ? parseFloat(s.amountRupees) : convertToINR(s.amountRupees, currency);
+      const sharePaise = rupeeToRoundedPaise(inrVal);
+      runningSplitSum += sharePaise;
+      return { user: s.user, amountPaise: sharePaise };
+    });
 
     const payload = {
       groupId: group._id,
@@ -211,10 +270,11 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
       paidBy,
       splitType,
       category,
+      isRecurring,
+      recurringFrequency: isRecurring ? recurringFrequency : 'none',
+      originalCurrency: currency,
       ...(splitType === 'custom' && {
-        splits: customSplits
-          .filter((s) => rupeeToRoundedPaise(s.amountRupees) > 0)
-          .map((s) => ({ user: s.user, amountPaise: rupeeToRoundedPaise(s.amountRupees) })),
+        splits: computedCustomSplits,
       }),
     };
 
@@ -288,7 +348,37 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
 
         <form id="add-expense-form" onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-slate-800 mb-2" htmlFor="expense-description">Description</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-semibold text-slate-800" htmlFor="expense-description">Description</label>
+              <label 
+                htmlFor="receipt-upload-input" 
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all active:scale-95 border ${
+                  isScanningReceipt 
+                    ? 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'
+                    : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                }`}
+              >
+                {isScanningReceipt ? (
+                  <>
+                    <Loader2 size={13} className="animate-spin" />
+                    <span>Scanning OCR...</span>
+                  </>
+                ) : (
+                  <>
+                    <Camera size={13} />
+                    <span>Scan Receipt</span>
+                  </>
+                )}
+              </label>
+              <input 
+                id="receipt-upload-input" 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={handleReceiptScan} 
+                disabled={isScanningReceipt}
+              />
+            </div>
             <input
               id="expense-description"
               type="text"
@@ -302,17 +392,49 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
 
           {splitType !== 'itemized' && (
             <div>
-              <label className="block text-sm font-semibold text-slate-800 mb-2" htmlFor="expense-amount">Total Amount (₹)</label>
-              <input
-                id="expense-amount"
-                type="number"
-                value={amountRupees}
-                onChange={(e) => setAmountRupees(e.target.value)}
-                placeholder="0.00"
-                min="0.01"
-                step="0.01"
-                className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400 font-semibold text-lg"
-              />
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-semibold text-slate-800" htmlFor="expense-amount">
+                  Total Amount ({currencySymbol})
+                </label>
+                <div className="flex items-center gap-1.5 bg-black/[0.04] px-2.5 py-1 rounded-full border border-black/[0.04]">
+                  <Globe size={13} className="text-slate-500" />
+                  <select
+                    id="expense-currency-select"
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                    className="text-xs font-semibold text-slate-700 bg-transparent border-none p-0 focus:outline-none cursor-pointer"
+                  >
+                    {CURRENCIES.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="relative">
+                <input
+                  id="expense-amount"
+                  type="number"
+                  value={amountRupees}
+                  onChange={(e) => setAmountRupees(e.target.value)}
+                  placeholder="0.00"
+                  min="0.01"
+                  step="0.01"
+                  className="w-full px-4 py-3.5 rounded-2xl apple-input text-slate-900 placeholder-neutral-400 font-semibold text-lg"
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400 pointer-events-none">
+                  {currencySymbol}
+                </div>
+              </div>
+              {currency !== 'INR' && amountRupees && (
+                <p className="mt-1.5 text-xs font-semibold text-emerald-700 flex items-center gap-1.5">
+                  <span>≈ ₹{convertToINR(amountRupees, currency).toFixed(2)} INR</span>
+                  <span className="text-slate-400 font-normal">
+                    (1 {currency} = ₹{CURRENCIES.find((c) => c.code === currency)?.rateToINR})
+                  </span>
+                </p>
+              )}
             </div>
           )}
 
@@ -414,7 +536,14 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
                   return (
                     <div key={m._id} className="flex justify-between items-center text-sm py-1 border-b border-black/[0.03] last:border-0">
                       <span className="font-medium text-neutral-800">{m.name}</span>
-                      <span className="text-slate-900 font-bold">{formatPaise(share)}</span>
+                      <span className="text-slate-900 font-bold">
+                        {currency !== 'INR' && (
+                          <span className="mr-1">{currencySymbol}{(enteredAmount / members.length).toFixed(2)}</span>
+                        )}
+                        <span className={currency !== 'INR' ? 'text-xs text-slate-400 font-normal' : ''}>
+                          {currency !== 'INR' ? `(${formatPaise(share)})` : formatPaise(share)}
+                        </span>
+                      </span>
                     </div>
                   );
                 })}
@@ -425,7 +554,7 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
           {splitType === 'custom' && (
             <div className="p-4 sm:p-5 rounded-2xl bg-black/[0.02] border border-black/[0.06] space-y-4">
               <div className="flex justify-between items-center">
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Custom amounts (₹)</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Custom amounts ({currencySymbol})</p>
                 <span
                   className={`text-xs font-semibold ${
                     splitDifference === 0
@@ -438,8 +567,8 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
                   {splitDifference === 0
                     ? '✓ Balanced'
                     : splitDifference > 0
-                    ? `${formatPaise(splitDifference)} remaining`
-                    : `${formatPaise(-splitDifference)} over`}
+                    ? `${currencySymbol}${splitDifference.toFixed(2)} remaining`
+                    : `${currencySymbol}${(-splitDifference).toFixed(2)} over`}
                 </span>
               </div>
               <div className="space-y-2.5">
@@ -574,6 +703,52 @@ const ExpenseModal = ({ group, onClose, onSuccess }) => {
               })()}
             </div>
           )}
+
+          <div className="p-3.5 rounded-2xl bg-black/[0.02] border border-black/[0.05]">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className={`p-2 rounded-xl transition-colors ${isRecurring ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500'}`}>
+                  <RefreshCw size={16} className={isRecurring ? 'animate-spin-slow' : ''} />
+                </div>
+                <div>
+                  <span className="text-sm font-semibold text-slate-800">Repeat Expense</span>
+                  <p className="text-xs text-slate-500">Auto-recurring (rent, bills, subscriptions)</p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  id="expense-recurring-toggle"
+                  type="checkbox" 
+                  checked={isRecurring} 
+                  onChange={(e) => setIsRecurring(e.target.checked)} 
+                  className="sr-only peer" 
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            {isRecurring && (
+              <div className="mt-3 pt-3 border-t border-black/[0.05] flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-600">Frequency</span>
+                <div className="flex gap-1.5">
+                  {['daily', 'weekly', 'monthly'].map((freq) => (
+                    <button
+                      key={freq}
+                      type="button"
+                      onClick={() => setRecurringFrequency(freq)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold capitalize transition-all ${
+                        recurringFrequency === freq
+                          ? 'bg-indigo-600 text-white shadow-apple-xs'
+                          : 'bg-white text-slate-600 border border-black/[0.08] hover:bg-slate-50'
+                      }`}
+                    >
+                      {freq}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="flex gap-3 pt-4 mt-6 border-t border-black/[0.06]">
             <button

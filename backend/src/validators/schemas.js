@@ -57,6 +57,9 @@ export const createExpenseSchema = z.object({
   splitType: z.enum(['equal', 'custom'], { required_error: 'splitType must be "equal" or "custom"' }),
   splits: z.array(splitSchema).optional(),
   category: z.enum(['general', 'food', 'travel', 'groceries', 'utilities', 'rent', 'entertainment']).optional().default('general'),
+  isRecurring: z.boolean().optional().default(false),
+  recurringFrequency: z.enum(['none', 'daily', 'weekly', 'monthly']).optional().default('none'),
+  originalCurrency: z.string().optional().default('INR'),
 }).refine(data => {
   if (data.splitType === 'custom') {
     return Array.isArray(data.splits) && data.splits.length > 0;
